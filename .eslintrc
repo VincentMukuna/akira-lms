@@ -9,7 +9,7 @@
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "plugin:prettier/recommended"
-    ],
+    ],    
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
@@ -24,11 +24,5 @@
         "react": {
             "version": "detect"
         }
-    },
-    "overrides": [
-        {
-            "files": ["*.ts", "*.tsx"],
-            "parser": "@typescript-eslint/parser"
-        }
-    ]
+    }
 }
