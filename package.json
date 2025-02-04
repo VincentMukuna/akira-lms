@@ -4,7 +4,8 @@
     "scripts": {
         "build": "tsc && vite build && vite build --ssr",
         "dev": "vite",
-        "lint": "eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix"
+        "lint": "eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix",
+        "format": "prettier --write \"resources/**/*.{js,jsx,ts,tsx,css,md,json}\""
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",
@@ -14,7 +15,7 @@
         "@types/react": "^18.0.28",
         "@types/react-dom": "^18.0.10",
         "@typescript-eslint/eslint-plugin": "^7.16.0",
-        "@typescript-eslint/parser": "^7.16.0",
+        "@typescript-eslint/parser": "^7.18.0",
         "@vitejs/plugin-react": "^4.2.0",
         "autoprefixer": "^10.4.12",
         "axios": "^1.7.4",
@@ -32,10 +33,19 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "tailwindcss": "^3.2.1",
+        "tslint-config-prettier": "^1.18.0",
         "typescript": "^5.0.2",
         "vite": "^6.0"
     },
     "dependencies": {
+        "@radix-ui/react-avatar": "^1.1.2",
+        "@radix-ui/react-collapsible": "^1.1.2",
+        "@radix-ui/react-dialog": "^1.1.5",
+        "@radix-ui/react-dropdown-menu": "^2.1.5",
+        "@radix-ui/react-progress": "^1.1.1",
+        "@radix-ui/react-separator": "^1.1.1",
+        "@radix-ui/react-slot": "^1.1.1",
+        "@radix-ui/react-tooltip": "^1.1.7",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "lucide-react": "^0.474.0",

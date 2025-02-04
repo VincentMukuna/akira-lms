@@ -7,13 +7,9 @@ export default function Welcome({
     phpVersion,
 }: PageProps<{ laravelVersion: string; phpVersion: string }>) {
     const handleImageError = () => {
-        document
-            .getElementById('screenshot-container')
-            ?.classList.add('!hidden');
+        document.getElementById('screenshot-container')?.classList.add('!hidden');
         document.getElementById('docs-card')?.classList.add('!row-span-1');
-        document
-            .getElementById('docs-card-content')
-            ?.classList.add('!flex-row');
+        document.getElementById('docs-card-content')?.classList.add('!flex-row');
         document.getElementById('background')?.classList.add('!hidden');
     };
 
@@ -74,7 +70,7 @@ export default function Welcome({
                                 <a
                                     href="https://laravel.com/docs"
                                     id="docs-card"
-                                    className="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+                                    className="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10"
                                 >
                                     <div
                                         id="screenshot-container"
@@ -123,14 +119,11 @@ export default function Welcome({
                                                 </h2>
 
                                                 <p className="mt-4 text-sm/relaxed">
-                                                    Laravel has wonderful
-                                                    documentation covering every
-                                                    aspect of the framework.
-                                                    Whether you are a newcomer
-                                                    or have prior experience
-                                                    with Laravel, we recommend
-                                                    reading our documentation
-                                                    from beginning to end.
+                                                    Laravel has wonderful documentation covering
+                                                    every aspect of the framework. Whether you are a
+                                                    newcomer or have prior experience with Laravel,
+                                                    we recommend reading our documentation from
+                                                    beginning to end.
                                                 </p>
                                             </div>
                                         </div>
@@ -153,7 +146,7 @@ export default function Welcome({
 
                                 <a
                                     href="https://laracasts.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20] lg:pb-10"
                                 >
                                     <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
                                         <svg
@@ -174,12 +167,10 @@ export default function Welcome({
                                         </h2>
 
                                         <p className="mt-4 text-sm/relaxed">
-                                            Laracasts offers thousands of video
-                                            tutorials on Laravel, PHP, and
-                                            JavaScript development. Check them
-                                            out, see for yourself, and massively
-                                            level up your development skills in
-                                            the process.
+                                            Laracasts offers thousands of video tutorials on
+                                            Laravel, PHP, and JavaScript development. Check them
+                                            out, see for yourself, and massively level up your
+                                            development skills in the process.
                                         </p>
                                     </div>
 
@@ -200,7 +191,7 @@ export default function Welcome({
 
                                 <a
                                     href="https://laravel-news.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
+                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20] lg:pb-10"
                                 >
                                     <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
                                         <svg
@@ -223,12 +214,10 @@ export default function Welcome({
                                         </h2>
 
                                         <p className="mt-4 text-sm/relaxed">
-                                            Laravel News is a community driven
-                                            portal and newsletter aggregating
-                                            all of the latest and most important
-                                            news in the Laravel ecosystem,
-                                            including new package releases and
-                                            tutorials.
+                                            Laravel News is a community driven portal and newsletter
+                                            aggregating all of the latest and most important news in
+                                            the Laravel ecosystem, including new package releases
+                                            and tutorials.
                                         </p>
                                     </div>
 
@@ -247,7 +236,7 @@ export default function Welcome({
                                     </svg>
                                 </a>
 
-                                <div className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
+                                <div className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] dark:bg-zinc-900 dark:ring-zinc-800 lg:pb-10">
                                     <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
                                         <svg
                                             className="size-5 sm:size-6"
@@ -267,9 +256,8 @@ export default function Welcome({
                                         </h2>
 
                                         <p className="mt-4 text-sm/relaxed">
-                                            Laravel's robust library of
-                                            first-party tools and libraries,
-                                            such as{' '}
+                                            Laravel's robust library of first-party tools and
+                                            libraries, such as{' '}
                                             <a
                                                 href="https://forge.laravel.com"
                                                 className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]"
@@ -304,9 +292,8 @@ export default function Welcome({
                                             >
                                                 Herd
                                             </a>{' '}
-                                            help you take your projects to the
-                                            next level. Pair them with powerful
-                                            open source libraries like{' '}
+                                            help you take your projects to the next level. Pair them
+                                            with powerful open source libraries like{' '}
                                             <a
                                                 href="https://laravel.com/docs/billing"
                                                 className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
