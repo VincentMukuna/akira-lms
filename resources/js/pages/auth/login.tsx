@@ -19,8 +19,8 @@ export default function Login({
         password: string;
         remember: boolean;
     }>({
-        email: '',
-        password: '',
+        email: 'test@example.com',
+        password: 'password',
         remember: false,
     });
 

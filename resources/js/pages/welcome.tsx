@@ -1,3 +1,4 @@
+import { ChatBot } from '@/components/chat-bot';
 import { useTheme } from '@/components/theme-provider';
 import {
     DropdownMenu,
@@ -175,7 +176,6 @@ export default function Welcome({ auth }: PageProps) {
                         </div>
                     </div>
                 </nav>
-
                 {/* Hero Section */}
                 <section className="relative pt-32">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -863,6 +863,9 @@ export default function Welcome({ auth }: PageProps) {
                         </div>
                     </div>
                 </footer>
+
+                {/* Add ChatBot at the end of the page */}
+                <ChatBot />
             </div>
         </>
     );

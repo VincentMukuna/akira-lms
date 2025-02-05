@@ -12,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app['request']->server->set('HTTPS', true);
     }
 
     /**
@@ -21,5 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Vite::prefetch(concurrency: 3);
+        $url = $this->app['url'];
+        $url->forceRootUrl(config('app.url'));
     }
 }
