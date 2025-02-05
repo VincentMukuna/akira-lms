@@ -1,6 +1,6 @@
 'use client';
 
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react';
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Monitor, Moon, Sparkles, Sun } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -9,7 +9,11 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuPortal,
     DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -18,6 +22,8 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar';
+import { useMemo } from 'react';
+import { useTheme } from './theme-provider';
 
 interface NavUserProps {
     user: {
@@ -29,6 +35,19 @@ interface NavUserProps {
 
 export function NavUser({ user }: NavUserProps) {
     const { isMobile } = useSidebar();
+    const { theme, setTheme } = useTheme();
+    const currentThemeIcon = useMemo(() => {
+        switch (theme) {
+            case "dark":
+                return <Moon className='size-[1.2rem]' />;
+            case 'light':
+                return <Sun className='size-[1.2rem]'/>;
+            case 'system':
+                return <Monitor className='size-[1.2rem]' />
+            default:
+                break;
+        }
+    }, [theme])
 
     return (
         <SidebarMenu>
@@ -98,8 +117,31 @@ export function NavUser({ user }: NavUserProps) {
                             <DropdownMenuItem>
                                 <Bell className="mr-2 h-4 w-4" />
                                 <span>Notifications</span>
-                            </DropdownMenuItem>
+                            </DropdownMenuItem>   
+                            <DropdownMenuSeparator />
                         </DropdownMenuGroup>
+                            <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>
+                                    {currentThemeIcon}
+                                    <span className='ms-2'>Theme</span>
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                    <DropdownMenuItem onClick={()=>setTheme("light")}>
+                                        <Sun className="h-[1.2rem] w-[1.2rem]" />
+                                        <span className=''>Light</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={()=>setTheme("dark")}>
+                                        <Moon className="h-[1.2rem] w-[1.2rem]" />
+                                        <span className=''>Dark</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={()=>setTheme("system")}>
+                                        <Monitor className="h-[1.2rem] w-[1.2rem]" />
+                                        <span className=''>System</span>
+                                    </DropdownMenuItem>
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <LogOut className="mr-2 h-4 w-4" />
