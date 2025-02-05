@@ -1,9 +1,18 @@
+import { useTheme } from '@/components/theme-provider';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
+import { Monitor, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Welcome({ auth }: PageProps) {
     const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+    const { theme, setTheme } = useTheme();
 
     return (
         <>
@@ -684,7 +693,43 @@ export default function Welcome({ auth }: PageProps) {
                                 <p className="text-sm">
                                     © {new Date().getFullYear()} AkiraLMS. All rights reserved.
                                 </p>
-                                <div className="flex space-x-6">
+                                <div className="flex items-center space-x-6">
+                                    <div className="flex items-center space-x-2">
+                                        <span className="text-sm">Theme:</span>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className="flex items-center gap-2 rounded-md p-2 text-sm hover:bg-gray-800">
+                                                {theme === 'light' && <Sun className="h-4 w-4" />}
+                                                {theme === 'dark' && <Moon className="h-4 w-4" />}
+                                                {theme === 'system' && (
+                                                    <Monitor className="h-4 w-4" />
+                                                )}
+                                                <span className="capitalize">{theme}</span>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="w-32">
+                                                <DropdownMenuItem
+                                                    onClick={() => setTheme('light')}
+                                                    className="gap-2"
+                                                >
+                                                    <Sun className="h-4 w-4" />
+                                                    <span>Light</span>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() => setTheme('dark')}
+                                                    className="gap-2"
+                                                >
+                                                    <Moon className="h-4 w-4" />
+                                                    <span>Dark</span>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() => setTheme('system')}
+                                                    className="gap-2"
+                                                >
+                                                    <Monitor className="h-4 w-4" />
+                                                    <span>System</span>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                     <a href="#" className="text-sm hover:text-indigo-400">
                                         Privacy Policy
                                     </a>
