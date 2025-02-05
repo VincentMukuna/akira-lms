@@ -7,7 +7,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',
         password: '',
@@ -27,9 +27,7 @@ export default function Register() {
             <Card>
                 <CardHeader>
                     <CardTitle>Register</CardTitle>
-                    <CardDescription>
-                        Create a new account to get started.
-                    </CardDescription>
+                    <CardDescription>Create a new account to get started.</CardDescription>
                 </CardHeader>
 
                 <CardContent>
@@ -45,9 +43,7 @@ export default function Register() {
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                             />
-                            {errors.name && (
-                                <p className="text-sm text-red-500">{errors.name}</p>
-                            )}
+                            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -61,9 +57,7 @@ export default function Register() {
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
                             />
-                            {errors.email && (
-                                <p className="text-sm text-red-500">{errors.email}</p>
-                            )}
+                            {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                         </div>
 
                         <div className="space-y-2">

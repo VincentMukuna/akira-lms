@@ -61,9 +61,7 @@ export default function Login({
                                 autoFocus
                                 onChange={(e) => setData('email', e.target.value)}
                             />
-                            {errors.email && (
-                                <p className="text-sm text-red-500">{errors.email}</p>
-                            )}
+                            {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -85,9 +83,7 @@ export default function Login({
                             <Checkbox
                                 id="remember"
                                 checked={data.remember}
-                                onCheckedChange={(checked) => 
-                                    setData('remember', checked === true)
-                                }
+                                onCheckedChange={(checked) => setData('remember', checked === true)}
                             />
                             <Label
                                 htmlFor="remember"

@@ -25,16 +25,15 @@ export default function ForgotPassword({ status }: { status?: string }) {
                 <CardHeader>
                     <CardTitle>Forgot Password</CardTitle>
                     <CardDescription>
-                        Forgot your password? No problem. Just let us know your email address and we will email you a password
-                        reset link that will allow you to choose a new one.
+                        Forgot your password? No problem. Just let us know your email address and we
+                        will email you a password reset link that will allow you to choose a new
+                        one.
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent>
                     {status && (
-                        <div className="mb-4 text-sm font-medium text-green-600">
-                            {status}
-                        </div>
+                        <div className="mb-4 text-sm font-medium text-green-600">{status}</div>
                     )}
 
                     <form onSubmit={submit} className="space-y-4">
@@ -50,9 +49,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                 required
                                 autoFocus
                             />
-                            {errors.email && (
-                                <p className="text-sm text-red-500">{errors.email}</p>
-                            )}
+                            {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                         </div>
 
                         <div className="flex justify-end">

@@ -35,7 +35,7 @@ export default function UpdateProfileInformation({
                     Update your account's profile information and email address.
                 </CardDescription>
             </CardHeader>
-            
+
             <CardContent>
                 <form onSubmit={submit} className="space-y-6">
                     <div className="space-y-2">
@@ -47,9 +47,7 @@ export default function UpdateProfileInformation({
                             required
                             autoComplete="name"
                         />
-                        {errors.name && (
-                            <p className="text-sm text-red-500">{errors.name}</p>
-                        )}
+                        {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -62,9 +60,7 @@ export default function UpdateProfileInformation({
                             required
                             autoComplete="username"
                         />
-                        {errors.email && (
-                            <p className="text-sm text-red-500">{errors.email}</p>
-                        )}
+                        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                     </div>
 
                     {mustVerifyEmail && user.email_verified_at === null && (

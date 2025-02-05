@@ -15,22 +15,23 @@ createInertiaApp({
         resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
     setup({ el, App, props }) {
         if (import.meta.env.SSR) {
-            hydrateRoot(el,
-                <ThemeProvider defaultTheme="light" storageKey='akira-theme'>
+            hydrateRoot(
+                el,
+                <ThemeProvider defaultTheme="light" storageKey="akira-theme">
                     <TooltipProvider>
                         <App {...props} />
                     </TooltipProvider>
-                </ThemeProvider>
+                </ThemeProvider>,
             );
             return;
         }
 
         createRoot(el).render(
-            <ThemeProvider defaultTheme="light" storageKey='akira-theme'>
+            <ThemeProvider defaultTheme="light" storageKey="akira-theme">
                 <TooltipProvider>
                     <App {...props} />
                 </TooltipProvider>
-            </ThemeProvider>
+            </ThemeProvider>,
         );
     },
     progress: {

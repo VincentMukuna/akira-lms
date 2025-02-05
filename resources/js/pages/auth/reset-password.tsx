@@ -6,14 +6,8 @@ import GuestLayout from '@/layouts/guest-layout';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-export default function ResetPassword({
-    token,
-    email,
-}: {
-    token: string;
-    email: string;
-}) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function ResetPassword({ token, email }: { token: string; email: string }) {
+    const { data, setData, post, processing, errors } = useForm({
         token: token,
         email: email,
         password: '',
@@ -33,9 +27,7 @@ export default function ResetPassword({
             <Card>
                 <CardHeader>
                     <CardTitle>Reset Password</CardTitle>
-                    <CardDescription>
-                        Create a new password for your account.
-                    </CardDescription>
+                    <CardDescription>Create a new password for your account.</CardDescription>
                 </CardHeader>
 
                 <CardContent>
@@ -51,9 +43,7 @@ export default function ResetPassword({
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
                             />
-                            {errors.email && (
-                                <p className="text-sm text-red-500">{errors.email}</p>
-                            )}
+                            {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                         </div>
 
                         <div className="space-y-2">

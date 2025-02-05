@@ -31,9 +31,7 @@ export default function Dashboard() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Courses in Progress
-                        </CardTitle>
+                        <CardTitle className="text-sm font-medium">Courses in Progress</CardTitle>
                         <GraduationCap className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -43,9 +41,7 @@ export default function Dashboard() {
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Completed Courses
-                        </CardTitle>
+                        <CardTitle className="text-sm font-medium">Completed Courses</CardTitle>
                         <Trophy className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -55,9 +51,7 @@ export default function Dashboard() {
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Certificates Earned
-                        </CardTitle>
+                        <CardTitle className="text-sm font-medium">Certificates Earned</CardTitle>
                         <GraduationCap className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -67,9 +61,7 @@ export default function Dashboard() {
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Learning Hours
-                        </CardTitle>
+                        <CardTitle className="text-sm font-medium">Learning Hours</CardTitle>
                         <Clock className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
@@ -88,9 +80,7 @@ export default function Dashboard() {
                         <div className="flex items-center space-x-4">
                             <BookOpen className="h-12 w-12 text-primary" />
                             <div>
-                                <h3 className="text-lg font-semibold">
-                                    Module 3: Neural Networks
-                                </h3>
+                                <h3 className="text-lg font-semibold">Module 3: Neural Networks</h3>
                                 <p className="text-sm text-muted-foreground">
                                     4 of 6 lessons completed
                                 </p>
@@ -98,9 +88,7 @@ export default function Dashboard() {
                         </div>
                         <div className="text-right">
                             <div className="text-2xl font-bold">60%</div>
-                            <p className="text-sm text-muted-foreground">
-                                Overall Progress
-                            </p>
+                            <p className="text-sm text-muted-foreground">Overall Progress</p>
                         </div>
                     </div>
                     <div className="space-y-4">
@@ -133,10 +121,7 @@ export default function Dashboard() {
                                             {deadline.course}: {deadline.task}
                                         </p>
                                         <p className="text-sm text-muted-foreground">
-                                            Due:{' '}
-                                            {new Date(
-                                                deadline.dueDate,
-                                            ).toLocaleDateString()}
+                                            Due: {new Date(deadline.dueDate).toLocaleDateString()}
                                         </p>
                                     </div>
                                 </div>

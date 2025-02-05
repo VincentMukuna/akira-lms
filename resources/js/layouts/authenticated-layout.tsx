@@ -7,15 +7,12 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { usePage } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode } from 'react';
 
 export default function Authenticated({
     header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
-    const user = usePage().props.auth.user;
-
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -27,17 +24,13 @@ export default function Authenticated({
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>
-                                        {header}
-                                    </BreadcrumbPage>
+                                    <BreadcrumbPage>{header}</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
                 </header>
-                <div className="flex flex-1 flex-col gap-6 p-6 pt-0">
-                    {children}
-                </div>
+                <div className="flex flex-1 flex-col gap-6 p-6 pt-0">{children}</div>
             </SidebarInset>
         </SidebarProvider>
     );

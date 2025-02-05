@@ -1,6 +1,16 @@
 'use client';
 
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Monitor, Moon, Sparkles, Sun } from 'lucide-react';
+import {
+    BadgeCheck,
+    Bell,
+    ChevronsUpDown,
+    CreditCard,
+    LogOut,
+    Monitor,
+    Moon,
+    Sparkles,
+    Sun,
+} from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -38,16 +48,16 @@ export function NavUser({ user }: NavUserProps) {
     const { theme, setTheme } = useTheme();
     const currentThemeIcon = useMemo(() => {
         switch (theme) {
-            case "dark":
-                return <Moon className='size-[1.2rem]' />;
+            case 'dark':
+                return <Moon className="size-[1.2rem]" />;
             case 'light':
-                return <Sun className='size-[1.2rem]'/>;
+                return <Sun className="size-[1.2rem]" />;
             case 'system':
-                return <Monitor className='size-[1.2rem]' />
+                return <Monitor className="size-[1.2rem]" />;
             default:
                 break;
         }
-    }, [theme])
+    }, [theme]);
 
     return (
         <SidebarMenu>
@@ -117,31 +127,31 @@ export function NavUser({ user }: NavUserProps) {
                             <DropdownMenuItem>
                                 <Bell className="mr-2 h-4 w-4" />
                                 <span>Notifications</span>
-                            </DropdownMenuItem>   
+                            </DropdownMenuItem>
                             <DropdownMenuSeparator />
                         </DropdownMenuGroup>
-                            <DropdownMenuSub>
+                        <DropdownMenuSub>
                             <DropdownMenuSubTrigger>
-                                    {currentThemeIcon}
-                                    <span className='ms-2'>Theme</span>
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuPortal>
-                                    <DropdownMenuSubContent>
-                                    <DropdownMenuItem onClick={()=>setTheme("light")}>
+                                {currentThemeIcon}
+                                <span className="ms-2">Theme</span>
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                    <DropdownMenuItem onClick={() => setTheme('light')}>
                                         <Sun className="h-[1.2rem] w-[1.2rem]" />
-                                        <span className=''>Light</span>
+                                        <span className="">Light</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={()=>setTheme("dark")}>
+                                    <DropdownMenuItem onClick={() => setTheme('dark')}>
                                         <Moon className="h-[1.2rem] w-[1.2rem]" />
-                                        <span className=''>Dark</span>
+                                        <span className="">Dark</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={()=>setTheme("system")}>
+                                    <DropdownMenuItem onClick={() => setTheme('system')}>
                                         <Monitor className="h-[1.2rem] w-[1.2rem]" />
-                                        <span className=''>System</span>
+                                        <span className="">System</span>
                                     </DropdownMenuItem>
-                                    </DropdownMenuSubContent>
-                                </DropdownMenuPortal>
-                            </DropdownMenuSub>
+                                </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                        </DropdownMenuSub>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <LogOut className="mr-2 h-4 w-4" />
