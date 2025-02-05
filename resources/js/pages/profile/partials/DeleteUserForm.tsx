@@ -62,9 +62,11 @@ export default function DeleteUserForm({ className = '' }: { className?: string 
             </CardHeader>
 
             <CardContent>
-                <Button variant="destructive" onClick={confirmUserDeletion}>
-                    Delete Account
-                </Button>
+                <div className="flex justify-end">
+                    <Button variant="destructive" onClick={confirmUserDeletion}>
+                        Delete Account
+                    </Button>
+                </div>
 
                 <Dialog open={confirmingUserDeletion} onOpenChange={setConfirmingUserDeletion}>
                     <DialogContent>
@@ -96,7 +98,7 @@ export default function DeleteUserForm({ className = '' }: { className?: string 
                                 )}
                             </div>
 
-                            <DialogFooter>
+                            <DialogFooter className="justify-end">
                                 <Button variant="outline" onClick={closeModal} type="button">
                                     Cancel
                                 </Button>

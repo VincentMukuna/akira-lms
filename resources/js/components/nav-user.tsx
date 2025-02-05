@@ -32,6 +32,7 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar';
+import { router } from '@inertiajs/react';
 import { useMemo } from 'react';
 import { useTheme } from './theme-provider';
 
@@ -153,7 +154,11 @@ export function NavUser({ user }: NavUserProps) {
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                router.post(route('logout'));
+                            }}
+                        >
                             <LogOut className="mr-2 h-4 w-4" />
                             <span>Log out</span>
                         </DropdownMenuItem>

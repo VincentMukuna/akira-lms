@@ -91,7 +91,7 @@ export default function UpdatePasswordForm({ className = '' }: { className?: str
                         )}
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-end gap-4">
                         <Button type="submit" disabled={processing}>
                             Save
                         </Button>

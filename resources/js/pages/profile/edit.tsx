@@ -13,16 +13,16 @@ export default function Edit({
         <AuthenticatedLayout header="Profile">
             <Head title="Profile" />
 
-            <div className="space-y-6">
+            <div className="grid max-w-4xl grid-cols-1 gap-6">
                 <UpdateProfileInformationForm
                     mustVerifyEmail={mustVerifyEmail}
                     status={status}
-                    className="max-w-xl"
+                    className=""
                 />
 
-                <UpdatePasswordForm className="max-w-xl" />
+                <UpdatePasswordForm className="" />
 
-                <DeleteUserForm className="max-w-xl" />
+                <DeleteUserForm className="" />
             </div>
         </AuthenticatedLayout>
     );
