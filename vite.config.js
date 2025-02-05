@@ -9,6 +9,10 @@ export default defineConfig({
             ssr: 'resources/js/ssr.tsx',
             refresh: true,
         }),
-        react(),
+        react({
+            babel: {
+                plugins: [['@babel/plugin-proposal-decorators', { legacy: true }]],
+            },
+        }),
     ],
 });

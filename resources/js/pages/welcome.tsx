@@ -17,8 +17,27 @@ export default function Welcome({ auth }: PageProps) {
 
     return (
         <>
-            <Head title="AkiraLMS - AI-Powered Learning Management System" />
-            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black">
+            <Head title="AkiraLMS - AI-Powered Learning Management System">
+                <style>{`
+                    .homepage ::selection {
+                        background-color: rgb(99 102 241 / 0.3);
+                        color: rgb(49 46 129);
+                    }
+                    .homepage ::-moz-selection {
+                        background-color: rgb(99 102 241 / 0.3);
+                        color: rgb(49 46 129);
+                    }
+                    .dark .homepage ::selection {
+                        background-color: rgb(99 102 241 / 0.3);
+                        color: rgb(224 231 255);
+                    }
+                    .dark .homepage ::-moz-selection {
+                        background-color: rgb(99 102 241 / 0.3);
+                        color: rgb(224 231 255);
+                    }
+                `}</style>
+            </Head>
+            <div className="homepage min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black">
                 {/* Navigation with Mega Menu */}
                 <nav className="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-md dark:bg-black/80">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -135,24 +154,18 @@ export default function Welcome({ auth }: PageProps) {
                                 <div className="transform transition-all duration-300 ease-in-out hover:scale-[1.02]">
                                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                                         Educational Institutions
+                                        <span className="ml-2 inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500">
+                                            Coming Soon
+                                        </span>
                                     </h3>
-                                    <div className="mt-4 space-y-4">
-                                        <a
-                                            href="#"
-                                            className="block text-sm text-gray-600 transition-colors duration-200 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400"
-                                        >
+                                    <div className="mt-4 space-y-4 opacity-60">
+                                        <a className="pointer-events-none block text-sm text-gray-600 transition-colors duration-200 dark:text-gray-400">
                                             K-12 Learning
                                         </a>
-                                        <a
-                                            href="#"
-                                            className="block text-sm text-gray-600 transition-colors duration-200 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400"
-                                        >
+                                        <a className="pointer-events-none block text-sm text-gray-600 transition-colors duration-200 dark:text-gray-400">
                                             Higher Education
                                         </a>
-                                        <a
-                                            href="#"
-                                            className="block text-sm text-gray-600 transition-colors duration-200 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400"
-                                        >
+                                        <a className="pointer-events-none block text-sm text-gray-600 transition-colors duration-200 dark:text-gray-400">
                                             Professional Certification
                                         </a>
                                     </div>
@@ -162,14 +175,15 @@ export default function Welcome({ auth }: PageProps) {
                                         Why AkiraLMS?
                                     </h3>
                                     <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                        Discover how our AI-powered platform can transform your
-                                        organization's learning experience.
+                                        Transform your organization's learning experience with our
+                                        enterprise-grade, AI-powered platform designed for corporate
+                                        training.
                                     </p>
                                     <Link
                                         href={route('register')}
                                         className="mt-4 inline-block rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-indigo-500"
                                     >
-                                        Learn More
+                                        Start Free Trial
                                     </Link>
                                 </div>
                             </div>
@@ -182,16 +196,16 @@ export default function Welcome({ auth }: PageProps) {
                         <div className="grid gap-12 lg:grid-cols-2 lg:gap-8">
                             <div className="max-w-2xl">
                                 <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
-                                    Transform Learning with{' '}
+                                    Transform Corporate Learning with{' '}
                                     <span className="text-indigo-600 dark:text-indigo-400">
                                         AI-Powered
                                     </span>{' '}
-                                    Education
+                                    Training
                                 </h1>
                                 <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
                                     Empower your organization with an intelligent learning platform
-                                    that adapts to each learner's needs. Perfect for corporate
-                                    training and educational institutions.
+                                    that adapts to each employee's needs. Perfect for enterprise
+                                    training, onboarding, and professional development.
                                 </p>
                                 <div className="mt-10 flex items-center gap-x-6">
                                     <Link
@@ -487,7 +501,7 @@ export default function Welcome({ auth }: PageProps) {
                                         <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
-                                            d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
+                                            d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4 0 2.25 2.25 0 014 0zm-13.5 0a2.25 2.25 0 11-4 0 2.25 2.25 0 014.5 0z"
                                         />
                                     </svg>
                                 </div>
