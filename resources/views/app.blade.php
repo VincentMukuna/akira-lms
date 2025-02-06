@@ -13,10 +13,6 @@
         <!-- Scripts -->
         @routes
         @viteReactRefresh
-        <script
-            crossOrigin="anonymous"
-            src="//unpkg.com/react-scan/dist/auto.global.js"
-        />
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
     </head>
