@@ -18,7 +18,6 @@ interface PageProps extends Record<string, unknown> {
 
 export function useRoleNavigation() {
     const { auth } = usePage<PageProps>().props;
-    console.log(auth);
     const roles = auth?.roles || [];
 
     // Get the highest priority role (admin > instructor > learner)

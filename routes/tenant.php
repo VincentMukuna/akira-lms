@@ -14,7 +14,10 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Users\InvitedUsersController;
 use App\Http\Controllers\Workspace\SetupController;
+use App\Http\Controllers\Users\InvitationController;
+use App\Http\Controllers\Users\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -41,7 +44,9 @@ Route::middleware([
     // Admin Routes
     Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-        // TODO: Add other admin routes when controllers are created
+        Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
+        Route::get('users/invite', [InvitedUsersController::class, 'create'])->name('admin.users.invite');
+        Route::post('users/invite', [InvitedUsersController::class, 'store'])->name('admin.users.invite.store');
     });
 
     // Instructor Routes
@@ -87,6 +92,12 @@ Route::middleware([
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('password.store');
+
+        Route::get('invitation/{token}', [InvitationController::class, 'create'])
+            ->name('invitation.accept');
+
+        Route::post('invitation/{token}', [InvitationController::class, 'store'])
+            ->name('invitation.accept.store');
     });
 
     // Email Verification Routes

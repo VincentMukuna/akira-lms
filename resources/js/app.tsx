@@ -18,7 +18,7 @@ createInertiaApp({
             <ThemeProvider defaultTheme="light" storageKey="akira-theme">
                 <TooltipProvider>
                     <App {...props} />
-                    <Toaster richColors />
+                    <Toaster />
                 </TooltipProvider>
             </ThemeProvider>,
         );
