@@ -19,6 +19,7 @@ class CreateWorkspaceAction
             $tenant = Tenant::create([
                 'id' => $data->subdomain,
                 'name' => $data->company_name,
+                'email' => $data->admin_email,
             ]);
 
             $appUri = Uri::of(config('app.url'));
