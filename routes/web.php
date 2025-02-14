@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Tenant\RegisteredTenantController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -12,5 +13,10 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('register', [RegisteredTenantController::class, 'create'])
+    ->name('register');
+
+Route::post('register', [RegisteredTenantController::class, 'store']);
 
 // require __DIR__ . '/auth.php';
