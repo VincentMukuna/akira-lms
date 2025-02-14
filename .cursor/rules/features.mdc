@@ -1,0 +1,6 @@
+---
+description: When creating an end to end feature
+globs: 
+---
+First describe the UI as the end user will view it
+once the UI is ready, proceed to the backend beginning with the controllers, actions and jobs.
