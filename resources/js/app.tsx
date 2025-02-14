@@ -6,7 +6,7 @@ import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { ThemeProvider } from './components/theme-provider';
-
+import { Toaster } from './components/ui/sonner';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -20,6 +20,7 @@ createInertiaApp({
                 <ThemeProvider defaultTheme="light" storageKey="akira-theme">
                     <TooltipProvider>
                         <App {...props} />
+                        <Toaster richColors />
                     </TooltipProvider>
                 </ThemeProvider>,
             );
@@ -30,6 +31,7 @@ createInertiaApp({
             <ThemeProvider defaultTheme="light" storageKey="akira-theme">
                 <TooltipProvider>
                     <App {...props} />
+                    <Toaster richColors />
                 </TooltipProvider>
             </ThemeProvider>,
         );

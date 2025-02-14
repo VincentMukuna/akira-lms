@@ -5,16 +5,19 @@ import { Label } from '@/components/ui/label';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import GuestLayout from '@/layouts/guest-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import axios from 'axios';
 import { FormEventHandler, useCallback, useState } from 'react';
 
 export default function Register() {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         company_name: '',
         subdomain: '',
+        admin_email: '',
     });
 
     const [subdomainAvailable, setSubdomainAvailable] = useState<boolean | null>(null);
     const [checking, setChecking] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
     const checkSubdomainAvailability = useCallback(async (subdomain: string) => {
         if (!subdomain) {
@@ -24,13 +27,15 @@ export default function Register() {
 
         setChecking(true);
         try {
-            const response = await fetch(`/api/check-subdomain/${subdomain}`);
-            const data = await response.json();
+            const { data } = await axios.get<{ available: boolean }>(
+                route('register.check-subdomain', subdomain),
+            );
             setSubdomainAvailable(data.available);
         } catch (error) {
             setSubdomainAvailable(false);
+        } finally {
+            setChecking(false);
         }
-        setChecking(false);
     }, []);
 
     const debouncedCheck = useDebouncedCallback(checkSubdomainAvailability);
@@ -45,8 +50,59 @@ export default function Register() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('register.tenant'));
+        post(route('register.workspace'), {
+            onSuccess: () => {
+                setSubmitted(true);
+                reset();
+            },
+        });
     };
+
+    if (submitted) {
+        return (
+            <GuestLayout>
+                <Head title="Registration Successful" />
+
+                <Card className="w-full max-w-xl">
+                    <CardHeader>
+                        <CardTitle>Workspace Created Successfully! 🎉</CardTitle>
+                        <CardDescription>
+                            We've sent setup instructions to {data.admin_email}
+                        </CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                            Please check your inbox to complete your admin account setup. The email
+                            should arrive within a few minutes.
+                        </p>
+
+                        <div className="rounded-lg bg-muted p-4">
+                            <p className="font-medium">What happens next?</p>
+                            <ol className="ml-4 mt-2 list-decimal text-sm text-muted-foreground">
+                                <li>Check your email for setup instructions</li>
+                                <li>Click the setup link in the email</li>
+                                <li>Create your admin account</li>
+                                <li>Start building your learning platform!</li>
+                            </ol>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                            <Button variant="outline" onClick={() => setSubmitted(false)}>
+                                Register Another Workspace
+                            </Button>
+                            <Link
+                                href={route('home')}
+                                className="text-sm text-primary underline hover:text-primary/90"
+                            >
+                                Back to Homepage
+                            </Link>
+                        </div>
+                    </CardContent>
+                </Card>
+            </GuestLayout>
+        );
+    }
 
     return (
         <GuestLayout>
@@ -115,6 +171,25 @@ export default function Register() {
                             {subdomainAvailable === false && !errors.subdomain && (
                                 <p className="text-sm text-red-500">Domain is not available</p>
                             )}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="admin_email">Admin Email</Label>
+                            <Input
+                                id="admin_email"
+                                type="email"
+                                name="admin_email"
+                                value={data.admin_email}
+                                onChange={(e) => setData('admin_email', e.target.value)}
+                                required
+                                placeholder="admin@company.com"
+                            />
+                            {errors.admin_email && (
+                                <p className="text-sm text-red-500">{errors.admin_email}</p>
+                            )}
+                            <p className="text-sm text-muted-foreground">
+                                We'll send setup instructions to this email address.
+                            </p>
                         </div>
 
                         <div className="flex items-center justify-between pt-4">

@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Tenant\RegisteredTenantController;
+use App\Http\Controllers\Workspace\CheckSubdomainController;
+use App\Http\Controllers\Workspace\WorkspaceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -12,11 +13,19 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+})->name('home');
+
+// Tenant Registration Routes
+Route::middleware('guest')->group(function () {
+    Route::get('register', [WorkspaceController::class, 'create'])
+        ->name('register');
+
+    Route::post('register', [WorkspaceController::class, 'store'])
+        ->name('register.workspace');
+
+    Route::get('check-subdomain/{subdomain}', CheckSubdomainController::class)
+        ->middleware('throttle:6,1')
+        ->name('register.check-subdomain');
 });
-
-Route::get('register', [RegisteredTenantController::class, 'create'])
-    ->name('register');
-
-Route::post('register', [RegisteredTenantController::class, 'store']);
 
 // require __DIR__ . '/auth.php';

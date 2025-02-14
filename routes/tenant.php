@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Workspace\SetupController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -67,6 +68,12 @@ Route::middleware([
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('password.store');
+
+        Route::get('/setup', [SetupController::class, 'create'])
+            ->name('workspace.setup');
+
+        Route::post('/setup', [SetupController::class, 'store'])
+            ->name('workspace.setup.store');
     });
 
     Route::middleware([
@@ -94,11 +101,5 @@ Route::middleware([
             ->name('logout');
     });
 });
-
-
-
-
-
-
 
 require __DIR__ . '/auth.php';

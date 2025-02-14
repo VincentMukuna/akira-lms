@@ -1,4 +1,5 @@
 import { AppSidebar } from '@/components/app-sidebar';
+import FlashMessage from '@/components/flash-message';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -31,6 +32,7 @@ export default function Authenticated({
                     </div>
                 </header>
                 <div className="flex flex-1 flex-col gap-6 p-6 pt-0">{children}</div>
+                <FlashMessage />
             </SidebarInset>
         </SidebarProvider>
     );
