@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Domain\Workspace\Notifications;
 
 use App\Models\Tenant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Uri;
 
 class WorkspaceCreated extends Notification
 {
@@ -23,7 +24,8 @@ class WorkspaceCreated extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        $setupUrl = "https://{$this->domain}/setup";
+        $appUri = Uri::of(config('app.url'));
+        $setupUrl = "{$appUri->scheme()}://{$this->domain}/setup";
 
         return (new MailMessage)
             ->subject("Welcome to {$this->tenant->name}'s Learning Platform")

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Dashboard\AdminDashboardController;
+use App\Http\Controllers\Dashboard\InstructorDashboardController;
+use App\Http\Controllers\Dashboard\LearnerDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -10,7 +13,6 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Workspace\SetupController;
 use Illuminate\Support\Facades\Route;
@@ -36,22 +38,39 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('dashboard');
-    })->middleware([
-        'auth',
-        'verified',
-    ])->name('dashboard');
+    // Admin Routes
+    Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        // TODO: Add other admin routes when controllers are created
+    });
 
+    // Instructor Routes
+    Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')->group(function () {
+        Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
+        // TODO: Add other instructor routes when controllers are created
+    });
+
+    // Learner Routes
+    Route::middleware(['auth', 'verified', 'role:learner'])->prefix('learner')->group(function () {
+        Route::get('/dashboard', [LearnerDashboardController::class, 'index'])->name('learner.dashboard');
+        // TODO: Add other learner routes when controllers are created
+    });
+
+    // Shared Routes
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
-    Route::middleware([
-        'guest',
-    ])->group(function () {
+    Route::get('/setup', [SetupController::class, 'create'])
+        ->name('workspace.setup');
+
+    Route::post('/setup', [SetupController::class, 'store'])
+        ->name('workspace.setup.store');
+
+    // Auth Routes
+    Route::middleware('guest')->group(function () {
         Route::get('login', [AuthenticatedSessionController::class, 'create'])
             ->name('login');
 
@@ -68,17 +87,10 @@ Route::middleware([
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('password.store');
-
-        Route::get('/setup', [SetupController::class, 'create'])
-            ->name('workspace.setup');
-
-        Route::post('/setup', [SetupController::class, 'store'])
-            ->name('workspace.setup.store');
     });
 
-    Route::middleware([
-        'auth',
-    ])->group(function () {
+    // Email Verification Routes
+    Route::middleware(['auth'])->group(function () {
         Route::get('verify-email', EmailVerificationPromptController::class)
             ->name('verification.notice');
 

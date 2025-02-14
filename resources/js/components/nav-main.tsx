@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Link } from '@inertiajs/react';
 
-interface NavItem {
+export interface NavItem {
     title: string;
     url: string;
     icon: LucideIcon;

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Workspace;
 
 use App\Domain\Workspace\Actions\CreateWorkspaceAction;
 use App\Domain\Workspace\Data\WorkspaceCreateData;
+use App\Domain\Workspace\Notifications\WorkspaceCreated;
 use App\Http\Controllers\Controller;
-use App\Notifications\WorkspaceCreated;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 use Inertia\Response;

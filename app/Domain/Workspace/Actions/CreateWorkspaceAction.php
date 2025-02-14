@@ -4,9 +4,7 @@ namespace App\Domain\Workspace\Actions;
 
 use App\Domain\Workspace\Data\WorkspaceCreateData;
 use App\Models\Tenant;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Uri;
 
 class CreateWorkspaceAction
@@ -24,7 +22,6 @@ class CreateWorkspaceAction
 
             $appUri = Uri::of(config('app.url'));
             $appHost = $appUri->host();
-
 
             $domain = $tenant->domains()->create([
                 'domain' => $data->subdomain . '.' . $appHost,

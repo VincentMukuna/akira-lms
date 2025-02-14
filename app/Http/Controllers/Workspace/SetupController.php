@@ -39,7 +39,7 @@ class SetupController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')
+        return redirect()->route('admin.dashboard')
             ->with('success', 'Welcome to your new workspace!');
     }
 }
