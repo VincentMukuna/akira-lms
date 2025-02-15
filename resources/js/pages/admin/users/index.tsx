@@ -1,4 +1,5 @@
 import { DataPagination, PaginatedData } from '@/components/data-pagination';
+import { SearchFilter } from '@/components/filters/search-filter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -9,9 +10,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Calendar, Clock, UserCheck, UserPlus, Users } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
 interface User {
     id: number;
@@ -28,12 +31,35 @@ interface Stats {
     pending_invitations: number;
 }
 
+interface Filters {
+    search?: string;
+}
+
 interface Props {
     users: PaginatedData<User>;
     stats: Stats;
+    filters: Filters;
 }
 
-const UsersIndex = ({ users, stats }: Props) => {
+const UsersIndex = ({ users, stats, filters: initialFilters }: Props) => {
+    const [filters, setFilters] = useState<Filters>(initialFilters);
+
+    const debouncedSearch = useDebouncedCallback((search: string) => {
+        router.get(
+            route('admin.users.index'),
+            { search },
+            { preserveState: true, preserveScroll: true },
+        );
+    }, 300);
+
+    const updateSearch = useCallback(
+        (search: string) => {
+            setFilters((filters) => ({ ...filters, search }));
+            debouncedSearch(search);
+        },
+        [debouncedSearch],
+    );
+
     return (
         <>
             <Head title="Users" />
@@ -84,12 +110,20 @@ const UsersIndex = ({ users, stats }: Props) => {
             <Card>
                 <CardHeader className="flex-row items-center justify-between space-y-0">
                     <CardTitle>Users</CardTitle>
-                    <Link href={route('admin.users.invite')}>
-                        <Button>
-                            <UserPlus className="mr-2 size-4" />
-                            Invite Users
-                        </Button>
-                    </Link>
+                    <div className="flex items-center gap-4">
+                        <SearchFilter
+                            value={filters.search ?? ''}
+                            onChange={updateSearch}
+                            placeholder="Search users..."
+                            className="w-[300px]"
+                        />
+                        <Link href={route('admin.users.invite')}>
+                            <Button>
+                                <UserPlus className="mr-2 size-4" />
+                                Invite Users
+                            </Button>
+                        </Link>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">

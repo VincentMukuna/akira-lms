@@ -3,21 +3,30 @@
 namespace App\Http\Controllers\Users;
 
 use App\Data\UserData;
+use App\Domain\Shared\QueryBuilder;
+use App\Domain\Users\Filters\SearchFilter;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UserController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $users = User::with('roles')
+        $users = QueryBuilder::for(User::class)
+            ->withFilters([
+                SearchFilter::class,
+            ])
+            ->get()
+            ->with('roles')
             ->latest()
             ->paginate(10);
 
         return Inertia::render('admin/users/index', [
             'users' => UserData::collect($users),
+            'filters' => $request->only(['search']),
             'stats' => [
                 'total_users' => User::count(),
                 'active_users' => User::where('email_verified_at', '!=', null)->count(),
