@@ -1,5 +1,6 @@
 import { DataPagination, PaginatedData } from '@/components/data-pagination';
 import { SearchFilter } from '@/components/filters/search-filter';
+import { SelectFilter } from '@/components/filters/select-filter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -10,11 +11,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
+import { FiltersProvider, useFilters, type Filters } from '@/contexts/filters-context';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Calendar, Clock, UserCheck, UserPlus, Users } from 'lucide-react';
-import { useCallback, useState } from 'react';
 
 interface User {
     id: number;
@@ -31,37 +31,98 @@ interface Stats {
     pending_invitations: number;
 }
 
-interface Filters {
-    search?: string;
-}
-
 interface Props {
     users: PaginatedData<User>;
     stats: Stats;
     filters: Filters;
+    availableRoles: string[];
 }
 
-const UsersIndex = ({ users, stats, filters: initialFilters }: Props) => {
-    const [filters, setFilters] = useState<Filters>(initialFilters);
-
-    const debouncedSearch = useDebouncedCallback((search: string) => {
-        router.get(
-            route('admin.users.index'),
-            { search },
-            { preserveState: true, preserveScroll: true },
-        );
-    }, 300);
-
-    const updateSearch = useCallback(
-        (search: string) => {
-            setFilters((filters) => ({ ...filters, search }));
-            debouncedSearch(search);
-        },
-        [debouncedSearch],
-    );
+function UsersTable({
+    users,
+    availableRoles,
+}: {
+    users: PaginatedData<User>;
+    availableRoles: string[];
+}) {
+    const { filters, updateFilter } = useFilters();
 
     return (
-        <>
+        <Card>
+            <CardHeader className="flex-row items-center justify-between space-y-0">
+                <CardTitle>Users</CardTitle>
+                <div className="flex items-center gap-4">
+                    <SearchFilter
+                        value={filters.search ?? ''}
+                        onChange={(value) => updateFilter('search', value)}
+                        placeholder="Search users..."
+                        className="w-[300px]"
+                    />
+                    <SelectFilter
+                        value={filters.role ?? ''}
+                        onChange={(value) => updateFilter('role', value)}
+                        options={availableRoles.map((role) => ({ label: role, value: role }))}
+                        placeholder="Filter by role"
+                        className="w-[200px]"
+                    />
+                    <Link href={route('admin.users.invite')}>
+                        <Button>
+                            <UserPlus className="mr-2 size-4" />
+                            Invite Users
+                        </Button>
+                    </Link>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <div className="space-y-4">
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Role</TableHead>
+                                    <TableHead>Joined</TableHead>
+                                    <TableHead className="w-24">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {users.data.map((user) => (
+                                    <TableRow key={user.id}>
+                                        <TableCell>{user.name}</TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>
+                                            {user.roles.map((role, index) => (
+                                                <span
+                                                    key={role}
+                                                    className="mr-1 inline-block rounded bg-primary/10 px-2 py-1 text-xs capitalize"
+                                                >
+                                                    {role}
+                                                    {index < user.roles.length - 1 ? ' ' : ''}
+                                                </span>
+                                            ))}
+                                        </TableCell>
+                                        <TableCell>{user.created_at}</TableCell>
+                                        <TableCell>
+                                            <Button variant="ghost" size="sm">
+                                                Edit
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    <DataPagination paginated={users} />
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+const UsersIndex = ({ users, stats, filters: initialFilters, availableRoles }: Props) => {
+    return (
+        <FiltersProvider initialFilters={initialFilters} routeName="admin.users.index">
             <Head title="Users" />
 
             <div className="mb-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -107,69 +168,8 @@ const UsersIndex = ({ users, stats, filters: initialFilters }: Props) => {
                 </Card>
             </div>
 
-            <Card>
-                <CardHeader className="flex-row items-center justify-between space-y-0">
-                    <CardTitle>Users</CardTitle>
-                    <div className="flex items-center gap-4">
-                        <SearchFilter
-                            value={filters.search ?? ''}
-                            onChange={updateSearch}
-                            placeholder="Search users..."
-                            className="w-[300px]"
-                        />
-                        <Link href={route('admin.users.invite')}>
-                            <Button>
-                                <UserPlus className="mr-2 size-4" />
-                                Invite Users
-                            </Button>
-                        </Link>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        <div className="rounded-md border">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Name</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Role</TableHead>
-                                        <TableHead>Joined</TableHead>
-                                        <TableHead className="w-24">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {users.data.map((user) => (
-                                        <TableRow key={user.id}>
-                                            <TableCell>{user.name}</TableCell>
-                                            <TableCell>{user.email}</TableCell>
-                                            <TableCell>
-                                                {user.roles.map((role, index) => (
-                                                    <span
-                                                        key={role}
-                                                        className="mr-1 inline-block rounded bg-primary/10 px-2 py-1 text-xs capitalize"
-                                                    >
-                                                        {role}
-                                                        {index < user.roles.length - 1 ? ' ' : ''}
-                                                    </span>
-                                                ))}
-                                            </TableCell>
-                                            <TableCell>{user.created_at}</TableCell>
-                                            <TableCell>
-                                                <Button variant="ghost" size="sm">
-                                                    Edit
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
-                        <DataPagination paginated={users} />
-                    </div>
-                </CardContent>
-            </Card>
-        </>
+            <UsersTable users={users} availableRoles={availableRoles} />
+        </FiltersProvider>
     );
 };
 

@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Users;
 
 use App\Data\UserData;
 use App\Domain\Shared\QueryBuilder;
+use App\Domain\Users\Filters\RoleFilter;
 use App\Domain\Users\Filters\SearchFilter;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -18,6 +20,7 @@ class UserController extends Controller
         $users = QueryBuilder::for(User::class)
             ->withFilters([
                 SearchFilter::class,
+                RoleFilter::class,
             ])
             ->get()
             ->with('roles')
@@ -26,7 +29,8 @@ class UserController extends Controller
 
         return Inertia::render('admin/users/index', [
             'users' => UserData::collect($users),
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'role']),
+            'availableRoles' => Role::pluck('name'),
             'stats' => [
                 'total_users' => User::count(),
                 'active_users' => User::where('email_verified_at', '!=', null)->count(),
