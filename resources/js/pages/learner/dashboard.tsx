@@ -2,9 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Head } from '@inertiajs/react';
 
-export default function LearnerDashboard() {
+const LearnerDashboard = () => {
     return (
-        <AuthenticatedLayout header="My Dashboard">
+        <>
             <Head title="My Dashboard" />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -35,6 +35,12 @@ export default function LearnerDashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </AuthenticatedLayout>
+        </>
     );
-}
+};
+
+LearnerDashboard.layout = (page: any) => (
+    <AuthenticatedLayout header="My Dashboard">{page}</AuthenticatedLayout>
+);
+
+export default LearnerDashboard;

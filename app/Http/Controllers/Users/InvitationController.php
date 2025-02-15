@@ -35,7 +35,13 @@ class InvitationController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')
-            ->with('success', 'Welcome! Your account has been set up successfully.');
+        return match ($invitation->role) {
+            'admin' => redirect()->route('admin.dashboard')
+                ->with('success', 'Welcome! Your account has been set up successfully.'),
+            'instructor' => redirect()->route('instructor.dashboard')
+                ->with('success', 'Welcome! Your account has been set up successfully.'),
+            default => redirect()->route('learner.dashboard')
+                ->with('success', 'Welcome! Your account has been set up successfully.'),
+        };
     }
 }

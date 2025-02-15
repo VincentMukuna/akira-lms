@@ -54,7 +54,7 @@ interface Invite {
     role: string;
 }
 
-export default function InviteUsers() {
+const InviteUsers = () => {
     const [invites, setInvites] = useState<Invite[]>([]);
     const [isPending, setIsPending] = useState(false);
 
@@ -109,7 +109,7 @@ export default function InviteUsers() {
     };
 
     return (
-        <AuthenticatedLayout header="Invite Users">
+        <>
             <Head title="Invite Users" />
 
             <div className="grid gap-6">
@@ -245,6 +245,12 @@ export default function InviteUsers() {
                     </Card>
                 )}
             </div>
-        </AuthenticatedLayout>
+        </>
     );
-}
+};
+
+InviteUsers.layout = (page: any) => (
+    <AuthenticatedLayout header="Invite Users">{page}</AuthenticatedLayout>
+);
+
+export default InviteUsers;

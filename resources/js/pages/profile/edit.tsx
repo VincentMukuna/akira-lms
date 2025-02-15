@@ -5,12 +5,12 @@ import DeleteUserForm from './partials/DeleteUserForm';
 import UpdatePasswordForm from './partials/UpdatePasswordForm';
 import UpdateProfileInformationForm from './partials/UpdateProfileInformationForm';
 
-export default function Edit({
+const Edit = ({
     mustVerifyEmail,
     status,
-}: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+}: PageProps<{ mustVerifyEmail: boolean; status?: string }>) => {
     return (
-        <AuthenticatedLayout header="Profile">
+        <>
             <Head title="Profile" />
 
             <div className="grid max-w-4xl grid-cols-1 gap-6">
@@ -24,6 +24,10 @@ export default function Edit({
 
                 <DeleteUserForm className="" />
             </div>
-        </AuthenticatedLayout>
+        </>
     );
-}
+};
+
+Edit.layout = (page: any) => <AuthenticatedLayout header="Profile">{page}</AuthenticatedLayout>;
+
+export default Edit;

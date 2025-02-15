@@ -8,6 +8,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useRoleNavigation } from '@/hooks/use-role-navigation';
+import { Link } from '@inertiajs/react';
 import { GraduationCap } from 'lucide-react';
 import { NavMain } from './nav-main';
 import { NavUser } from './nav-user';
@@ -21,7 +22,7 @@ export function RoleSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href={`/${activeRole}/dashboard`}>
+                            <Link href={`/${activeRole}/dashboard`}>
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                     <GraduationCap className="size-4" />
                                 </div>
@@ -31,7 +32,7 @@ export function RoleSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) 
                                         {activeRole} Dashboard
                                     </span>
                                 </div>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

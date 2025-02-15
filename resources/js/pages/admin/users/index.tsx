@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Head, Link } from '@inertiajs/react';
-import { UserPlus } from 'lucide-react';
+import { Calendar, Clock, UserCheck, UserPlus, Users } from 'lucide-react';
 
 interface User {
     id: number;
@@ -18,6 +18,13 @@ interface User {
     email: string;
     role: string;
     created_at: string;
+}
+
+interface Stats {
+    total_users: number;
+    active_users: number;
+    new_users_this_month: number;
+    pending_invitations: number;
 }
 
 interface Props {
@@ -33,12 +40,56 @@ interface Props {
             active: boolean;
         }[];
     };
+    stats: Stats;
 }
 
-export default function UsersIndex({ users }: Props) {
+const UsersIndex = ({ users, stats }: Props) => {
     return (
-        <AuthenticatedLayout header="Users">
+        <>
             <Head title="Users" />
+
+            <div className="mb-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.total_users}</div>
+                        <p className="text-xs text-muted-foreground">All registered users</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                        <UserCheck className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.active_users}</div>
+                        <p className="text-xs text-muted-foreground">Verified users</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">New This Month</CardTitle>
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.new_users_this_month}</div>
+                        <p className="text-xs text-muted-foreground">Users joined this month</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Pending Invites</CardTitle>
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.pending_invitations}</div>
+                        <p className="text-xs text-muted-foreground">Awaiting acceptance</p>
+                    </CardContent>
+                </Card>
+            </div>
 
             <Card>
                 <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -81,6 +132,10 @@ export default function UsersIndex({ users }: Props) {
                     </div>
                 </CardContent>
             </Card>
-        </AuthenticatedLayout>
+        </>
     );
-}
+};
+
+UsersIndex.layout = (page: any) => <AuthenticatedLayout header="Users">{page}</AuthenticatedLayout>;
+
+export default UsersIndex;

@@ -18,6 +18,7 @@ use App\Http\Controllers\Users\InvitedUsersController;
 use App\Http\Controllers\Workspace\SetupController;
 use App\Http\Controllers\Users\InvitationController;
 use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Users\UserStatsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -47,6 +48,7 @@ Route::middleware([
         Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
         Route::get('users/invite', [InvitedUsersController::class, 'create'])->name('admin.users.invite');
         Route::post('users/invite', [InvitedUsersController::class, 'store'])->name('admin.users.invite.store');
+        Route::get('/users/stats', UserStatsController::class)->name('admin.users.stats');
     });
 
     // Instructor Routes

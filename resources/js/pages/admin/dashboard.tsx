@@ -11,10 +11,9 @@ interface Props {
     };
 }
 
-export default function AdminDashboard({ stats }: Props) {
-    console.log(stats);
+const AdminDashboard = ({ stats }: Props) => {
     return (
-        <AuthenticatedLayout header="Admin Dashboard">
+        <>
             <Head title="Admin Dashboard" />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -65,6 +64,12 @@ export default function AdminDashboard({ stats }: Props) {
                 - Latest Registrations
                 - Course Analytics
             */}
-        </AuthenticatedLayout>
+        </>
     );
-}
+};
+
+AdminDashboard.layout = (page: any) => (
+    <AuthenticatedLayout header="Admin Dashboard">{page}</AuthenticatedLayout>
+);
+
+export default AdminDashboard;
