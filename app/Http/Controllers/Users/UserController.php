@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Users;
 
+use App\Data\UserData;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +17,7 @@ class UserController extends Controller
             ->paginate(10);
 
         return Inertia::render('admin/users/index', [
-            'users' => UserResource::collection($users),
+            'users' => UserData::collect($users),
             'stats' => [
                 'total_users' => User::count(),
                 'active_users' => User::where('email_verified_at', '!=', null)->count(),
