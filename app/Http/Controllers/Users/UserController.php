@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Users;
 
 use App\Data\UserData;
 use App\Domain\Shared\QueryBuilder;
+use App\Domain\Users\Filters\DateRangeFilter;
 use App\Domain\Users\Filters\RoleFilter;
 use App\Domain\Users\Filters\SearchFilter;
 use App\Http\Controllers\Controller;
@@ -21,6 +22,7 @@ class UserController extends Controller
             ->withFilters([
                 SearchFilter::class,
                 RoleFilter::class,
+                DateRangeFilter::class,
             ])
             ->get()
             ->with('roles')
@@ -29,7 +31,7 @@ class UserController extends Controller
 
         return Inertia::render('admin/users/index', [
             'users' => UserData::collect($users),
-            'filters' => $request->only(['search', 'role']),
+            'filters' => $request->only(['search', 'role', 'startDate', 'endDate']),
             'availableRoles' => Role::pluck('name'),
             'stats' => [
                 'total_users' => User::count(),
