@@ -194,7 +194,7 @@ export default function Register() {
 
                         <div className="flex items-center justify-between pt-4">
                             <Link
-                                href={route('login')}
+                                href={route('workspace.access')}
                                 className="text-sm text-primary underline hover:text-primary/90"
                             >
                                 Already have an account?
