@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCountdown } from '@/hooks/use-countdown';
 import GuestLayout from '@/layouts/guest-layout';
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { GraduationCap } from 'lucide-react';
 import { useState } from 'react';
@@ -66,7 +66,13 @@ export default function Access() {
         setIsRedirecting(true);
 
         try {
-            const response = await axios.post(route('workspace.access'), data);
+            const response = await axios.post(route('workspace.access'), data, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            });
+
             const { redirect_url, company_name } = response.data;
 
             // Validate the URL before setting state
@@ -84,11 +90,20 @@ export default function Access() {
             start();
         } catch (error: any) {
             setIsRedirecting(false);
+            console.error('Error details:', {
+                response: error.response,
+                status: error.response?.status,
+                data: error.response?.data,
+            });
+
             if (error.response?.data?.errors) {
                 const serverErrors = error.response.data.errors;
                 if ('subdomain' in serverErrors) {
                     setError('subdomain', serverErrors.subdomain);
                 }
+            } else if (error.response?.status === 419) {
+                // CSRF token mismatch
+                setError('subdomain', 'Session expired. Please refresh the page and try again.');
             } else {
                 setError('subdomain', 'An error occurred while processing your request.');
             }
@@ -141,7 +156,7 @@ export default function Access() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={submit} className="space-y-4">
+                    <form onSubmit={submit} className="space-y-8">
                         <div className="space-y-2">
                             <Label htmlFor="subdomain">Workspace Domain</Label>
                             <div className="space-y-2">
@@ -167,6 +182,15 @@ export default function Access() {
                         </Button>
                     </form>
                 </CardContent>
+                <div className="px-6 pb-6 text-center text-sm text-muted-foreground">
+                    Don't have a workspace yet?{' '}
+                    <Link
+                        href={route('register')}
+                        className="font-medium text-primary hover:underline"
+                    >
+                        Create your workspace
+                    </Link>
+                </div>
             </Card>
         </GuestLayout>
     );

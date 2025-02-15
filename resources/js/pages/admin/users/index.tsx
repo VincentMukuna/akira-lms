@@ -16,7 +16,7 @@ interface User {
     id: number;
     name: string;
     email: string;
-    role: string;
+    roles: string[];
     created_at: string;
 }
 
@@ -118,7 +118,17 @@ const UsersIndex = ({ users, stats }: Props) => {
                                     <TableRow key={user.id}>
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
-                                        <TableCell className="capitalize">{user.role}</TableCell>
+                                        <TableCell>
+                                            {user.roles.map((role, index) => (
+                                                <span
+                                                    key={role}
+                                                    className="mr-1 inline-block rounded bg-primary/10 px-2 py-1 text-xs capitalize"
+                                                >
+                                                    {role}
+                                                    {index < user.roles.length - 1 ? ' ' : ''}
+                                                </span>
+                                            ))}
+                                        </TableCell>
                                         <TableCell>{user.created_at}</TableCell>
                                         <TableCell>
                                             <Button variant="ghost" size="sm">

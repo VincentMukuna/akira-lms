@@ -40,6 +40,13 @@ class TenantAccessController extends Controller
         }
 
         if (!$tenant) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'errors' => [
+                        'subdomain' => 'We couldn\'t find a workspace with that domain.',
+                    ]
+                ], 422);
+            }
             return back()->withErrors([
                 'subdomain' => 'We couldn\'t find a workspace with that domain.',
             ]);
@@ -48,17 +55,31 @@ class TenantAccessController extends Controller
         $domain = $tenant->domains->first();
 
         if (!$domain) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'errors' => [
+                        'subdomain' => 'This workspace has no associated domain.',
+                    ]
+                ], 422);
+            }
             return back()->withErrors([
                 'subdomain' => 'This workspace has no associated domain.',
             ]);
         }
 
         // Construct the URL with proper protocol and domain
-        $protocol = request()->secure() ? 'https://' : 'http://';
+        $protocol = $request->secure() ? 'https://' : 'http://';
         $loginUrl = $protocol . $domain->domain . '/login';
 
         // Return JSON response with redirect URL and company name
-        return response()->json([
+        if ($request->wantsJson()) {
+            return response()->json([
+                'redirect_url' => $loginUrl,
+                'company_name' => $tenant->name
+            ]);
+        }
+
+        return back()->with([
             'redirect_url' => $loginUrl,
             'company_name' => $tenant->name
         ]);
