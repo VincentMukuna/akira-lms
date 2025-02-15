@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Workspace\CheckSubdomainController;
+use App\Http\Controllers\Workspace\TenantAccessController;
 use App\Http\Controllers\Workspace\WorkspaceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,13 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 })->name('home');
+
+// Tenant Access Routes
+Route::get('/access', [TenantAccessController::class, 'create'])
+    ->name('workspace.access');
+
+Route::post('/access', [TenantAccessController::class, 'store'])
+    ->name('workspace.access');
 
 // Tenant Registration Routes
 Route::middleware('guest')->group(function () {
