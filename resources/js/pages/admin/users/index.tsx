@@ -1,3 +1,4 @@
+import { DataPagination, PaginatedData } from '@/components/data-pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -28,18 +29,7 @@ interface Stats {
 }
 
 interface Props {
-    users: {
-        data: User[];
-        current_page: number;
-        last_page: number;
-        per_page: number;
-        total: number;
-        links: {
-            url: string | null;
-            label: string;
-            active: boolean;
-        }[];
-    };
+    users: PaginatedData<User>;
     stats: Stats;
 }
 
@@ -102,43 +92,46 @@ const UsersIndex = ({ users, stats }: Props) => {
                     </Link>
                 </CardHeader>
                 <CardContent>
-                    <div className="rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    <TableHead>Joined</TableHead>
-                                    <TableHead className="w-24">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {users.data.map((user) => (
-                                    <TableRow key={user.id}>
-                                        <TableCell>{user.name}</TableCell>
-                                        <TableCell>{user.email}</TableCell>
-                                        <TableCell>
-                                            {user.roles.map((role, index) => (
-                                                <span
-                                                    key={role}
-                                                    className="mr-1 inline-block rounded bg-primary/10 px-2 py-1 text-xs capitalize"
-                                                >
-                                                    {role}
-                                                    {index < user.roles.length - 1 ? ' ' : ''}
-                                                </span>
-                                            ))}
-                                        </TableCell>
-                                        <TableCell>{user.created_at}</TableCell>
-                                        <TableCell>
-                                            <Button variant="ghost" size="sm">
-                                                Edit
-                                            </Button>
-                                        </TableCell>
+                    <div className="space-y-4">
+                        <div className="rounded-md border">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Role</TableHead>
+                                        <TableHead>Joined</TableHead>
+                                        <TableHead className="w-24">Actions</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {users.data.map((user) => (
+                                        <TableRow key={user.id}>
+                                            <TableCell>{user.name}</TableCell>
+                                            <TableCell>{user.email}</TableCell>
+                                            <TableCell>
+                                                {user.roles.map((role, index) => (
+                                                    <span
+                                                        key={role}
+                                                        className="mr-1 inline-block rounded bg-primary/10 px-2 py-1 text-xs capitalize"
+                                                    >
+                                                        {role}
+                                                        {index < user.roles.length - 1 ? ' ' : ''}
+                                                    </span>
+                                                ))}
+                                            </TableCell>
+                                            <TableCell>{user.created_at}</TableCell>
+                                            <TableCell>
+                                                <Button variant="ghost" size="sm">
+                                                    Edit
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <DataPagination paginated={users} />
                     </div>
                 </CardContent>
             </Card>
