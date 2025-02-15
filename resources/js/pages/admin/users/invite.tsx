@@ -78,6 +78,8 @@ const InviteUsers = () => {
 
         setInvites([...invites, formData]);
         form.reset();
+        //focus on email input
+        form.setFocus('email');
     };
 
     const removeInvite = (email: string) => {
