@@ -2,11 +2,10 @@ import { DataPagination, PaginatedData } from '@/components/data-pagination';
 import { DateRangeFilter } from '@/components/filters/date-range-filter';
 import { SearchFilter } from '@/components/filters/search-filter';
 import { SelectFilter } from '@/components/filters/select-filter';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
     Table,
     TableBody,
@@ -18,8 +17,7 @@ import {
 import { FiltersProvider, useFilters, type Filters } from '@/contexts/filters-context';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Head, Link } from '@inertiajs/react';
-import { format } from 'date-fns';
-import { Calendar, Clock, SlidersHorizontal, UserCheck, UserPlus, Users, X } from 'lucide-react';
+import { Calendar, Clock, SlidersHorizontal, UserCheck, UserPlus, Users } from 'lucide-react';
 
 interface User {
     id: number;
@@ -43,22 +41,19 @@ interface Props {
     availableRoles: string[];
 }
 
-function FiltersSheet({ availableRoles }: { availableRoles: string[] }) {
+function FiltersPopover({ availableRoles }: { availableRoles: string[] }) {
     const { filters, dateRange, updateFilter, updateDateRange } = useFilters();
 
     return (
-        <Sheet>
-            <SheetTrigger asChild>
+        <Popover>
+            <PopoverTrigger asChild>
                 <Button variant="outline" className="h-10">
                     <SlidersHorizontal className="mr-2 h-4 w-4" />
                     Filters
                 </Button>
-            </SheetTrigger>
-            <SheetContent className="w-full sm:max-w-md">
-                <SheetHeader>
-                    <SheetTitle>Filter Users</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6 space-y-6">
+            </PopoverTrigger>
+            <PopoverContent className="w-[400px] p-4" align="end">
+                <div className="space-y-4">
                     <div className="space-y-2">
                         <Label>Search</Label>
                         <SearchFilter
@@ -85,48 +80,8 @@ function FiltersSheet({ availableRoles }: { availableRoles: string[] }) {
                         />
                     </div>
                 </div>
-            </SheetContent>
-        </Sheet>
-    );
-}
-
-function ActiveFilters() {
-    const { filters, dateRange, updateFilter, updateDateRange } = useFilters();
-    const hasFilters = filters.search || filters.role || dateRange;
-
-    if (!hasFilters) return null;
-
-    return (
-        <div className="mb-4 flex flex-wrap gap-2">
-            {filters.search && (
-                <Badge variant="secondary" className="gap-1">
-                    Search: {filters.search}
-                    <X
-                        className="h-3 w-3 cursor-pointer"
-                        onClick={() => updateFilter('search', '')}
-                    />
-                </Badge>
-            )}
-            {filters.role && (
-                <Badge variant="secondary" className="gap-1">
-                    Role: {filters.role}
-                    <X
-                        className="h-3 w-3 cursor-pointer"
-                        onClick={() => updateFilter('role', '')}
-                    />
-                </Badge>
-            )}
-            {dateRange && (
-                <Badge variant="secondary" className="gap-1">
-                    Joined: {format(dateRange.from!, 'MMM d')}
-                    {dateRange.to && ` - ${format(dateRange.to, 'MMM d')}`}
-                    <X
-                        className="h-3 w-3 cursor-pointer"
-                        onClick={() => updateDateRange(undefined)}
-                    />
-                </Badge>
-            )}
-        </div>
+            </PopoverContent>
+        </Popover>
     );
 }
 
@@ -137,7 +92,7 @@ function UsersTable({
     users: PaginatedData<User>;
     availableRoles: string[];
 }) {
-    const { filters, updateFilter } = useFilters();
+    const { filters, dateRange, updateFilter, updateDateRange } = useFilters();
 
     return (
         <Card>
@@ -150,7 +105,7 @@ function UsersTable({
                         placeholder="Search users..."
                         className="w-[300px]"
                     />
-                    <FiltersSheet availableRoles={availableRoles} />
+                    <FiltersPopover availableRoles={availableRoles} />
                     <Link href={route('admin.users.invite')}>
                         <Button>
                             <UserPlus className="mr-2 size-4" />
@@ -161,7 +116,6 @@ function UsersTable({
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
-                    <ActiveFilters />
                     <div className="rounded-md border">
                         <Table>
                             <TableHeader>
