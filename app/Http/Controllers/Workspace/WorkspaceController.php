@@ -23,7 +23,11 @@ class WorkspaceController extends Controller
 
         // Send welcome email with setup instructions
         Notification::route('mail', $data->admin_email)
-            ->notify(new WorkspaceCreated($result['tenant'], $result['domain']));
+            ->notify(new WorkspaceCreated(
+                $result['tenant'],
+                $result['domain'],
+                $result['setup_token']
+            ));
 
         return Inertia::render('auth/register', [
             'status' => 'success',

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
@@ -16,6 +17,7 @@ class SetupController extends Controller
 {
     public function create(): Response
     {
+        // CHeck if the curre
         return Inertia::render('workspace/setup');
     }
 
@@ -25,21 +27,37 @@ class SetupController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'token' => ['required', 'string'],
         ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
 
-        // Create admin role if it doesn't exist
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $user->assignRole($adminRole);
+            // Create admin role if it doesn't exist
+            $adminRole = Role::firstOrCreate(['name' => 'admin']);
+            $user->assignRole($adminRole);
 
-        Auth::login($user);
+            // Mark setup as complete
+            tenant()->update([
+                'is_setup_complete' => true,
+                'setup_token' => null,
+                'setup_token_expires_at' => null,
+            ]);
 
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Welcome to your new workspace!');
+            DB::commit();
+
+            Auth::login($user);
+
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Welcome to your new workspace!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

@@ -71,9 +71,11 @@ Route::middleware([
     });
 
     Route::get('/setup', [SetupController::class, 'create'])
+        ->middleware('validate.setup.token')
         ->name('workspace.setup');
 
     Route::post('/setup', [SetupController::class, 'store'])
+        ->middleware('validate.setup.token')
         ->name('workspace.setup.store');
 
     // Auth Routes

@@ -6,16 +6,21 @@ import GuestLayout from '@/layouts/guest-layout';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function WorkspaceSetup() {
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    console.log(token);
+
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        token: token,
     });
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('workspace.setup'));
+        post(route('workspace.setup.store'));
     };
 
     return (
@@ -32,6 +37,8 @@ export default function WorkspaceSetup() {
 
                 <CardContent>
                     <form onSubmit={submit} className="space-y-6">
+                        <input type="hidden" name="token" value={token || ''} />
+
                         <div className="space-y-2">
                             <Label htmlFor="name">Full Name</Label>
                             <Input

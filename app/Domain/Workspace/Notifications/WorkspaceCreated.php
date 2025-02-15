@@ -15,6 +15,7 @@ class WorkspaceCreated extends Notification
     public function __construct(
         public Tenant $tenant,
         public string $domain,
+        public string $setup_token,
     ) {}
 
     public function via(object $notifiable): array
@@ -25,7 +26,7 @@ class WorkspaceCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $appUri = Uri::of(config('app.url'));
-        $setupUrl = "{$appUri->scheme()}://{$this->domain}/setup";
+        $setupUrl = "{$appUri->scheme()}://{$this->domain}/setup?token={$this->setup_token}";
 
         return (new MailMessage)
             ->subject("Welcome to {$this->tenant->name}'s Learning Platform")

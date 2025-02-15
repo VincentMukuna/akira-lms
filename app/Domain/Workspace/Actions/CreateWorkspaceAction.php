@@ -6,6 +6,7 @@ use App\Domain\Workspace\Data\WorkspaceCreateData;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Uri;
+use Illuminate\Support\Str;
 
 class CreateWorkspaceAction
 {
@@ -13,11 +14,17 @@ class CreateWorkspaceAction
     {
         DB::beginTransaction();
         try {
-            // TODO: Use a Saga to create the tenant and domain
+            // Generate setup token that expires in 24 hours
+            $setupToken = Str::random(64);
+            $setupTokenExpiresAt = now()->addDay();
+
             $tenant = Tenant::create([
                 'id' => $data->subdomain,
                 'name' => $data->company_name,
                 'email' => $data->admin_email,
+                'setup_token' => $setupToken,
+                'setup_token_expires_at' => $setupTokenExpiresAt,
+                'is_setup_complete' => false,
             ]);
 
             $appUri = Uri::of(config('app.url'));
@@ -32,6 +39,7 @@ class CreateWorkspaceAction
             return [
                 'tenant' => $tenant,
                 'domain' => $domain->domain,
+                'setup_token' => $setupToken,
             ];
         } catch (\Exception $e) {
             DB::rollBack();

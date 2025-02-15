@@ -40,20 +40,33 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'validate.setup.token' => \App\Http\Middleware\ValidateSetupToken::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
-            if (! app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), [500, 503, 404, 403])) {
-                return Inertia::render('error', ['status' => $response->getStatusCode()])
-                    ->toResponse($request)
-                    ->setStatusCode($response->getStatusCode());
-            } elseif ($response->getStatusCode() === 419) {
+            $statusCode = $response->getStatusCode();
+
+            // Handle CSRF token expiration
+            if ($statusCode === 419) {
                 return back()->with([
                     'message' => 'The page expired, please try again.',
                 ]);
             }
 
+            // Show custom error page for common errors in production
+            if (in_array($statusCode, [500, 503, 404, 403])) {
+                return Inertia::render('error', ['status' => $statusCode])
+                    ->toResponse($request)
+                    ->setStatusCode($statusCode);
+            }
+
             return $response;
         });
+
+        // Disable debug mode in production
+        if (! app()->environment(['local', 'testing'])) {
+            $exceptions->dontReport([\Illuminate\Database\QueryException::class]);
+            config(['app.debug' => false]);
+        }
     })->create();
