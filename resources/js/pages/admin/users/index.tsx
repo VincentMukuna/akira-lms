@@ -92,7 +92,7 @@ function UsersTable({
     users: PaginatedData<User>;
     availableRoles: string[];
 }) {
-    const { filters, dateRange, updateFilter, updateDateRange } = useFilters();
+    const { filters, updateFilter } = useFilters();
 
     return (
         <Card>
