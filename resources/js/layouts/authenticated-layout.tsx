@@ -1,4 +1,5 @@
-import { AppSidebar } from '@/components/app-sidebar';
+import FlashMessage from '@/components/flash-message';
+import { RoleSidebar } from '@/components/role-sidebar';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -15,7 +16,7 @@ export default function Authenticated({
 }: PropsWithChildren<{ header?: ReactNode }>) {
     return (
         <SidebarProvider>
-            <AppSidebar />
+            <RoleSidebar />
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center gap-2">
                     <div className="flex items-center gap-2 px-4">
@@ -31,6 +32,7 @@ export default function Authenticated({
                     </div>
                 </header>
                 <div className="flex flex-1 flex-col gap-6 p-6 pt-0">{children}</div>
+                <FlashMessage />
             </SidebarInset>
         </SidebarProvider>
     );

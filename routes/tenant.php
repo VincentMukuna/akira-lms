@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Dashboard\AdminDashboardController;
+use App\Http\Controllers\Dashboard\InstructorDashboardController;
+use App\Http\Controllers\Dashboard\LearnerDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -10,8 +13,12 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Users\InvitedUsersController;
+use App\Http\Controllers\Workspace\SetupController;
+use App\Http\Controllers\Users\InvitationController;
+use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Users\UserStatsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -35,27 +42,44 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('dashboard');
-    })->middleware([
-        'auth',
-        'verified',
-    ])->name('dashboard');
+    // Admin Routes
+    Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
+        Route::get('users/invite', [InvitedUsersController::class, 'create'])->name('admin.users.invite');
+        Route::post('users/invite', [InvitedUsersController::class, 'store'])->name('admin.users.invite.store');
+        Route::get('/users/stats', UserStatsController::class)->name('admin.users.stats');
+    });
 
+    // Instructor Routes
+    Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')->group(function () {
+        Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
+        // TODO: Add other instructor routes when controllers are created
+    });
+
+    // Learner Routes
+    Route::middleware(['auth', 'verified', 'role:learner'])->prefix('learner')->group(function () {
+        Route::get('/dashboard', [LearnerDashboardController::class, 'index'])->name('learner.dashboard');
+        // TODO: Add other learner routes when controllers are created
+    });
+
+    // Shared Routes
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
-    Route::middleware([
-        'guest',
-    ])->group(function () {
-        Route::get('register', [RegisteredUserController::class, 'create'])
-            ->name('register');
+    Route::get('/setup', [SetupController::class, 'create'])
+        ->middleware('validate.setup.token')
+        ->name('workspace.setup');
 
-        Route::post('register', [RegisteredUserController::class, 'store']);
+    Route::post('/setup', [SetupController::class, 'store'])
+        ->middleware('validate.setup.token')
+        ->name('workspace.setup.store');
 
+    // Auth Routes
+    Route::middleware('guest')->group(function () {
         Route::get('login', [AuthenticatedSessionController::class, 'create'])
             ->name('login');
 
@@ -72,11 +96,16 @@ Route::middleware([
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('password.store');
+
+        Route::get('invitation/{token}', [InvitationController::class, 'create'])
+            ->name('invitation.accept');
+
+        Route::post('invitation/{token}', [InvitationController::class, 'store'])
+            ->name('invitation.accept.store');
     });
 
-    Route::middleware([
-        'auth',
-    ])->group(function () {
+    // Email Verification Routes
+    Route::middleware(['auth'])->group(function () {
         Route::get('verify-email', EmailVerificationPromptController::class)
             ->name('verification.notice');
 
@@ -99,11 +128,5 @@ Route::middleware([
             ->name('logout');
     });
 });
-
-
-
-
-
-
 
 require __DIR__ . '/auth.php';

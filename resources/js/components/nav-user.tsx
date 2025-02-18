@@ -1,5 +1,7 @@
 'use client';
 
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Link, router, usePage } from '@inertiajs/react';
 import {
     BadgeCheck,
     Bell,
@@ -8,11 +10,12 @@ import {
     LogOut,
     Monitor,
     Moon,
-    Sparkles,
     Sun,
 } from 'lucide-react';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useMemo } from 'react';
+import { Config } from 'ziggy-js';
+import { useTheme } from './theme-provider';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,28 +28,28 @@ import {
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
-} from '@/components/ui/sidebar';
-import { router } from '@inertiajs/react';
-import { useMemo } from 'react';
-import { useTheme } from './theme-provider';
+} from './ui/dropdown-menu';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
 
-interface NavUserProps {
-    user: {
-        name: string;
-        email: string;
-        avatar: string;
-    };
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    avatar?: string;
 }
 
-export function NavUser({ user }: NavUserProps) {
-    const { isMobile } = useSidebar();
+interface PageProps extends Record<string, unknown> {
+    auth: {
+        user: User;
+    };
+    ziggy: Config & { location: string };
+}
+
+export function NavUser() {
+    const { auth } = usePage<PageProps>().props;
     const { theme, setTheme } = useTheme();
+    const isMobile = useIsMobile();
+
     const currentThemeIcon = useMemo(() => {
         switch (theme) {
             case 'dark':
@@ -70,17 +73,17 @@ export function NavUser({ user }: NavUserProps) {
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage src={user.avatar} alt={user.name} />
+                                <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
                                 <AvatarFallback className="rounded-lg">
-                                    {user.name
+                                    {auth.user.name
                                         .split(' ')
                                         .map((n) => n[0])
                                         .join('')}
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">{user.name}</span>
-                                <span className="truncate text-xs">{user.email}</span>
+                                <span className="truncate font-semibold">{auth.user.name}</span>
+                                <span className="truncate text-xs">{auth.user.email}</span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
                         </SidebarMenuButton>
@@ -94,32 +97,27 @@ export function NavUser({ user }: NavUserProps) {
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage src={user.avatar} alt={user.name} />
+                                    <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
                                     <AvatarFallback className="rounded-lg">
-                                        {user.name
+                                        {auth.user.name
                                             .split(' ')
                                             .map((n) => n[0])
                                             .join('')}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold">{user.name}</span>
-                                    <span className="truncate text-xs">{user.email}</span>
+                                    <span className="truncate font-semibold">{auth.user.name}</span>
+                                    <span className="truncate text-xs">{auth.user.email}</span>
                                 </div>
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <Sparkles className="mr-2 h-4 w-4" />
-                                <span>Upgrade to Pro</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck className="mr-2 h-4 w-4" />
-                                <span>Account</span>
+                            <DropdownMenuItem asChild>
+                                <Link href={route('profile.edit')}>
+                                    <BadgeCheck className="mr-2 h-4 w-4" />
+                                    <span>Profile</span>
+                                </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <CreditCard className="mr-2 h-4 w-4" />

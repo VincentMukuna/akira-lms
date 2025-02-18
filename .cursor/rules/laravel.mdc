@@ -46,6 +46,16 @@ Laravel Best Practices
 - Implement proper database indexing for improved query performance.
 - Use Laravel's built-in pagination features.
 - Implement proper error logging and monitoring.
+- Keep the controllers light with a maximum of 3/4 methods if necessary. Ensure this methods are named like
+  resource methods e.g create, store. If you find yourself having to create a controller method like
+  likePost, create a new LikedPostsCOntroller and add a create method instead.
+- Keep each controller method succinct and have the core logic in Action classes and query builder classes
+
+Laravel Action Classes
+- Main execution method should be execute().
+- Should be composable and reusable.
+- Use dependency injection if possible.
+- Should not assume environment being used as in Request etc.
 
 
 Tailwind CSS Styling

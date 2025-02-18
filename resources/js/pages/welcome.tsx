@@ -99,10 +99,10 @@ export default function Welcome({ auth }: PageProps) {
                                 ) : (
                                     <>
                                         <Link
-                                            href={route('login')}
+                                            href={route('workspace.access')}
                                             className="text-sm font-medium text-gray-700 transition hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
                                         >
-                                            Log in
+                                            Sign In
                                         </Link>
                                         <Link
                                             href={route('register')}
