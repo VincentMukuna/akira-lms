@@ -1,10 +1,11 @@
 import { NavItem } from '@/components/nav-main';
 import {
     Award,
-    BarChart,
     BookOpen,
     Calendar,
     FileText,
+    GraduationCap,
+    LayoutDashboard,
     MessageSquare,
     Settings,
     TrendingUp,
@@ -16,16 +17,16 @@ export const navigation: Record<string, { main: NavItem[] }> = {
         main: [
             {
                 title: 'Dashboard',
-                icon: BarChart,
                 url: '/admin/dashboard',
+                icon: LayoutDashboard,
             },
             {
                 title: 'Users',
-                icon: Users,
                 url: '/admin/users',
+                icon: Users,
                 items: [
                     {
-                        title: 'Manage Users',
+                        title: 'All Users',
                         url: '/admin/users',
                     },
                     {
@@ -36,18 +37,28 @@ export const navigation: Record<string, { main: NavItem[] }> = {
             },
             {
                 title: 'Courses',
-                icon: BookOpen,
                 url: '/admin/courses',
+                icon: BookOpen,
+                items: [
+                    {
+                        title: 'All Courses',
+                        url: '/admin/courses',
+                    },
+                    {
+                        title: 'Create Course',
+                        url: '/admin/courses/create',
+                    },
+                ],
             },
             {
                 title: 'Reports',
-                icon: FileText,
                 url: '/admin/reports',
+                icon: FileText,
             },
             {
                 title: 'Settings',
-                icon: Settings,
                 url: '/admin/settings',
+                icon: Settings,
             },
         ],
     },
@@ -55,13 +66,13 @@ export const navigation: Record<string, { main: NavItem[] }> = {
         main: [
             {
                 title: 'Dashboard',
-                icon: BarChart,
                 url: '/instructor/dashboard',
+                icon: LayoutDashboard,
             },
             {
-                title: 'My Courses',
-                icon: BookOpen,
+                title: 'Courses',
                 url: '/instructor/courses',
+                icon: BookOpen,
                 items: [
                     {
                         title: 'All Courses',
@@ -74,19 +85,9 @@ export const navigation: Record<string, { main: NavItem[] }> = {
                 ],
             },
             {
-                title: 'Students',
-                icon: Users,
-                url: '/instructor/students',
-            },
-            {
-                title: 'Calendar',
-                icon: Calendar,
-                url: '/instructor/calendar',
-            },
-            {
-                title: 'Assessments',
-                icon: FileText,
-                url: '/instructor/assessments',
+                title: 'Settings',
+                url: '/instructor/settings',
+                icon: Settings,
             },
         ],
     },
@@ -94,14 +95,18 @@ export const navigation: Record<string, { main: NavItem[] }> = {
         main: [
             {
                 title: 'Dashboard',
-                icon: BarChart,
                 url: '/learner/dashboard',
+                icon: LayoutDashboard,
             },
             {
                 title: 'My Courses',
-                icon: BookOpen,
                 url: '/learner/courses',
+                icon: GraduationCap,
                 items: [
+                    {
+                        title: 'All Courses',
+                        url: '/learner/courses',
+                    },
                     {
                         title: 'In Progress',
                         url: '/learner/courses/in-progress',
@@ -110,31 +115,32 @@ export const navigation: Record<string, { main: NavItem[] }> = {
                         title: 'Completed',
                         url: '/learner/courses/completed',
                     },
-                    {
-                        title: 'Bookmarked',
-                        url: '/learner/courses/bookmarked',
-                    },
                 ],
             },
             {
                 title: 'Progress',
-                icon: TrendingUp,
                 url: '/learner/progress',
+                icon: TrendingUp,
             },
             {
                 title: 'Calendar',
-                icon: Calendar,
                 url: '/learner/calendar',
+                icon: Calendar,
             },
             {
                 title: 'Achievements',
-                icon: Award,
                 url: '/learner/achievements',
+                icon: Award,
             },
             {
                 title: 'Messages',
-                icon: MessageSquare,
                 url: '/learner/messages',
+                icon: MessageSquare,
+            },
+            {
+                title: 'Settings',
+                url: '/learner/settings',
+                icon: Settings,
             },
         ],
     },

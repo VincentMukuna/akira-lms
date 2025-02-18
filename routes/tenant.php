@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Courses\CourseController;
 use App\Http\Controllers\Users\InvitedUsersController;
 use App\Http\Controllers\Workspace\SetupController;
 use App\Http\Controllers\Users\InvitationController;
@@ -49,12 +50,23 @@ Route::middleware([
         Route::get('users/invite', [InvitedUsersController::class, 'create'])->name('admin.users.invite');
         Route::post('users/invite', [InvitedUsersController::class, 'store'])->name('admin.users.invite.store');
         Route::get('/users/stats', UserStatsController::class)->name('admin.users.stats');
+
+        // Course Management Routes
+        Route::get('/courses', [CourseController::class, 'index'])->name('admin.courses.index');
+        Route::get('/courses/create', [CourseController::class, 'create'])->name('admin.courses.create');
+        Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('admin.courses.edit');
+        Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('admin.courses.builder');
     });
 
     // Instructor Routes
     Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')->group(function () {
         Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
-        // TODO: Add other instructor routes when controllers are created
+
+        // Course Management Routes
+        Route::get('/courses', [CourseController::class, 'index'])->name('instructor.courses.index');
+        Route::get('/courses/create', [CourseController::class, 'create'])->name('instructor.courses.create');
+        Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('instructor.courses.edit');
+        Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('instructor.courses.builder');
     });
 
     // Learner Routes
