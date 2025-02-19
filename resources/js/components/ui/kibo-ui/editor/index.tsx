@@ -662,7 +662,12 @@ export const EditorProvider = ({
 
     return (
         <TooltipProvider>
-            <div className={cn(className, 'prose [&_.ProseMirror-focused]:outline-none')}>
+            <div
+                className={cn(
+                    className,
+                    'prose dark:prose-invert [&_.ProseMirror-focused]:outline-none',
+                )}
+            >
                 <TiptapEditorProvider
                     extensions={[...defaultExtensions, ...(extensions ?? [])]}
                     editorProps={{
