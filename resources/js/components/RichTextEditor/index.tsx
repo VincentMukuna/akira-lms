@@ -102,7 +102,7 @@ export default function RichTextEditor({
                     <EditorNodeTable hideName />
                 </EditorFloatingMenu>
                 <EditorBubbleMenu>
-                    <EditorSelector title="Text" open={false} onOpenChange={() => {}}>
+                    <EditorSelector title="Text">
                         <EditorNodeText />
                         <EditorNodeHeading1 />
                         <EditorNodeHeading2 />

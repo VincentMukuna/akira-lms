@@ -311,6 +311,7 @@ export default function CourseBuilder({ courseId }: Props) {
                             <RichTextEditor
                                 content={selectedModule.content}
                                 onChange={handleModuleContentChange}
+                                key={selectedModule.id}
                                 placeholder="Start writing your module content..."
                             />
                         </div>
