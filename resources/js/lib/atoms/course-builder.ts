@@ -2,6 +2,17 @@ import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { type CourseContent, type Module, type Section } from '../types/course-builder';
 
+// Initial empty content for new modules
+const emptyEditorContent = {
+    type: 'doc',
+    content: [
+        {
+            type: 'paragraph',
+            content: [],
+        },
+    ],
+};
+
 // Mock API functions (to be replaced with real API calls later)
 const mockCourseContent: CourseContent = {
     sections: [],
@@ -131,7 +142,7 @@ export const addModuleAtom = atom(
             id: `temp-${Date.now()}`,
             title: 'New Module',
             type,
-            content: '<p></p>', // Initialize with empty paragraph for rich text editor
+            content: JSON.stringify(emptyEditorContent), // Initialize with empty editor content
             order,
             sectionId,
         };

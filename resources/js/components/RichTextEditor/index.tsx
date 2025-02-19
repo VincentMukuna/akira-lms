@@ -1,16 +1,62 @@
-import React from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Placeholder from '@tiptap/extension-placeholder';
-import Link from '@tiptap/extension-link';
 import {
-    BoldIcon,
-    ItalicIcon,
-    ListBulletIcon,
-    ChatBubbleBottomCenterTextIcon as QuoteIcon,
-    LinkIcon,
-    QueueListIcon as ListNumberedIcon,
-} from '@heroicons/react/24/outline';
+    EditorBackgroundColor,
+    EditorBubbleMenu,
+    EditorCharacterCount,
+    EditorClearFormatting,
+    EditorFloatingMenu,
+    EditorFormatBold,
+    EditorFormatCode,
+    EditorFormatItalic,
+    EditorFormatStrike,
+    EditorFormatSubscript,
+    EditorFormatSuperscript,
+    EditorFormatUnderline,
+    EditorLinkSelector,
+    EditorNodeBulletList,
+    EditorNodeCode,
+    EditorNodeHeading1,
+    EditorNodeHeading2,
+    EditorNodeHeading3,
+    EditorNodeOrderedList,
+    EditorNodeQuote,
+    EditorNodeTable,
+    EditorNodeTaskList,
+    EditorNodeText,
+    EditorProvider,
+    EditorSelector,
+    EditorTableColumnAfter,
+    EditorTableColumnBefore,
+    EditorTableColumnDelete,
+    EditorTableColumnMenu,
+    EditorTableDelete,
+    EditorTableFix,
+    EditorTableGlobalMenu,
+    EditorTableHeaderColumnToggle,
+    EditorTableHeaderRowToggle,
+    EditorTableMenu,
+    EditorTableMergeCells,
+    EditorTableRowAfter,
+    EditorTableRowBefore,
+    EditorTableRowDelete,
+    EditorTableRowMenu,
+    EditorTableSplitCell,
+    EditorTextColor,
+} from '@/components/ui/kibo-ui/editor';
+import { type Editor } from '@tiptap/core';
+
+const textColors = [
+    { name: 'Red', color: '#b91c1c' },
+    { name: 'Orange', color: '#c2410c' },
+    { name: 'Amber', color: '#b45309' },
+    { name: 'Yellow', color: '#a16207' },
+];
+
+const backgroundColors = [
+    { name: 'Red', color: '#fca5a5' },
+    { name: 'Orange', color: '#fdba74' },
+    { name: 'Amber', color: '#fcd34d' },
+    { name: 'Yellow', color: '#fde047' },
+];
 
 interface RichTextEditorProps {
     content: string;
@@ -18,98 +64,105 @@ interface RichTextEditorProps {
     placeholder?: string;
 }
 
-const MenuBar = ({ editor }: { editor: any }) => {
-    if (!editor) {
-        return null;
-    }
-
-    return (
-        <div className="border-b border-gray-200 p-2 flex gap-1">
-            <button
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                    editor.isActive('bold') ? 'bg-gray-100' : ''
-                }`}
-            >
-                <BoldIcon className="h-5 w-5" />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                    editor.isActive('italic') ? 'bg-gray-100' : ''
-                }`}
-            >
-                <ItalicIcon className="h-5 w-5" />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                    editor.isActive('bulletList') ? 'bg-gray-100' : ''
-                }`}
-            >
-                <ListBulletIcon className="h-5 w-5" />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                    editor.isActive('orderedList') ? 'bg-gray-100' : ''
-                }`}
-            >
-                <ListNumberedIcon className="h-5 w-5" />
-            </button>
-            <button
-                onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                    editor.isActive('blockquote') ? 'bg-gray-100' : ''
-                }`}
-            >
-                <QuoteIcon className="h-5 w-5" />
-            </button>
-            <button
-                onClick={() => {
-                    const url = window.prompt('Enter URL');
-                    if (url) {
-                        editor.chain().focus().setLink({ href: url }).run();
-                    }
-                }}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                    editor.isActive('link') ? 'bg-gray-100' : ''
-                }`}
-            >
-                <LinkIcon className="h-5 w-5" />
-            </button>
-        </div>
-    );
-};
-
 export default function RichTextEditor({
     content,
     onChange,
     placeholder = 'Start writing...',
 }: RichTextEditorProps) {
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Placeholder.configure({
-                placeholder,
-            }),
-            Link.configure({
-                openOnClick: false,
-            }),
-        ],
-        content,
-        onUpdate: ({ editor }) => {
-            onChange(editor.getHTML());
-        },
-    });
+    const handleUpdate = ({ editor }: { editor: Editor }) => {
+        const json = editor.getJSON();
+        onChange(JSON.stringify(json));
+    };
+
+    const initialContent = content
+        ? JSON.parse(content)
+        : {
+              type: 'doc',
+              content: [
+                  {
+                      type: 'paragraph',
+                      content: [],
+                  },
+              ],
+          };
 
     return (
-        <div className="border rounded-lg overflow-hidden">
-            <MenuBar editor={editor} />
-            <EditorContent
-                editor={editor}
-                className="prose max-w-none p-4 min-h-[200px] focus:outline-none"
-            />
+        <div className="overflow-hidden rounded-lg border">
+            <EditorProvider
+                content={initialContent}
+                placeholder={placeholder}
+                className="min-h-[200px] overflow-y-auto p-4"
+                onUpdate={handleUpdate}
+            >
+                <EditorFloatingMenu>
+                    <EditorNodeHeading1 hideName />
+                    <EditorNodeBulletList hideName />
+                    <EditorNodeQuote hideName />
+                    <EditorNodeCode hideName />
+                    <EditorNodeTable hideName />
+                </EditorFloatingMenu>
+                <EditorBubbleMenu>
+                    <EditorSelector title="Text" open={false} onOpenChange={() => {}}>
+                        <EditorNodeText />
+                        <EditorNodeHeading1 />
+                        <EditorNodeHeading2 />
+                        <EditorNodeHeading3 />
+                        <EditorNodeBulletList />
+                        <EditorNodeOrderedList />
+                        <EditorNodeTaskList />
+                        <EditorNodeQuote />
+                        <EditorNodeCode />
+                    </EditorSelector>
+                    <EditorSelector title="Format">
+                        <EditorFormatBold />
+                        <EditorFormatItalic />
+                        <EditorFormatUnderline />
+                        <EditorFormatStrike />
+                        <EditorFormatCode />
+                        <EditorFormatSuperscript />
+                        <EditorFormatSubscript />
+                    </EditorSelector>
+                    <EditorSelector title="Color">
+                        {textColors.map((color) => (
+                            <EditorTextColor
+                                key={color.name}
+                                color={color.color}
+                                name={color.name}
+                            />
+                        ))}
+                        {backgroundColors.map((color) => (
+                            <EditorBackgroundColor
+                                key={color.name}
+                                color={color.color}
+                                name={color.name}
+                            />
+                        ))}
+                    </EditorSelector>
+                    <EditorLinkSelector />
+                    <EditorClearFormatting />
+                </EditorBubbleMenu>
+                <EditorTableMenu>
+                    <EditorTableColumnMenu>
+                        <EditorTableColumnBefore />
+                        <EditorTableColumnAfter />
+                        <EditorTableColumnDelete />
+                    </EditorTableColumnMenu>
+                    <EditorTableRowMenu>
+                        <EditorTableRowBefore />
+                        <EditorTableRowAfter />
+                        <EditorTableRowDelete />
+                    </EditorTableRowMenu>
+                    <EditorTableGlobalMenu>
+                        <EditorTableHeaderColumnToggle />
+                        <EditorTableHeaderRowToggle />
+                        <EditorTableDelete />
+                        <EditorTableMergeCells />
+                        <EditorTableSplitCell />
+                        <EditorTableFix />
+                    </EditorTableGlobalMenu>
+                </EditorTableMenu>
+                <EditorCharacterCount.Words>Words: </EditorCharacterCount.Words>
+            </EditorProvider>
         </div>
     );
-} 
+}
