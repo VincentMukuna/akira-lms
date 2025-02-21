@@ -107,7 +107,7 @@ export function useUpdateModule() {
             // Validate the module data before sending
             const validationError = moduleRegistry.validate(data);
             if (validationError) {
-                throw new Error(validationError);
+                throw new Error(JSON.stringify(validationError));
             }
 
             return updateModuleApi(moduleId, data);

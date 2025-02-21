@@ -26,10 +26,10 @@ class ModuleRegistry {
         return module.defaultData();
     }
 
-    validate(module: BaseModule): string | null {
+    validate(module: BaseModule): Record<string, string> | null {
         const moduleType = this.modules.get(module.type);
         if (!moduleType) {
-            return 'Invalid module type';
+            return { error: 'Invalid module type' };
         }
         return moduleType.validate?.(module) ?? null;
     }

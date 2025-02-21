@@ -1,5 +1,4 @@
 import { BaseModule, ModuleType } from '@/components/CourseBuilder/types/course';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
     useAddModule,
@@ -24,14 +23,13 @@ interface Props {
 export default function CourseBuilder({ courseId }: Props) {
     const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
     const { data: courseContent, isLoading } = useCourseContent(courseId);
-    const { addSection, error: addSectionError } = useAddSection();
-    const { addModule, error: addModuleError } = useAddModule();
+    const { addSection,  } = useAddSection();
+    const { addModule, } = useAddModule();
     const updateModule = useUpdateModule();
     const updateSectionOrder = useUpdateSectionOrder();
     const updateModuleOrder = useUpdateModuleOrder();
 
     const selectedModule = courseContent?.modules.find((m) => m.id === selectedModuleId);
-    const error = addSectionError || addModuleError || updateModule.error;
 
     const handleDragEnd = async (result: any) => {
         if (!result.destination || !courseContent) return;
@@ -102,11 +100,6 @@ export default function CourseBuilder({ courseId }: Props) {
             {/* Left Sidebar - Course Structure */}
             <div className="w-80 border-r">
                 <ScrollArea className="h-full pe-4 -ps-4">
-                    {error && (
-                        <Alert variant="destructive" className="m-4">
-                            <AlertDescription>{error.message}</AlertDescription>
-                        </Alert>
-                    )}
                     <SectionList
                         sections={courseContent.sections}
                         modules={courseContent.modules}
