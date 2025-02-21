@@ -54,8 +54,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ]);
             }
 
-            // Show custom error page for common errors in production
-            if (in_array($statusCode, [500, 503, 404, 403])) {
+            // Show custom error page for common errors in production only
+            if (!app()->environment(['local', 'testing']) && in_array($statusCode, [500, 503, 404, 403])) {
                 return Inertia::render('error', ['status' => $statusCode])
                     ->toResponse($request)
                     ->setStatusCode($statusCode);

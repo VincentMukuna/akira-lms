@@ -1,6 +1,4 @@
-import React from 'react';
-import { Link } from '@inertiajs/react';
-import { PlusIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Table,
@@ -10,9 +8,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { useRoleNavigation } from '@/hooks/use-role-navigation';
+import AuthenticatedLayout from '@/layouts/authenticated-layout';
+import { Link } from '@inertiajs/react';
+import { PlusIcon } from 'lucide-react';
+import React from 'react';
 
 interface Course {
     id: string;
@@ -23,26 +23,11 @@ interface Course {
     created_at: string;
 }
 
-const dummyCourses: Course[] = [
-    {
-        id: '1',
-        title: 'Introduction to React',
-        description: 'Learn the basics of React development',
-        status: 'published',
-        modules_count: 12,
-        created_at: '2024-02-18',
-    },
-    {
-        id: '2',
-        title: 'Advanced TypeScript',
-        description: 'Master TypeScript for large applications',
-        status: 'draft',
-        modules_count: 8,
-        created_at: '2024-02-17',
-    },
-];
+interface Props {
+    courses: Course[];
+}
 
-function CoursesIndex() {
+function CoursesIndex({ courses }: Props) {
     const { activeRole } = useRoleNavigation();
 
     return (
@@ -69,7 +54,7 @@ function CoursesIndex() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {dummyCourses.map((course) => (
+                        {courses.map((course) => (
                             <TableRow key={course.id}>
                                 <TableCell>
                                     <div className="font-medium">{course.title}</div>

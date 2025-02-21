@@ -35,5 +35,3 @@ Route::middleware('guest')->group(function () {
         ->middleware('throttle:6,1')
         ->name('register.check-subdomain');
 });
-
-// require __DIR__ . '/auth.php';

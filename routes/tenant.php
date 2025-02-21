@@ -54,7 +54,9 @@ Route::middleware([
         // Course Management Routes
         Route::get('/courses', [CourseController::class, 'index'])->name('admin.courses.index');
         Route::get('/courses/create', [CourseController::class, 'create'])->name('admin.courses.create');
+        Route::post('/courses', [CourseController::class, 'store'])->name('admin.courses.store');
         Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('admin.courses.edit');
+        Route::put('/courses/{id}', [CourseController::class, 'update'])->name('admin.courses.update');
         Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('admin.courses.builder');
     });
 
@@ -65,7 +67,9 @@ Route::middleware([
         // Course Management Routes
         Route::get('/courses', [CourseController::class, 'index'])->name('instructor.courses.index');
         Route::get('/courses/create', [CourseController::class, 'create'])->name('instructor.courses.create');
+        Route::post('/courses', [CourseController::class, 'store'])->name('instructor.courses.store');
         Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('instructor.courses.edit');
+        Route::put('/courses/{id}', [CourseController::class, 'update'])->name('instructor.courses.update');
         Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('instructor.courses.builder');
     });
 
