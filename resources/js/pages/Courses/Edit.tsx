@@ -176,7 +176,21 @@ function EditCourse({ course }: Props) {
 }
 
 EditCourse.layout = (page: React.ReactNode) => (
-    <AuthenticatedLayout header="Edit Course">{page}</AuthenticatedLayout>
+    <AuthenticatedLayout
+        header={{
+            items: [
+                {
+                    label: 'Courses',
+                    href: route(`admin.courses.index`),
+                },
+                {
+                    label: 'Edit',
+                },
+            ],
+        }}
+    >
+        {page}
+    </AuthenticatedLayout>
 );
 
 export default EditCourse; 

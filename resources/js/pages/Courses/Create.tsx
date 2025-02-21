@@ -172,7 +172,21 @@ function CreateCourse() {
 }
 
 CreateCourse.layout = (page: React.ReactNode) => (
-    <AuthenticatedLayout header="Create Course">{page}</AuthenticatedLayout>
+    <AuthenticatedLayout
+        header={{
+            items: [
+                {
+                    label: 'Courses',
+                    href: route(`admin.courses.index`),
+                },
+                {
+                    label: 'Create',
+                },
+            ],
+        }}
+    >
+        {page}
+    </AuthenticatedLayout>
 );
 
 export default CreateCourse; 
