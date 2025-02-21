@@ -1,17 +1,19 @@
+import { BaseModule, VideoModule } from '@/components/CourseBuilder/types/course';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { BaseModule, VideoModule } from '@/types/course';
 import { Video } from 'lucide-react';
-import BaseModuleEditor from '../../components/CourseBuilder/ModuleEditor/BaseModuleEditor';
-import moduleRegistry from '../moduleRegistry';
+import moduleRegistry from '../../../lib/moduleRegistry';
+import BaseModuleEditor from '../ModuleEditor/BaseModuleEditor';
+import { validateVideoModule } from '../schemas/video-module';
 
 interface VideoModuleEditorProps {
     module: VideoModule;
     onChange: (module: Partial<VideoModule>) => void;
+    errors?: Record<string, string>;
 }
 
-export function VideoModuleEditor({ module, onChange }: VideoModuleEditorProps) {
+export function VideoModuleEditor({ module, onChange, errors = {} }: VideoModuleEditorProps) {
     const handleVideoUrlChange = (videoUrl: string) => {
         onChange({ videoUrl });
     };
@@ -34,7 +36,11 @@ export function VideoModuleEditor({ module, onChange }: VideoModuleEditorProps) 
                         value={module.videoUrl}
                         onChange={(e) => handleVideoUrlChange(e.target.value)}
                         placeholder="Enter video URL (YouTube, Vimeo, etc.)"
+                        className={errors.videoUrl ? "border-red-500" : ""}
                     />
+                    {errors.videoUrl && (
+                        <div className="text-[0.8rem] font-medium text-destructive">{errors.videoUrl}</div>
+                    )}
                 </div>
 
                 <div className="space-y-2">
@@ -44,7 +50,11 @@ export function VideoModuleEditor({ module, onChange }: VideoModuleEditorProps) 
                         value={module.thumbnailUrl || ''}
                         onChange={(e) => handleThumbnailUrlChange(e.target.value)}
                         placeholder="Enter thumbnail URL"
+                        className={errors.thumbnailUrl ? "border-red-500" : ""}
                     />
+                    {errors.thumbnailUrl && (
+                        <div className="text-[0.8rem] font-medium text-destructive">{errors.thumbnailUrl}</div>
+                    )}
                 </div>
 
                 <div className="space-y-2">
@@ -54,11 +64,14 @@ export function VideoModuleEditor({ module, onChange }: VideoModuleEditorProps) 
                         value={module.description || ''}
                         onChange={(e) => handleDescriptionChange(e.target.value)}
                         placeholder="Enter video description"
-                        className="h-32"
+                        className={`h-32 ${errors.description ? "border-red-500" : ""}`}
                     />
+                    {errors.description && (
+                        <div className="text-[0.8rem] font-medium text-destructive">{errors.description}</div>
+                    )}
                 </div>
 
-                {module.videoUrl && (
+                {module.videoUrl && !errors.videoUrl && (
                     <div className="aspect-video rounded-lg border bg-muted">
                         <iframe
                             src={module.videoUrl}
@@ -89,11 +102,14 @@ moduleRegistry.register({
         description: '',
     }),
     validate: (module: BaseModule) => {
-        if (!isVideoModule(module)) {
-            return 'Invalid module type';
-        }
-        if (!module.videoUrl.trim()) {
-            return 'Video URL cannot be empty';
+        const result = validateVideoModule(module);
+        if (!result.success) {
+            // Convert validation errors to a Record<string, string>
+            console.log(result.errors);
+            return result.errors?.reduce((acc, error) => {
+                acc[error.path] = error.message;
+                return acc;
+            }, {} as Record<string, string>) || null;
         }
         return null;
     },

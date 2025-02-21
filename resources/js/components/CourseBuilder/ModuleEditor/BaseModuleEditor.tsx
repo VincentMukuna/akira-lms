@@ -1,5 +1,5 @@
+import { BaseModule } from '@/components/CourseBuilder/types/course';
 import { Input } from '@/components/ui/input';
-import { BaseModule } from '@/types/course';
 
 interface BaseModuleEditorProps<T extends BaseModule> {
     module: T;

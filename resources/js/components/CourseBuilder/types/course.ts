@@ -46,7 +46,8 @@ export interface CourseContent {
 
 export interface ModuleEditorProps<T extends BaseModule> {
     module: T;
-    onChange: (module: T) => void;
+    onChange: (module: Partial<T>) => void;
+    errors?: Record<string, string>;
 }
 
 export interface ModuleRegistryEntry {
@@ -55,5 +56,5 @@ export interface ModuleRegistryEntry {
     icon: React.ComponentType<{ className?: string }>;
     editor: React.ComponentType<ModuleEditorProps<any>>;
     defaultData: () => Omit<BaseModule, keyof BaseModule>;
-    validate?: (module: BaseModule) => string | null;
+    validate?: (module: BaseModule) => Record<string, string> | null;
 } 

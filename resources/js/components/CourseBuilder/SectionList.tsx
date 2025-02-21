@@ -1,8 +1,8 @@
+import { BaseModule, ModuleType, Section } from '@/components/CourseBuilder/types/course';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import moduleRegistry from '@/lib/moduleRegistry';
-import { BaseModule, ModuleType, Section } from '@/types/course';
 import { GripVertical } from 'lucide-react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import ModuleTypeSelector from './ModuleTypeSelector';

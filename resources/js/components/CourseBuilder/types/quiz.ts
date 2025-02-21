@@ -1,4 +1,4 @@
-import { BaseModule } from '@/types/course';
+import { BaseModule } from '@/components/CourseBuilder/types/course';
 
 export type QuestionType = 'multiple_choice' | 'text';
 

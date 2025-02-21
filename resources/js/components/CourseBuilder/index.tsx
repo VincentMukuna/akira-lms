@@ -1,3 +1,4 @@
+import { BaseModule, ModuleType } from '@/components/CourseBuilder/types/course';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -8,14 +9,13 @@ import {
     useUpdateModuleOrder,
     useUpdateSectionOrder,
 } from '@/hooks/use-course-builder';
-import { BaseModule, ModuleType } from '@/types/course';
 import { FileText, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import ModuleFactory from './ModuleFactory';
 import SectionList from './SectionList';
 
 // Import module registry and register all modules
-import '@/lib/modules';
+import '@/components/CourseBuilder/modules';
 
 interface Props {
     courseId: string;

@@ -1,6 +1,6 @@
-import { BaseModule, Section } from '@/types/course';
+import { BaseModule, Section } from '@/components/CourseBuilder/types/course';
 import { getDefaultStore } from 'jotai';
-import { CourseContent, getCourseContent, updateCourseContent } from '../store/course-builder';
+import { CourseContent, getCourseContent, updateCourseContent } from '../../components/CourseBuilder/store/course-builder';
 
 const store = getDefaultStore();
 

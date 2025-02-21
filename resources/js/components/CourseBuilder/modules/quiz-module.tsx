@@ -1,8 +1,8 @@
-import { QuizModule } from '@/lib/types/quiz';
-import { BaseModule } from '@/types/course';
+import { BaseModule } from '@/components/CourseBuilder/types/course';
+import { QuizModule } from '@/components/CourseBuilder/types/quiz';
 import { ClipboardList } from 'lucide-react';
-import QuizEditor from '../../components/CourseBuilder/ModuleEditor/QuizEditor';
-import moduleRegistry from '../moduleRegistry';
+import moduleRegistry from '../../../lib/moduleRegistry';
+import QuizEditor from '../ModuleEditor/QuizEditor';
 
 function isQuizModule(module: BaseModule): module is QuizModule {
     return module.type === 'quiz';

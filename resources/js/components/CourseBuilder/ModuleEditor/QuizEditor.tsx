@@ -1,10 +1,10 @@
+import { MultipleChoiceOption, MultipleChoiceQuestion, Question, QuizModule, TextQuestion } from '@/components/CourseBuilder/types/quiz';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
-import { MultipleChoiceOption, MultipleChoiceQuestion, Question, QuizModule, TextQuestion } from '@/lib/types/quiz';
 import { cn } from '@/lib/utils';
 import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { nanoid } from 'nanoid';

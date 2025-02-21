@@ -1,4 +1,4 @@
-import { BaseModule, ModuleRegistryEntry } from '@/types/course';
+import { BaseModule, ModuleRegistryEntry } from '@/components/CourseBuilder/types/course';
 
 class ModuleRegistry {
     private modules: Map<string, ModuleRegistryEntry> = new Map();

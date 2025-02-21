@@ -1,19 +1,24 @@
+import { getModuleEditorState, setModuleEditorState, updateCurrentModule } from '@/components/CourseBuilder/store/module-editor';
+import { BaseModule } from '@/components/CourseBuilder/types/course';
 import { Button } from '@/components/ui/button';
 import moduleRegistry from '@/lib/moduleRegistry';
-import { getModuleEditorState, setModuleEditorState, updateCurrentModule } from '@/lib/store/module-editor';
-import { BaseModule } from '@/types/course';
 import { useAtom, useSetAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ModuleFactoryProps {
     module: BaseModule;
     onChange: (module: BaseModule) => void;
 }
 
+interface ValidationErrors {
+    [key: string]: string;
+}
+
 export default function ModuleFactory({ module, onChange }: ModuleFactoryProps) {
     const [editorState] = useAtom(getModuleEditorState);
     const setEditorState = useSetAtom(setModuleEditorState);
     const updateModule = useSetAtom(updateCurrentModule);
+    const [errors, setErrors] = useState<ValidationErrors>({});
 
     useEffect(() => {
         setEditorState(module);
@@ -32,13 +37,31 @@ export default function ModuleFactory({ module, onChange }: ModuleFactoryProps) 
     const ModuleEditor = moduleType.editor;
 
     const handleSave = () => {
-        if (editorState.currentModule) {
+        if (!editorState.currentModule) return;
+
+        // Get the validation function for this module type
+        const validateFn = moduleType.validate;
+        if (!validateFn) {
             onChange(editorState.currentModule);
+            return;
         }
+
+        // Run validation
+        const validationResult = validateFn(editorState.currentModule);
+        if (validationResult) {
+            // If there are validation errors, show them and don't save
+            setErrors(validationResult);
+            return;
+        }
+
+        // Clear errors and save if validation passes
+        setErrors({});
+        onChange(editorState.currentModule);
     };
 
     const handleReset = () => {
         setEditorState(module);
+        setErrors({});
     };
 
     return (
@@ -65,6 +88,7 @@ export default function ModuleFactory({ module, onChange }: ModuleFactoryProps) 
                 <ModuleEditor
                     module={editorState.currentModule}
                     onChange={(updates) => updateModule(updates)}
+                    errors={errors}
                 />
             )}
         </div>

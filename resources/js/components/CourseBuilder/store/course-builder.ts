@@ -1,4 +1,4 @@
-import { BaseModule, Section } from '@/types/course';
+import { BaseModule, Section } from '@/components/CourseBuilder/types/course';
 import { atom } from 'jotai';
 
 export interface CourseContent {

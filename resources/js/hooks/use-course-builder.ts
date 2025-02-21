@@ -1,3 +1,4 @@
+import { BaseModule, ModuleType, Section } from '@/components/CourseBuilder/types/course';
 import {
     createModule,
     createSection,
@@ -7,7 +8,6 @@ import {
     updateSectionOrder as updateSectionOrderApi,
 } from '@/lib/api/course-builder';
 import moduleRegistry from '@/lib/moduleRegistry';
-import { BaseModule, ModuleType, Section } from '@/types/course';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 

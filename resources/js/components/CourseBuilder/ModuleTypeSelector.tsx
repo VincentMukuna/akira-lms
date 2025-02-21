@@ -1,3 +1,4 @@
+import { ModuleType } from '@/components/CourseBuilder/types/course';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -6,7 +7,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import moduleRegistry from '@/lib/moduleRegistry';
-import { ModuleType } from '@/types/course';
 import { Plus } from 'lucide-react';
 
 interface ModuleTypeSelectorProps {
