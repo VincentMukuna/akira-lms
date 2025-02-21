@@ -1,15 +1,28 @@
 import {
     createModule,
     createSection,
-    emptyEditorContent,
     fetchCourseContent,
-    updateModule,
-    updateModuleOrder,
-    updateSectionOrder,
+    updateModule as updateModuleApi,
+    updateModuleOrder as updateModuleOrderApi,
+    updateSectionOrder as updateSectionOrderApi,
 } from '@/lib/api/course-builder';
-import { type Module, type Section } from '@/lib/types/course-builder';
+import moduleRegistry from '@/lib/moduleRegistry';
+import { BaseModule, ModuleType, Section } from '@/types/course';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { nanoid } from 'nanoid';
 
+interface AddModuleData {
+    sectionId: string;
+    type: ModuleType;
+    [key: string]: any;
+}
+
+interface UpdateModuleData {
+    moduleId: string;
+    data: BaseModule;
+}
+
+// Fetch course content
 export function useCourseContent(courseId: string) {
     return useQuery({
         queryKey: ['course-content', courseId],
@@ -17,236 +30,136 @@ export function useCourseContent(courseId: string) {
     });
 }
 
+// Add a new section
+export function useAddSection() {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: async (courseId: string) => {
+            const newSection: Section = {
+                id: nanoid(),
+                title: 'New Section',
+                order: 0, // Will be updated when saving
+                courseId,
+            };
+
+            return createSection(newSection);
+        },
+        onSuccess: (newSection, courseId) => {
+            queryClient.setQueryData(['course-content', courseId], (old: any) => ({
+                ...old,
+                sections: [...(old?.sections || []), newSection],
+            }));
+        },
+    });
+
+    return {
+        addSection: mutation.mutate,
+        isLoading: mutation.isPending,
+        error: mutation.error,
+    };
+}
+
+// Add a new module
+export function useAddModule() {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: async ({ sectionId, type, ...rest }: AddModuleData) => {
+            // Get the module type's default data
+            const defaultData = moduleRegistry.createDefaultData(type);
+
+            // Create the new module with the default data
+            const newModule: BaseModule = {
+                id: nanoid(),
+                title: 'New Module',
+                order: 0, // Will be updated when saving
+                sectionId,
+                type,
+                ...defaultData,
+                ...rest, // Allow overriding defaults except for core properties
+            };
+
+            return createModule(newModule);
+        },
+        onSuccess: (newModule) => {
+            queryClient.setQueriesData({ queryKey: ['course-content'] }, (old: any) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    modules: [...(old.modules || []), newModule],
+                };
+            });
+        },
+    });
+
+    return {
+        addModule: mutation.mutate,
+        isLoading: mutation.isPending,
+        error: mutation.error,
+    };
+}
+
+// Update a module
 export function useUpdateModule() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ moduleId, data }: { moduleId: string; data: Partial<Module> }) =>
-            updateModule(moduleId, data),
-        onMutate: async ({ moduleId, data }) => {
-            const courseId = '1'; // This would come from the module in a real app
-            await queryClient.cancelQueries({ queryKey: ['course-content', courseId] });
+        mutationFn: async ({ moduleId, data }: UpdateModuleData) => {
+            // Validate the module data before sending
+            const validationError = moduleRegistry.validate(data);
+            if (validationError) {
+                throw new Error(validationError);
+            }
 
-            const previousData = queryClient.getQueryData(['course-content', courseId]);
-
-            queryClient.setQueryData(['course-content', courseId], (old: any) => {
-                if (!old) return;
+            return updateModuleApi(moduleId, data);
+        },
+        onSuccess: (updatedModule) => {
+            queryClient.setQueriesData({ queryKey: ['course-content'] }, (old: any) => {
+                if (!old) return old;
                 return {
                     ...old,
-                    modules: old.modules.map((m: Module) =>
-                        m.id === moduleId ? { ...m, ...data } as Module : m,
+                    modules: old.modules.map((m: BaseModule) =>
+                        m.id === updatedModule.id ? updatedModule : m,
                     ),
                 };
             });
-
-            return { previousData };
-        },
-        onError: (err, variables, context) => {
-            const courseId = '1'; // This would come from the module in a real app
-            if (context?.previousData) {
-                queryClient.setQueryData(['course-content', courseId], context.previousData);
-            }
-        },
-        onSettled: () => {
-            const courseId = '1'; // This would come from the module in a real app
-            queryClient.invalidateQueries({ queryKey: ['course-content', courseId] });
         },
     });
 }
 
-export function useCreateModule() {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: (data: Omit<Module, 'id'>) => createModule(data),
-        onMutate: async (newModule) => {
-            const courseId = '1'; // This would come from the section in a real app
-            await queryClient.cancelQueries({ queryKey: ['course-content', courseId] });
-
-            const previousData = queryClient.getQueryData(['course-content', courseId]);
-
-            const tempModule = {
-                ...newModule,
-                id: `temp-${Date.now()}`,
-            };
-
-            queryClient.setQueryData(['course-content', courseId], (old: any) => {
-                if (!old) return;
-                return {
-                    ...old,
-                    modules: [...old.modules, tempModule as Module],
-                };
-            });
-
-            return { previousData, tempModule };
-        },
-        onError: (err, variables, context) => {
-            const courseId = '1'; // This would come from the section in a real app
-            if (context?.previousData) {
-                queryClient.setQueryData(['course-content', courseId], context.previousData);
-            }
-        },
-        onSettled: () => {
-            const courseId = '1'; // This would come from the section in a real app
-            queryClient.invalidateQueries({ queryKey: ['course-content', courseId] });
-        },
-    });
-}
-
-export function useCreateSection() {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: (data: Omit<Section, 'id'>) => createSection(data),
-        onMutate: async (newSection) => {
-            const courseId = newSection.courseId;
-            await queryClient.cancelQueries({ queryKey: ['course-content', courseId] });
-
-            const previousData = queryClient.getQueryData(['course-content', courseId]);
-
-            const tempSection = {
-                ...newSection,
-                id: `temp-${Date.now()}`,
-            };
-
-            queryClient.setQueryData(['course-content', courseId], (old: any) => {
-                if (!old) return;
-                return {
-                    ...old,
-                    sections: [...old.sections, tempSection as Section],
-                };
-            });
-
-            return { previousData, tempSection };
-        },
-        onError: (err, variables, context) => {
-            const courseId = variables.courseId;
-            if (context?.previousData) {
-                queryClient.setQueryData(['course-content', courseId], context.previousData);
-            }
-        },
-        onSettled: (data, error, variables) => {
-            const courseId = variables.courseId;
-            queryClient.invalidateQueries({ queryKey: ['course-content', courseId] });
-        },
-    });
-}
-
+// Update section order
 export function useUpdateSectionOrder() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (sections: Section[]) => updateSectionOrder(sections),
-        onMutate: async (newSections) => {
-            if (newSections.length === 0) return { previousData: null };
-            const courseId = newSections[0].courseId;
-            await queryClient.cancelQueries({ queryKey: ['course-content', courseId] });
-
-            const previousData = queryClient.getQueryData(['course-content', courseId]);
-
-            queryClient.setQueryData(['course-content', courseId], (old: any) => {
-                if (!old) return;
-                return {
-                    ...old,
-                    sections: newSections,
-                };
-            });
-
-            return { previousData };
-        },
-        onError: (err, variables, context) => {
-            if (variables.length === 0 || !context?.previousData) return;
-            const courseId = variables[0].courseId;
-            queryClient.setQueryData(['course-content', courseId], context.previousData);
-        },
-        onSettled: (data, error, variables) => {
-            if (variables.length === 0) return;
-            const courseId = variables[0].courseId;
-            queryClient.invalidateQueries({ queryKey: ['course-content', courseId] });
+        mutationFn: updateSectionOrderApi,
+        onSuccess: (updatedSections) => {
+            if (!updatedSections.length) return;
+            const courseId = updatedSections[0].courseId;
+            queryClient.setQueryData(['course-content', courseId], (old: any) => ({
+                ...old,
+                sections: updatedSections,
+            }));
         },
     });
 }
 
+// Update module order
 export function useUpdateModuleOrder() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (modules: Module[]) => updateModuleOrder(modules),
-        onMutate: async (newModules) => {
-            if (newModules.length === 0) return { previousData: null };
-            const courseId = '1'; // This would come from the section in a real app
-            await queryClient.cancelQueries({ queryKey: ['course-content', courseId] });
-
-            const previousData = queryClient.getQueryData(['course-content', courseId]);
-
-            queryClient.setQueryData(['course-content', courseId], (old: any) => {
-                if (!old) return;
+        mutationFn: updateModuleOrderApi,
+        onSuccess: (updatedModules) => {
+            queryClient.setQueriesData({ queryKey: ['course-content'] }, (old: any) => {
+                if (!old) return old;
                 return {
                     ...old,
-                    modules: old.modules.map((m: Module) => {
-                        const updatedModule = newModules.find((nm) => nm.id === m.id);
-                        return updatedModule || m;
+                    modules: old.modules.map((m: BaseModule) => {
+                        const updated = updatedModules.find((um: BaseModule) => um.id === m.id);
+                        return updated || m;
                     }),
                 };
             });
-
-            return { previousData };
-        },
-        onError: (err, variables, context) => {
-            if (variables.length === 0 || !context?.previousData) return;
-            const courseId = '1'; // This would come from the section in a real app
-            queryClient.setQueryData(['course-content', courseId], context.previousData);
-        },
-        onSettled: (data, error, variables) => {
-            if (variables.length === 0) return;
-            const courseId = '1'; // This would come from the section in a real app
-            queryClient.invalidateQueries({ queryKey: ['course-content', courseId] });
         },
     });
-}
-
-export function useAddModule() {
-    const createModuleMutation = useCreateModule();
-
-    const addModule = async ({
-        sectionId,
-        type,
-    }: {
-        sectionId: string;
-        type: Module['type'];
-    }) => {
-        const order = 0; // This will be calculated on the server
-        return createModuleMutation.mutateAsync({
-            title: 'New Module',
-            type,
-            content: JSON.stringify(emptyEditorContent),
-            order,
-            sectionId,
-        });
-    };
-
-    return {
-        addModule,
-        isLoading: createModuleMutation.isPending,
-        error: createModuleMutation.error,
-    };
-}
-
-export function useAddSection() {
-    const createSectionMutation = useCreateSection();
-
-    const addSection = async (courseId: string) => {
-        const order = 0; // This will be calculated on the server
-        return createSectionMutation.mutateAsync({
-            title: 'New Section',
-            order,
-            courseId,
-        });
-    };
-
-    return {
-        addSection,
-        isLoading: createSectionMutation.isPending,
-        error: createSectionMutation.error,
-    };
 } 

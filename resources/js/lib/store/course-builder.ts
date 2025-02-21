@@ -1,72 +1,31 @@
+import { BaseModule, Section } from '@/types/course';
 import { atom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
-import { type CourseContent } from '../types/course-builder';
 
-// Initial dummy data
-const initialContent: CourseContent = {
-    sections: [
-        {
-            id: 'section-1',
-            title: 'Introduction',
-            order: 0,
-            courseId: '1',
-        },
-        {
-            id: 'section-2',
-            title: 'Getting Started',
-            order: 1,
-            courseId: '1',
-        },
-    ],
-    modules: [
-        {
-            id: 'module-1',
-            title: 'Welcome',
-            type: 'text',
-            content: JSON.stringify({
-                type: 'doc',
-                content: [
-                    {
-                        type: 'paragraph',
-                        content: [{ type: 'text', text: 'Welcome to the course!' }],
-                    },
-                ],
-            }),
-            order: 0,
-            sectionId: 'section-1',
-        },
-        {
-            id: 'module-2',
-            title: 'Course Overview',
-            type: 'text',
-            content: JSON.stringify({
-                type: 'doc',
-                content: [
-                    {
-                        type: 'paragraph',
-                        content: [{ type: 'text', text: 'In this course, you will learn...' }],
-                    },
-                ],
-            }),
-            order: 1,
-            sectionId: 'section-1',
-        },
-    ],
-};
+export interface CourseContent {
+    sections: Section[];
+    modules: BaseModule[];
+}
 
-// Persist the store in localStorage for development
-export const courseBuilderStore = atomWithStorage<Record<string, CourseContent>>(
-    'course-builder-store',
-    { '1': initialContent },
-);
+interface CourseStore {
+    [courseId: string]: CourseContent;
+}
 
-// Helper atoms for managing the store
+const initialStore: CourseStore = {};
+
+const courseBuilderStore = atom<CourseStore>(initialStore);
+
 export const getCourseContent = atom(
     (get) => (courseId: string) => {
         const store = get(courseBuilderStore);
-        return store[courseId] || { sections: [], modules: [] };
+        return (
+            store[courseId] || {
+                sections: [],
+                modules: [],
+            }
+        );
     },
 );
+
 
 export const updateCourseContent = atom(
     null,

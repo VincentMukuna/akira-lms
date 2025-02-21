@@ -1,58 +1,61 @@
+import { BaseModule, Section } from '@/types/course';
 import { getDefaultStore } from 'jotai';
-import { getCourseContent, updateCourseContent } from '../store/course-builder';
-import { type CourseContent, type Module, type Section } from '../types/course-builder';
-
-// Initial empty content for new modules
-export const emptyEditorContent = {
-    type: 'doc',
-    content: [
-        {
-            type: 'paragraph',
-            content: [],
-        },
-    ],
-};
+import { CourseContent, getCourseContent, updateCourseContent } from '../store/course-builder';
 
 const store = getDefaultStore();
 
-// API functions that update the store
+function getCourseIdFromModule(moduleId: string, content: CourseContent): string | null {
+    const module = content.modules.find((m) => m.id === moduleId);
+    if (!module) return null;
+    const section = content.sections.find((s) => s.id === module.sectionId);
+    return section?.courseId || null;
+}
+
+function getCourseIdFromSection(sectionId: string, content: CourseContent): string | null {
+    const section = content.sections.find((s) => s.id === sectionId);
+    return section?.courseId || null;
+}
+
 export async function fetchCourseContent(courseId: string): Promise<CourseContent> {
-    // Get content from the store
     const getContent = store.get(getCourseContent);
+    if (!getContent) return { sections: [], modules: [] };
     return getContent(courseId);
 }
 
-export async function updateModule(moduleId: string, data: Partial<Module>): Promise<Module> {
-    // Get the current state
-    const courseId = '1'; // This would come from the module in a real app
-    const content = store.get(getCourseContent)(courseId);
+export async function updateModule(moduleId: string, data: Partial<BaseModule>): Promise<BaseModule> {
+    
+    const allContent = await fetchCourseContent('1'); 
+    const courseId = getCourseIdFromModule(moduleId, allContent);
+    if (!courseId) throw new Error('Module not found');
 
-    // Update the module
-    const updatedContent = {
+    const content = await fetchCourseContent(courseId);
+
+    const updatedContent: CourseContent = {
         ...content,
-        modules: content.modules.map((m) => (m.id === moduleId ? { ...m, ...data } as Module : m)),
+        modules: content.modules.map((m: BaseModule) =>
+            m.id === moduleId ? { ...m, ...data } as BaseModule : m,
+        ),
     };
 
-    // Update the store
     store.set(updateCourseContent, { courseId, content: updatedContent });
 
-    // Return the updated module
-    return updatedContent.modules.find((m) => m.id === moduleId) as Module;
+    
+    return updatedContent.modules.find((m: BaseModule) => m.id === moduleId) as BaseModule;
 }
 
-export async function createModule(data: Omit<Module, 'id'>): Promise<Module> {
-    // Get the current state
-    const courseId = '1'; // This would come from the section in a real app
-    const content = store.get(getCourseContent)(courseId);
+export async function createModule(data: Omit<BaseModule, 'id'>): Promise<BaseModule> {
+    const allContent = await fetchCourseContent('1'); 
+    const courseId = getCourseIdFromSection(data.sectionId, allContent);
+    if (!courseId) throw new Error('Section not found');
 
-    // Create new module
-    const newModule = {
+    const content = await fetchCourseContent(courseId);
+
+    const newModule: BaseModule = {
         ...data,
         id: `module-${Date.now()}`,
     };
 
-    // Update the store
-    const updatedContent = {
+    const updatedContent: CourseContent = {
         ...content,
         modules: [...content.modules, newModule],
     };
@@ -62,18 +65,15 @@ export async function createModule(data: Omit<Module, 'id'>): Promise<Module> {
 }
 
 export async function createSection(data: Omit<Section, 'id'>): Promise<Section> {
-    // Get the current state
     const courseId = data.courseId;
-    const content = store.get(getCourseContent)(courseId);
+    const content = await fetchCourseContent(courseId);
 
-    // Create new section
-    const newSection = {
+    const newSection: Section = {
         ...data,
         id: `section-${Date.now()}`,
     };
 
-    // Update the store
-    const updatedContent = {
+    const updatedContent: CourseContent = {
         ...content,
         sections: [...content.sections, newSection],
     };
@@ -85,12 +85,10 @@ export async function createSection(data: Omit<Section, 'id'>): Promise<Section>
 export async function updateSectionOrder(sections: Section[]): Promise<Section[]> {
     if (sections.length === 0) return sections;
 
-    // Get the current state
     const courseId = sections[0].courseId;
-    const content = store.get(getCourseContent)(courseId);
+    const content = await fetchCourseContent(courseId);
 
-    // Update the store
-    const updatedContent = {
+    const updatedContent: CourseContent = {
         ...content,
         sections,
     };
@@ -99,18 +97,19 @@ export async function updateSectionOrder(sections: Section[]): Promise<Section[]
     return sections;
 }
 
-export async function updateModuleOrder(modules: Module[]): Promise<Module[]> {
+export async function updateModuleOrder(modules: BaseModule[]): Promise<BaseModule[]> {
     if (modules.length === 0) return modules;
 
-    // Get the current state
-    const courseId = '1'; // This would come from the section in a real app
-    const content = store.get(getCourseContent)(courseId);
+    const allContent = await fetchCourseContent('1'); 
+    const courseId = getCourseIdFromModule(modules[0].id, allContent);
+    if (!courseId) throw new Error('Module not found');
 
-    // Update the store with new module order
-    const updatedContent = {
+    const content = await fetchCourseContent(courseId);
+
+    const updatedContent: CourseContent = {
         ...content,
         modules: content.modules.map(
-            (m) => modules.find((nm) => nm.id === m.id) || m,
+            (m: BaseModule) => modules.find((nm) => nm.id === m.id) || m,
         ),
     };
     store.set(updateCourseContent, { courseId, content: updatedContent });
