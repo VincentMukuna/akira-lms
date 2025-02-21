@@ -5,19 +5,15 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import {
-    addModuleAtom,
-    addSectionAtom,
-    courseContentAtom,
-    errorAtom,
-    fetchCourseContent,
-    isLoadingAtom,
-    selectedModuleAtom,
-    selectedModuleIdAtom,
-    updateModuleContentAtom,
-} from '@/lib/atoms/course-builder';
-import { useAtom, useSetAtom } from 'jotai';
+    useAddModule,
+    useAddSection,
+    useCourseContent,
+    useUpdateModule,
+    useUpdateModuleOrder,
+    useUpdateSectionOrder,
+} from '@/hooks/use-course-builder';
 import { FileText, GripVertical, Loader2, Plus } from 'lucide-react';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import RichTextEditor from '../RichTextEditor';
 
@@ -26,36 +22,24 @@ interface Props {
 }
 
 export default function CourseBuilder({ courseId }: Props) {
-    const [courseContent, setCourseContent] = useAtom(courseContentAtom);
-    const [selectedModule] = useAtom(selectedModuleAtom);
-    const [isLoading] = useAtom(isLoadingAtom);
-    const [error] = useAtom(errorAtom);
-    const setSelectedModuleId = useSetAtom(selectedModuleIdAtom);
-    const updateModuleContent = useSetAtom(updateModuleContentAtom);
-    const addModule = useSetAtom(addModuleAtom);
-    const addSection = useSetAtom(addSectionAtom);
+    const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
+    const { data: courseContent, isLoading } = useCourseContent(courseId);
+    const { addSection, error: addSectionError } = useAddSection();
+    const { addModule, error: addModuleError } = useAddModule();
+    const updateModule = useUpdateModule();
+    const updateSectionOrder = useUpdateSectionOrder();
+    const updateModuleOrder = useUpdateModuleOrder();
 
-    useEffect(() => {
-        const loadContent = async () => {
-            try {
-                const content = await fetchCourseContent(courseId);
-                setCourseContent(content);
-            } catch (err) {
-                console.error('Failed to load course content:', err);
-            }
-        };
-
-        loadContent();
-    }, [courseId, setCourseContent]);
+    const selectedModule = courseContent?.modules.find((m) => m.id === selectedModuleId);
+    const error = addSectionError || addModuleError || updateModule.error;
 
     const handleDragEnd = async (result: any) => {
-        if (!result.destination) return;
+        if (!result.destination || !courseContent) return;
 
         const { source, destination } = result;
-        const newSections = [...courseContent.sections];
-        const newModules = [...courseContent.modules];
 
         if (result.type === 'section') {
+            const newSections = [...courseContent.sections];
             const [movedSection] = newSections.splice(source.index, 1);
             newSections.splice(destination.index, 0, movedSection);
 
@@ -64,15 +48,13 @@ export default function CourseBuilder({ courseId }: Props) {
                 section.order = index;
             });
 
-            setCourseContent({
-                ...courseContent,
-                sections: newSections,
-            });
+            // Optimistically update the UI and send the update to the server
+            updateSectionOrder.mutate(newSections);
         } else {
             const sourceSection = source.droppableId;
             const destSection = destination.droppableId;
 
-            const modulesToUpdate = newModules.filter(
+            const modulesToUpdate = courseContent.modules.filter(
                 (m) => m.sectionId === sourceSection || m.sectionId === destSection,
             );
 
@@ -85,10 +67,8 @@ export default function CourseBuilder({ courseId }: Props) {
                 module.order = index;
             });
 
-            setCourseContent({
-                ...courseContent,
-                modules: newModules.map((m) => modulesToUpdate.find((um) => um.id === m.id) || m),
-            });
+            // Optimistically update the UI and send the update to the server
+            updateModuleOrder.mutate(modulesToUpdate);
         }
     };
 
@@ -102,7 +82,10 @@ export default function CourseBuilder({ courseId }: Props) {
 
     const handleModuleContentChange = (content: string) => {
         if (selectedModule) {
-            updateModuleContent({ moduleId: selectedModule.id, content });
+            updateModule.mutate({
+                moduleId: selectedModule.id,
+                data: { ...selectedModule, content },
+            });
         }
     };
 
@@ -114,6 +97,8 @@ export default function CourseBuilder({ courseId }: Props) {
         );
     }
 
+    if (!courseContent) return null;
+
     return (
         <div className="flex h-[calc(100vh-4rem)]">
             {/* Left Sidebar - Course Structure */}
@@ -122,7 +107,7 @@ export default function CourseBuilder({ courseId }: Props) {
                     <div className="space-y-6 p-4">
                         {error && (
                             <Alert variant="destructive">
-                                <AlertDescription>{error}</AlertDescription>
+                                <AlertDescription>{error.message}</AlertDescription>
                             </Alert>
                         )}
                         <div className="space-y-4">
@@ -153,7 +138,7 @@ export default function CourseBuilder({ courseId }: Props) {
                                                                     <Input
                                                                         value={section.title}
                                                                         onChange={(e) => {
-                                                                            const newSections =
+                                                                            updateSectionOrder.mutate(
                                                                                 courseContent.sections.map(
                                                                                     (s) =>
                                                                                         s.id ===
@@ -165,12 +150,8 @@ export default function CourseBuilder({ courseId }: Props) {
                                                                                                       .value,
                                                                                               }
                                                                                             : s,
-                                                                                );
-                                                                            setCourseContent({
-                                                                                ...courseContent,
-                                                                                sections:
-                                                                                    newSections,
-                                                                            });
+                                                                                ),
+                                                                            );
                                                                         }}
                                                                         className="h-7 px-2"
                                                                     />
@@ -232,7 +213,7 @@ export default function CourseBuilder({ courseId }: Props) {
                                                                                                     }
                                                                                                     {...provided.draggableProps}
                                                                                                     className={`flex items-center gap-2 rounded-md border p-2 ${
-                                                                                                        selectedModule?.id ===
+                                                                                                        selectedModuleId ===
                                                                                                         module.id
                                                                                                             ? 'border-primary bg-muted'
                                                                                                             : 'border-border hover:border-primary'
@@ -295,14 +276,12 @@ export default function CourseBuilder({ courseId }: Props) {
                                 <Input
                                     value={selectedModule.title}
                                     onChange={(e) => {
-                                        const newModules = courseContent.modules.map((module) =>
-                                            module.id === selectedModule.id
-                                                ? { ...module, title: e.target.value }
-                                                : module,
-                                        );
-                                        setCourseContent({
-                                            ...courseContent,
-                                            modules: newModules,
+                                        updateModule.mutate({
+                                            moduleId: selectedModule.id,
+                                            data: {
+                                                ...selectedModule,
+                                                title: e.target.value,
+                                            },
                                         });
                                     }}
                                 />

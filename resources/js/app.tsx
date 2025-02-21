@@ -3,11 +3,24 @@ import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from './components/theme-provider';
 import { Toaster } from './components/ui/sonner';
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+// Create a client
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 60 * 1000, // 1 minute
+            retry: 1,
+        },
+    },
+});
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -15,12 +28,15 @@ createInertiaApp({
         resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
     setup({ el, App, props }) {
         createRoot(el).render(
-            <ThemeProvider defaultTheme="light" storageKey="akira-theme">
-                <TooltipProvider>
-                    <App {...props} />
-                    <Toaster />
-                </TooltipProvider>
-            </ThemeProvider>,
+            <QueryClientProvider client={queryClient}>
+                <ThemeProvider defaultTheme="light" storageKey="akira-theme">
+                    <TooltipProvider>
+                        <App {...props} />
+                        <Toaster />
+                    </TooltipProvider>
+                </ThemeProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>,
         );
     },
     progress: {
