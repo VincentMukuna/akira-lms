@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { useRoleNavigation } from '@/hooks/use-role-navigation';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
@@ -31,7 +30,6 @@ type FormData = {
 }
 
 function CreateCourse() {
-    const { activeRole } = useRoleNavigation();
     const { data, setData, post, processing, errors } = useForm<FormData>({
         title: '',
         description: '',
@@ -42,7 +40,7 @@ function CreateCourse() {
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route(`${activeRole}.courses.store`));
+        post(route(`courses.store`));
     };
 
     return (
@@ -177,7 +175,7 @@ CreateCourse.layout = (page: React.ReactNode) => (
             items: [
                 {
                     label: 'Courses',
-                    href: route(`admin.courses.index`),
+                    href: route(`courses.index`),
                 },
                 {
                     label: 'Create',

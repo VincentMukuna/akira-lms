@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Courses;
+namespace App\Http\Controllers\Course;
 
 use App\Domain\Course\Actions\CreateCourseAction;
 use App\Domain\Course\Data\CourseData;

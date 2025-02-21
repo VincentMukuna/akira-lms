@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Course\Models;
 
+use App\Domain\Course\QueryBuilders\CourseQueryBuilder;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,5 +28,10 @@ class Course extends Model
     public function sections(): HasMany
     {
         return $this->hasMany(CourseSection::class)->orderBy('order');
+    }
+
+    public function newEloquentBuilder($query): CourseQueryBuilder
+    {
+        return new CourseQueryBuilder($query);
     }
 }

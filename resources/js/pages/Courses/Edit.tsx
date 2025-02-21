@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { useRoleNavigation } from '@/hooks/use-role-navigation';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { useForm } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
@@ -35,7 +34,6 @@ interface Props {
 }
 
 function EditCourse({ course }: Props) {
-    const { activeRole } = useRoleNavigation();
     const { data, setData, put, processing, errors } = useForm<FormData>({
         title: course.title,
         description: course.description,
@@ -46,7 +44,7 @@ function EditCourse({ course }: Props) {
 
     const onSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route(`${activeRole}.courses.update`, { id: course.id }));
+        put(route(`courses.update`, { id: course.id }));
     };
 
     return (
@@ -181,7 +179,7 @@ EditCourse.layout = (page: React.ReactNode) => (
             items: [
                 {
                     label: 'Courses',
-                    href: route(`admin.courses.index`),
+                    href: route(`courses.index`),
                 },
                 {
                     label: 'Edit',

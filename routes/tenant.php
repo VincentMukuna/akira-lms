@@ -14,12 +14,15 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\Courses\CourseController;
+use App\Http\Controllers\Course\CourseController;
 use App\Http\Controllers\Users\InvitedUsersController;
 use App\Http\Controllers\Workspace\SetupController;
 use App\Http\Controllers\Users\InvitationController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Users\UserStatsController;
+use App\Http\Controllers\Course\ModuleReorderController;
+use App\Http\Controllers\Course\SectionController;
+use App\Http\Controllers\Course\ModuleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -50,27 +53,11 @@ Route::middleware([
         Route::get('users/invite', [InvitedUsersController::class, 'create'])->name('admin.users.invite');
         Route::post('users/invite', [InvitedUsersController::class, 'store'])->name('admin.users.invite.store');
         Route::get('/users/stats', UserStatsController::class)->name('admin.users.stats');
-
-        // Course Management Routes
-        Route::get('/courses', [CourseController::class, 'index'])->name('admin.courses.index');
-        Route::get('/courses/create', [CourseController::class, 'create'])->name('admin.courses.create');
-        Route::post('/courses', [CourseController::class, 'store'])->name('admin.courses.store');
-        Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('admin.courses.edit');
-        Route::put('/courses/{id}', [CourseController::class, 'update'])->name('admin.courses.update');
-        Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('admin.courses.builder');
     });
 
     // Instructor Routes
     Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')->group(function () {
         Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
-
-        // Course Management Routes
-        Route::get('/courses', [CourseController::class, 'index'])->name('instructor.courses.index');
-        Route::get('/courses/create', [CourseController::class, 'create'])->name('instructor.courses.create');
-        Route::post('/courses', [CourseController::class, 'store'])->name('instructor.courses.store');
-        Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('instructor.courses.edit');
-        Route::put('/courses/{id}', [CourseController::class, 'update'])->name('instructor.courses.update');
-        Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('instructor.courses.builder');
     });
 
     // Learner Routes
@@ -142,6 +129,22 @@ Route::middleware([
 
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
             ->name('logout');
+    });
+
+    // Course Builder Routes
+    Route::middleware(['auth', 'verified', 'role:admin,instructor'])->group(function () {
+        // Course Management
+        Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
+        Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+        Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+        Route::put('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+        Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('courses.builder');
+
+        // Course Content Management
+        Route::post('modules/{id}/reorder', ModuleReorderController::class)->name('modules.reorder');
+        Route::post('sections', [SectionController::class, 'store'])->name('sections.store');
+        Route::apiResource('modules', ModuleController::class)->only(['store', 'update']);
     });
 });
 
