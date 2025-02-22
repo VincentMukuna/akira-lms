@@ -249,9 +249,13 @@ export function useUpdateModuleOrder() {
             if (!previousContent) {
                 throw new Error('Previous content not found');
             }
+            
             queryClient.setQueryData(['course-content', updateModuleOrderData.course_id], (old: any) => ({
                 ...old,
-                modules: old.modules.map((m: BaseModule) => updateModuleOrderData.module_orders.find((mo: ModuleOrder) => mo.id === m.id) || m),
+                modules: old.modules.map((m: BaseModule) => {
+                    const updatedOrder = updateModuleOrderData.module_orders.find((mo: ModuleOrder) => mo.id === m.id);
+                    return updatedOrder ? { ...m, ...updatedOrder } : m;
+                }),
             }));
             return { previousContent };
         },

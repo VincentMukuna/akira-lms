@@ -27,6 +27,7 @@ export default function ModuleFactory({ module, onChange }: ModuleFactoryProps) 
     const moduleType = moduleRegistry.get(module.type);
 
     if (!moduleType) {
+        console.log("Unknown module type: ", module);
         return (
             <div className="p-4 text-center text-red-500">
                 Unknown module type: {module.type}
