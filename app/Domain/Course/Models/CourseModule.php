@@ -17,12 +17,12 @@ class CourseModule extends Model
         'section_id',
         'title',
         'type',
-        'content',
+        'data',
         'order',
     ];
 
     protected $casts = [
-        'content' => 'json',
+        'data' => 'json',
         'type' => ModuleType::class,
     ];
 

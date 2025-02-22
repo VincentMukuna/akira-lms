@@ -29,7 +29,7 @@ const multipleChoiceQuestionSchema = baseQuestionSchema.extend({
 // Schema for text questions
 const textQuestionSchema = baseQuestionSchema.extend({
     type: z.literal('text'),
-    correctAnswer: z.string().min(1, 'Correct answer is required'),
+    correct_answer: z.string().min(1, 'Correct answer is required'),
 });
 
 // Combined question schema using discriminated union
@@ -41,8 +41,10 @@ const questionSchema = z.discriminatedUnion('type', [
 // Main quiz module schema
 export const quizModuleSchema = baseModuleSchema.extend({
     type: z.literal('quiz'),
-    questions: z.array(questionSchema)
-        .min(1, 'Quiz must have at least one question'),
+    data: z.object({
+        questions: z.array(questionSchema)
+            .min(1, 'Quiz must have at least one question'),
+    }),
 });
 
 export type QuizModuleSchema = z.infer<typeof quizModuleSchema>;

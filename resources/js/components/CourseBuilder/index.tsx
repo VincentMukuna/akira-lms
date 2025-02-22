@@ -1,5 +1,3 @@
-import { BaseModule, ModuleType } from '@/components/CourseBuilder/types/course';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
     useAddModule,
     useAddSection,
@@ -7,7 +5,9 @@ import {
     useUpdateModule,
     useUpdateModuleOrder,
     useUpdateSectionOrder,
-} from '@/hooks/use-course-builder';
+} from '@/components/CourseBuilder/hooks/use-course-builder';
+import { BaseModule, CourseContent, ModuleType } from '@/components/CourseBuilder/types/course';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { FileText, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import ModuleFactory from './ModuleFactory';
@@ -17,12 +17,13 @@ import SectionList from './SectionList';
 import '@/components/CourseBuilder/modules';
 
 interface Props {
-    courseId: string;
+    course_id: string;
+    defaultCourseContent: CourseContent;
 }
 
-export default function CourseBuilder({ courseId }: Props) {
+export default function CourseBuilder({ course_id, defaultCourseContent }: Props) {
     const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
-    const { data: courseContent, isLoading } = useCourseContent(courseId);
+    const { data: courseContent, isLoading } = useCourseContent(course_id, defaultCourseContent);
     const { addSection,  } = useAddSection();
     const { addModule, } = useAddModule();
     const updateModule = useUpdateModule();
@@ -30,7 +31,6 @@ export default function CourseBuilder({ courseId }: Props) {
     const updateModuleOrder = useUpdateModuleOrder();
 
     const selectedModule = courseContent?.modules.find((m) => m.id === selectedModuleId);
-
     const handleDragEnd = async (result: any) => {
         if (!result.destination || !courseContent) return;
 
@@ -69,19 +69,26 @@ export default function CourseBuilder({ courseId }: Props) {
     };
 
     const handleAddSection = () => {
-        addSection(courseId);
+        console.log('handleAddSection', course_id);
+        const sectionCount = courseContent?.sections.length || 0;
+        addSection({course_id, title: 'New Section', order: sectionCount+1});
     };
 
-    const handleAddModule = (sectionId: string, type: ModuleType) => {
+    const handleAddModule = (section_id: string, type: ModuleType) => {
         // By default, call it Module 1, Module 2, etc.
-        const moduleCount = courseContent?.modules.filter((m) => m.sectionId === sectionId).length || 0;
-        addModule({ sectionId, type, title: `Module ${moduleCount + 1}` });
+        const moduleCount = courseContent?.modules.filter((m) => m.section_id === section_id).length || 0;
+        addModule({ section_id, course_id, type, title: `Module ${moduleCount + 1}`, order: moduleCount+1, data: null});
     };
 
     const handleModuleUpdate = (module: BaseModule) => {
+        if (!selectedModuleId) return;
+        if(!selectedModule) return;
         updateModule.mutate({
-            moduleId: module.id,
-            data: module,
+            id: selectedModuleId,
+            course_id: course_id,
+            type: selectedModule?.type,
+            title: module.title,
+            data: module.data,
         });
     };
 
@@ -108,7 +115,7 @@ export default function CourseBuilder({ courseId }: Props) {
                         onSectionUpdate={(section) =>
                             updateSectionOrder.mutate(
                                 courseContent.sections.map((s) =>
-                                    s.id === section.id ? { ...section, courseId } : s,
+                                    s.id === section.id ? { ...section, course_id } : s,
                                 ),
                             )
                         }

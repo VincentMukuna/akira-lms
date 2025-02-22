@@ -37,16 +37,16 @@ export const navigation: Record<string, { main: NavItem[] }> = {
             },
             {
                 title: 'Courses',
-                url: '/admin/courses',
+                url: '/courses',
                 icon: BookOpen,
                 items: [
                     {
                         title: 'All Courses',
-                        url: '/admin/courses',
+                        url: '/courses',
                     },
                     {
                         title: 'Create Course',
-                        url: '/admin/courses/create',
+                        url: '/courses/create',
                     },
                 ],
             },

@@ -2,10 +2,10 @@ import { BaseModule, TextModule } from '@/components/CourseBuilder/types/course'
 import RichTextEditor from '@/components/RichTextEditor';
 import { Label } from '@/components/ui/label';
 import { FileText } from 'lucide-react';
+import { nanoid } from 'nanoid';
 import moduleRegistry from '../../../lib/moduleRegistry';
 import BaseModuleEditor from '../ModuleEditor/BaseModuleEditor';
 import { validateTextModule } from '../schemas/text-module';
-
 interface TextModuleEditorProps {
     module: TextModule;
     onChange: (module: Partial<TextModule>) => void;
@@ -14,9 +14,8 @@ interface TextModuleEditorProps {
 
 export function TextModuleEditor({ module, onChange, errors = {} }: TextModuleEditorProps) {
     const handleContentChange = (content: string) => {
-        onChange({ content });
+        onChange({ data: { content } });
     };
-
     return (
         <BaseModuleEditor module={module} onChange={onChange}>
             <div className="space-y-2">
@@ -24,13 +23,13 @@ export function TextModuleEditor({ module, onChange, errors = {} }: TextModuleEd
                 <div className={errors.content ? "ring-2 ring-destructive rounded-md" : ""}>
                     <RichTextEditor
                         key={module.id}
-                        content={module.content}
+                        content={module.data.content}
                         onChange={handleContentChange}
                         placeholder="Start writing your module content..."
                     />
                 </div>
-                {errors.content && (
-                    <div className="text-[0.8rem] font-medium text-destructive">{errors.content}</div>
+                {errors && errors['data.content'] && (
+                    <div className="text-[0.8rem] font-medium text-destructive">{errors['data.content']}</div>
                 )}
             </div>
         </BaseModuleEditor>
@@ -49,7 +48,14 @@ moduleRegistry.register({
     icon: FileText,
     editor: TextModuleEditor,
     defaultData: () => ({
-        content: '',
+        id: nanoid(),
+        title: '',
+        order: 0,
+        section_id: '',
+        type: 'text',
+        data: {
+            content: '',
+        },
     }),
     validate: (module: BaseModule) => {
         const result = validateTextModule(module);

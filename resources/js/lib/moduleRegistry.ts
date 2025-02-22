@@ -4,9 +4,9 @@ class ModuleRegistry {
     private modules: Map<string, ModuleRegistryEntry> = new Map();
 
     register(module: ModuleRegistryEntry) {
-        if (this.modules.has(module.type)) {
-            throw new Error(`Module type ${module.type} is already registered`);
-        }
+        // if (this.modules.has(module.type)) {
+        //     throw new Error(`Module type ${module.type} is already registered`);
+        // }
         this.modules.set(module.type, module);
     }
 
@@ -18,7 +18,7 @@ class ModuleRegistry {
         return Array.from(this.modules.values());
     }
 
-    createDefaultData(type: string): Partial<BaseModule> {
+    createDefaultData(type: string): BaseModule & { data: any } {
         const module = this.modules.get(type);
         if (!module) {
             throw new Error(`Module type ${type} not found`);
@@ -26,7 +26,7 @@ class ModuleRegistry {
         return module.defaultData();
     }
 
-    validate(module: BaseModule): Record<string, string> | null {
+    validate(module: BaseModule & { data: any }): Record<string, string> | null {
         const moduleType = this.modules.get(module.type);
         if (!moduleType) {
             return { error: 'Invalid module type' };

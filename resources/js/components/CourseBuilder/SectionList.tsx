@@ -66,7 +66,7 @@ export default function SectionList({
                                                                 className="space-y-2"
                                                             >
                                                                 {modules
-                                                                    .filter((m) => m.sectionId === section.id)
+                                                                    .filter((m) => m.section_id === section.id)
                                                                     .sort((a, b) => a.order - b.order)
                                                                     .map((module, index) => {
                                                                         const ModuleIcon = moduleRegistry.get(module.type)?.icon || (() => null);

@@ -132,7 +132,7 @@ Route::middleware([
     });
 
     // Course Builder Routes
-    Route::middleware(['auth', 'verified', 'role:admin,instructor'])->group(function () {
+    Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         // Course Management
         Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
         Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
@@ -140,10 +140,11 @@ Route::middleware([
         Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
         Route::put('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
         Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('courses.builder');
+        Route::get('/courses/{id}/content', [CourseController::class, 'content'])->name('courses.content');
 
         // Course Content Management
-        Route::post('modules/{id}/reorder', ModuleReorderController::class)->name('modules.reorder');
-        Route::post('sections', [SectionController::class, 'store'])->name('sections.store');
+        Route::post('modules/{id}/reorder', ModuleReorderController::class)->name('courses.modules.reorder');
+        Route::post('courses/{course_id}/sections', [SectionController::class, 'store'])->name('courses.sections.store');
         Route::apiResource('modules', ModuleController::class)->only(['store', 'update']);
     });
 });

@@ -8,7 +8,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { useRoleNavigation } from '@/hooks/use-role-navigation';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Link } from '@inertiajs/react';
 import { PlusIcon } from 'lucide-react';
@@ -28,14 +27,12 @@ interface Props {
 }
 
 function CoursesIndex({ courses }: Props) {
-    const { activeRole } = useRoleNavigation();
-
     return (
         <>
             <div className="flex justify-between items-center">
                 <div />
                 <Button asChild>
-                    <Link href={route(`${activeRole}.courses.create`)}>
+                    <Link href={route(`courses.create`)}>
                         <PlusIcon className="mr-2 h-4 w-4" />
                         New Course
                     </Link>
@@ -79,7 +76,7 @@ function CoursesIndex({ courses }: Props) {
                                             asChild
                                         >
                                             <Link
-                                                href={route(`${activeRole}.courses.builder`, {
+                                                href={route(`courses.builder`, {
                                                     id: course.id,
                                                 })}
                                             >
@@ -92,7 +89,7 @@ function CoursesIndex({ courses }: Props) {
                                             asChild
                                         >
                                             <Link
-                                                href={route(`${activeRole}.courses.edit`, {
+                                                href={route(`courses.edit`, {
                                                     id: course.id,
                                                 })}
                                             >

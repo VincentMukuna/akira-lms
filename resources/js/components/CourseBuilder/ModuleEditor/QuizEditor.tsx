@@ -1,4 +1,3 @@
-import { MultipleChoiceOption, MultipleChoiceQuestion, Question, QuizModule, TextQuestion } from '@/components/CourseBuilder/types/quiz';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { DragDropContext, Draggable, DraggableProvided, DraggableStateSnapshot, Droppable, DroppableProvided, DropResult } from 'react-beautiful-dnd';
+import { MultipleChoiceOption, MultipleChoiceQuestion, Question, QuizModule, TextQuestion } from '../types/course';
 import BaseModuleEditor from './BaseModuleEditor';
 
 interface QuizEditorProps {
@@ -18,13 +18,16 @@ interface QuizEditorProps {
 }
 
 export default function QuizEditor({ module, onChange, errors = {} }: QuizEditorProps) {
+    console.log(module);
+    const questions = module.data.questions;
+
     const handleAddQuestion = (type: 'multiple_choice' | 'text') => {
         const newQuestion: Question = type === 'multiple_choice'
             ? {
                 id: nanoid(),
                 type: 'multiple_choice',
                 question: '',
-                order: module.questions.length,
+                order: questions.length,
                 options: [
                     { id: nanoid(), text: '', isCorrect: true },
                     { id: nanoid(), text: '', isCorrect: false },
@@ -34,103 +37,117 @@ export default function QuizEditor({ module, onChange, errors = {} }: QuizEditor
                 id: nanoid(),
                 type: 'text',
                 question: '',
-                order: module.questions.length,
-                correctAnswer: '',
+                order: questions.length,
+                correct_answer: '',
             };
 
         onChange({
-            questions: [...module.questions, newQuestion],
+            data: {
+                questions: [...questions, newQuestion],
+            },
         });
     };
 
     const handleQuestionChange = (questionId: string, updates: Partial<Question>) => {
         onChange({
-            questions: module.questions.map(q => {
-                if (q.id !== questionId) return q;
-                
+            data: {
+                questions: questions.map(q => {
+                    if (q.id !== questionId) return q;
+                    
                 if (q.type === 'multiple_choice') {
                     return { ...q, ...updates } as MultipleChoiceQuestion;
                 }
-                return { ...q, ...updates } as TextQuestion;
-            }),
+                    return { ...q, ...updates } as TextQuestion;
+                }),
+            },
         });
     };
 
     const handleDeleteQuestion = (questionId: string) => {
         onChange({
-            questions: module.questions
-                .filter(q => q.id !== questionId)
-                .map((q, index) => ({ ...q, order: index })),
+            data: {
+                questions: questions
+                    .filter(q => q.id !== questionId)
+                    .map((q, index) => ({ ...q, order: index })),
+            },
         });
     };
 
     const handleAddOption = (questionId: string) => {
         onChange({
-            questions: module.questions.map(q =>
-                q.id === questionId && q.type === 'multiple_choice'
-                    ? {
-                        ...q,
+            data: {
+                questions: questions.map(q =>
+                    q.id === questionId && q.type === 'multiple_choice'
+                        ? {
+                            ...q,
                         options: [...q.options, { id: nanoid(), text: '', isCorrect: false }],
                     }
                     : q
             ),
+            },
         });
     };
 
     const handleOptionChange = (questionId: string, optionId: string, updates: Partial<MultipleChoiceOption>) => {
         onChange({
-            questions: module.questions.map(q =>
-                q.id === questionId && q.type === 'multiple_choice'
-                    ? {
-                        ...q,
+            data: {
+                questions: questions.map(q =>
+                    q.id === questionId && q.type === 'multiple_choice'
+                        ? {
+                            ...q,
                         options: q.options.map(o =>
                             o.id === optionId ? { ...o, ...updates } : o
-                        ),
-                    }
-                    : q
-            ),
+                            ),
+                        }
+                        : q
+                ),
+            },
         });
     };
 
     const handleDeleteOption = (questionId: string, optionId: string) => {
         onChange({
-            questions: module.questions.map(q =>
-                q.id === questionId && q.type === 'multiple_choice'
-                    ? {
-                        ...q,
+            data: {
+                questions: questions.map(q =>
+                    q.id === questionId && q.type === 'multiple_choice'
+                        ? {
+                            ...q,
                         options: q.options.filter(o => o.id !== optionId),
                     }
                     : q
-            ),
+                ),
+            },
         });
     };
 
     const handleDragEnd = (result: DropResult) => {
         if (!result.destination) return;
 
-        const items = Array.from(module.questions);
+        const items = Array.from(questions);
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
 
         onChange({
-            questions: items.map((item, index) => ({ ...item, order: index })),
+            data: {
+                questions: items.map((item, index) => ({ ...item, order: index })),
+            },
         });
     };
 
     const getQuestionError = (index: number) => {
-        return errors[`questions.${index}.question`] || errors[`questions.${index}`];
+        return errors[`data.questions.${index}.question`] || errors[`data.questions.${index}`];
     };
 
     const getOptionError = (questionIndex: number, optionIndex: number) => {
-        return errors[`questions.${questionIndex}.options.${optionIndex}.text`];
+        return errors[`data.questions.${questionIndex}.options.${optionIndex}.text`];
     };
 
-    const getCorrectAnswerError = (index: number) => {
-        return errors[`questions.${index}.correctAnswer`];
+    const getcorrect_answerError = (index: number) => {
+        return errors[`data.questions.${index}.correct_answer`];
     };
 
     const getOptionsError = (questionIndex: number) => {
-        return errors[`questions.${questionIndex}.options`];
+        return errors[`data.questions.${questionIndex}.options`];
     };
 
     return (
@@ -147,7 +164,7 @@ export default function QuizEditor({ module, onChange, errors = {} }: QuizEditor
                                 ref={provided.innerRef}
                                 className="space-y-4"
                             >
-                                {module.questions.map((question, questionIndex) => (
+                                {questions.map((question, questionIndex) => (
                                     <Draggable
                                         key={question.id}
                                         draggableId={question.id}
@@ -282,20 +299,20 @@ export default function QuizEditor({ module, onChange, errors = {} }: QuizEditor
                                                             <div className="space-y-2">
                                                                 <Label>Correct Answer</Label>
                                                                 <Input
-                                                                    value={question.correctAnswer}
+                                                                    value={question.correct_answer}
                                                                     onChange={(e) =>
                                                                         handleQuestionChange(question.id, {
-                                                                            correctAnswer: e.target.value,
+                                                                            correct_answer: e.target.value,
                                                                         })
                                                                     }
                                                                     placeholder="Enter the correct answer"
                                                                     className={cn(
-                                                                        getCorrectAnswerError(questionIndex) && "border-destructive"
+                                                                        getcorrect_answerError(questionIndex) && "border-destructive"
                                                                     )}
                                                                 />
-                                                                {getCorrectAnswerError(questionIndex) && (
+                                                                {getcorrect_answerError(questionIndex) && (
                                                                     <div className="text-[0.8rem] font-medium text-destructive">
-                                                                        {getCorrectAnswerError(questionIndex)}
+                                                                        {getcorrect_answerError(questionIndex)}
                                                                     </div>
                                                                 )}
                                                             </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Course;
 use App\Domain\Course\Actions\Modules\CreateModuleAction;
 use App\Domain\Course\Actions\Modules\UpdateModuleAction;
 use App\Domain\Course\Data\CreateModuleData;
+use App\Domain\Course\Data\ModuleUpdateData;
 use App\Domain\Course\Models\CourseModule;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -22,13 +23,14 @@ class ModuleController extends Controller
 
         $module = $this->createModule->execute($data);
 
-        return back()->with('module', $module);
+        return response()->json($module);
     }
 
     public function update(Request $request, CourseModule $module)
     {
-        $module = $this->updateModule->execute($module, $request->input('content'));
+        $data = ModuleUpdateData::from($request->input());
+        $module = $this->updateModule->execute($module, $data);
 
-        return back()->with('module', $module);
+        return response()->json($module);
     }
 }

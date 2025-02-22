@@ -41,6 +41,7 @@ export default function ModuleFactory({ module, onChange }: ModuleFactoryProps) 
 
         // Get the validation function for this module type
         const validateFn = moduleType.validate;
+
         if (!validateFn) {
             onChange(editorState.currentModule);
             return;
@@ -48,6 +49,7 @@ export default function ModuleFactory({ module, onChange }: ModuleFactoryProps) 
 
         // Run validation
         const validationResult = validateFn(editorState.currentModule);
+        console.log('validationResult', validationResult);
         if (validationResult) {
             // If there are validation errors, show them and don't save
             setErrors(validationResult);

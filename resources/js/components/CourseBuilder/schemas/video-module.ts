@@ -3,10 +3,11 @@ import { baseModuleSchema } from './base-module';
 
 export const videoModuleSchema = baseModuleSchema.extend({
     type: z.literal('video'),
-    videoUrl: z.string()
-        .min(1, 'Video URL is required')
-        .url('Please enter a valid URL')
-        .refine(
+    data: z.object({
+        video_url: z.string()
+            .min(1, 'Video URL is required')
+            .url('Please enter a valid URL')
+            .refine(
             (url) => {
                 // Basic validation for common video platforms
                 const videoPatterns = [
@@ -21,10 +22,11 @@ export const videoModuleSchema = baseModuleSchema.extend({
             'Please enter a valid video platform URL (YouTube, Vimeo, etc.)'
         ),
     description: z.string().optional(),
-    thumbnailUrl: z.string()
-        .url('Please enter a valid thumbnail URL')
-        .optional()
-        .nullable(),
+    thumbnail_url: z.string()
+            .url('Please enter a valid thumbnail URL')
+            .optional()
+            .nullable(),
+    }),
 });
 
 export type VideoModuleSchema = z.infer<typeof videoModuleSchema>;

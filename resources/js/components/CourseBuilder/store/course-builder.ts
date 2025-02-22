@@ -1,13 +1,9 @@
-import { BaseModule, Section } from '@/components/CourseBuilder/types/course';
 import { atom } from 'jotai';
+import { CourseContent } from '../types/course';
 
-export interface CourseContent {
-    sections: Section[];
-    modules: BaseModule[];
-}
 
 interface CourseStore {
-    [courseId: string]: CourseContent;
+    [course_id: string]: CourseContent;
 }
 
 const initialStore: CourseStore = {};
@@ -15,10 +11,10 @@ const initialStore: CourseStore = {};
 const courseBuilderStore = atom<CourseStore>(initialStore);
 
 export const getCourseContent = atom(
-    (get) => (courseId: string) => {
+    (get) => (course_id: string) => {
         const store = get(courseBuilderStore);
         return (
-            store[courseId] || {
+            store[course_id] || {
                 sections: [],
                 modules: [],
             }
@@ -29,11 +25,11 @@ export const getCourseContent = atom(
 
 export const updateCourseContent = atom(
     null,
-    (get, set, { courseId, content }: { courseId: string; content: CourseContent }) => {
+    (get, set, { course_id, content }: { course_id: string; content: CourseContent }) => {
         const store = get(courseBuilderStore);
         set(courseBuilderStore, {
             ...store,
-            [courseId]: content,
+            [course_id]: content,
         });
     },
 ); 

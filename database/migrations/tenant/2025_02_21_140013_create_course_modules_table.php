@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('section_id')->constrained('course_sections')->cascadeOnDelete();
             $table->string('title');
             $table->string('type');
-            $table->json('content');
+            $table->json('data');
             $table->integer('order');
             $table->timestamps();
 

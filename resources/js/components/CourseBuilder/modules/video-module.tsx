@@ -3,10 +3,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Video } from 'lucide-react';
+import { nanoid } from 'nanoid';
 import moduleRegistry from '../../../lib/moduleRegistry';
 import BaseModuleEditor from '../ModuleEditor/BaseModuleEditor';
 import { validateVideoModule } from '../schemas/video-module';
-
 interface VideoModuleEditorProps {
     module: VideoModule;
     onChange: (module: Partial<VideoModule>) => void;
@@ -14,46 +14,46 @@ interface VideoModuleEditorProps {
 }
 
 export function VideoModuleEditor({ module, onChange, errors = {} }: VideoModuleEditorProps) {
-    const handleVideoUrlChange = (videoUrl: string) => {
-        onChange({ videoUrl });
+    const handlevideo_urlChange = (video_url: string) => {
+        onChange({ data: { video_url } });
     };
 
     const handleDescriptionChange = (description: string) => {
-        onChange({ description });
+        onChange({ data: { description, video_url: module.data.video_url } });
     };
 
-    const handleThumbnailUrlChange = (thumbnailUrl: string) => {
-        onChange({ thumbnailUrl });
+    const handlethumbnail_urlChange = (thumbnail_url: string) => {
+        onChange({ data: { thumbnail_url, video_url: module.data.video_url } });
     };
 
     return (
         <BaseModuleEditor module={module} onChange={onChange}>
             <div className="space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor="videoUrl">Video URL</Label>
+                    <Label htmlFor="video_url">Video URL</Label>
                     <Input
-                        id="videoUrl"
-                        value={module.videoUrl}
-                        onChange={(e) => handleVideoUrlChange(e.target.value)}
+                        id="video_url"
+                        value={module.data.video_url}
+                        onChange={(e) => handlevideo_urlChange(e.target.value)}
                         placeholder="Enter video URL (YouTube, Vimeo, etc.)"
-                        className={errors.videoUrl ? "border-red-500" : ""}
+                        className={errors.video_url ? "border-red-500" : ""}
                     />
-                    {errors.videoUrl && (
-                        <div className="text-[0.8rem] font-medium text-destructive">{errors.videoUrl}</div>
+                    {errors.video_url && (
+                        <div className="text-[0.8rem] font-medium text-destructive">{errors.video_url}</div>
                     )}
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="thumbnailUrl">Thumbnail URL (optional)</Label>
+                    <Label htmlFor="thumbnail_url">Thumbnail URL (optional)</Label>
                     <Input
-                        id="thumbnailUrl"
-                        value={module.thumbnailUrl || ''}
-                        onChange={(e) => handleThumbnailUrlChange(e.target.value)}
+                        id="thumbnail_url"
+                        value={module.data.thumbnail_url || ''}
+                        onChange={(e) => handlethumbnail_urlChange(e.target.value)}
                         placeholder="Enter thumbnail URL"
-                        className={errors.thumbnailUrl ? "border-red-500" : ""}
+                        className={errors.thumbnail_url ? "border-red-500" : ""}
                     />
-                    {errors.thumbnailUrl && (
-                        <div className="text-[0.8rem] font-medium text-destructive">{errors.thumbnailUrl}</div>
+                    {errors.thumbnail_url && (
+                        <div className="text-[0.8rem] font-medium text-destructive">{errors.thumbnail_url}</div>
                     )}
                 </div>
 
@@ -61,7 +61,7 @@ export function VideoModuleEditor({ module, onChange, errors = {} }: VideoModule
                     <Label htmlFor="description">Description</Label>
                     <Textarea
                         id="description"
-                        value={module.description || ''}
+                        value={module.data.description || ''}
                         onChange={(e) => handleDescriptionChange(e.target.value)}
                         placeholder="Enter video description"
                         className={`h-32 ${errors.description ? "border-red-500" : ""}`}
@@ -71,10 +71,10 @@ export function VideoModuleEditor({ module, onChange, errors = {} }: VideoModule
                     )}
                 </div>
 
-                {module.videoUrl && !errors.videoUrl && (
+                {module.data.video_url && !errors.video_url && (
                     <div className="aspect-video rounded-lg border bg-muted">
                         <iframe
-                            src={module.videoUrl}
+                            src={module.data.video_url}
                             className="h-full w-full rounded-lg"
                             allowFullScreen
                             title={module.title}
@@ -88,7 +88,7 @@ export function VideoModuleEditor({ module, onChange, errors = {} }: VideoModule
 
 // Type guard to check if a module is a VideoModule
 function isVideoModule(module: BaseModule): module is VideoModule {
-    return module.type === 'video' && 'videoUrl' in module;
+    return module.type === 'video' && 'video_url' in module;
 }
 
 // Register the video module type
@@ -98,8 +98,17 @@ moduleRegistry.register({
     icon: Video,
     editor: VideoModuleEditor,
     defaultData: () => ({
-        videoUrl: '',
-        description: '',
+        id: nanoid(),
+        title: '',
+        order: 0,
+        section_id: '',
+        type: 'video',
+        data: {
+            video_url: '',
+            description: '',
+            thumbnail_url: '',
+            title: '',
+        },
     }),
     validate: (module: BaseModule) => {
         const result = validateVideoModule(module);

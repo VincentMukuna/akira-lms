@@ -13,8 +13,9 @@ class CreateModuleAction
         return DB::transaction(function () use ($data) {
             return CourseModule::create([
                 'type' => $data->type,
-                'course_section_id' => $data->section_id,
-                'content' => $data->content,
+                'section_id' => $data->section_id,
+                'data' => $data->data,
+                'title' => $data->title,
                 'order' => $data->order,
             ]);
         });

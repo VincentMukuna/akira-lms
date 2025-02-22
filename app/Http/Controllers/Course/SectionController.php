@@ -15,10 +15,10 @@ class SectionController extends Controller
 
     public function store(Request $request)
     {
-        $data = CreateSectionData::from($request->input());
+        $data = CreateSectionData::from($request->all());
 
         $section = $this->createSection->execute($data);
 
-        return back()->with('section', $section);
+        return response()->json($section);
     }
 }

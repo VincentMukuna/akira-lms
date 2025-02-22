@@ -8,6 +8,7 @@ use App\Domain\Course\Actions\CreateCourseAction;
 use App\Domain\Course\Data\CourseData;
 use App\Domain\Course\Models\Course;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -65,7 +66,7 @@ class CourseController extends Controller
             CourseData::from($validated)
         );
 
-        return redirect()->route('admin.courses.builder', [
+        return redirect()->route('courses.builder', [
             'id' => $course->id,
         ])->with('success', 'Course created successfully.');
     }
@@ -99,15 +100,57 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
         $course->update($validated);
 
-        return redirect()->route('admin.courses.builder', [
+        return redirect()->route('courses.builder', [
             'id' => $course->id,
         ])->with('success', 'Course updated successfully.');
     }
 
     public function builder(string $id): Response
     {
+        $course = Course::findOrFail($id);
+
+        $sections = $course->sections()
+            ->orderBy('order')
+            ->with(['modules' => function ($query) {
+                $query->orderBy('order');
+            }])
+            ->get();
+
+        $modules = $sections->flatMap(function ($section) {
+            return $section->modules;
+        });
+
+        $content = [
+            'sections' => $sections,
+            'modules' => $modules,
+        ];
+
         return Inertia::render('Courses/Builder', [
-            'courseId' => $id,
+            'course_id' => $id,
+            'defaultCourseContent' => $content,
         ]);
+    }
+
+    public function content(string $id): JsonResponse
+    {
+        $course = Course::findOrFail($id);
+
+        $sections = $course->sections()
+            ->orderBy('order')
+            ->with(['modules' => function ($query) {
+                $query->orderBy('order');
+            }])
+            ->get();
+
+        $modules = $sections->flatMap(function ($section) {
+            return $section->modules;
+        });
+
+        $content = [
+            'sections' => $sections,
+            'modules' => $modules,
+        ];
+
+        return response()->json($content);
     }
 }

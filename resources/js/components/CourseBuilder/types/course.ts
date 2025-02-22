@@ -5,38 +5,66 @@ export interface BaseModule {
     title: string;
     type: ModuleType;
     order: number;
-    sectionId: string;
+    section_id: string;
+    data: ModuleData[keyof ModuleData];
 }
 
 export interface TextModule extends BaseModule {
     type: 'text';
-    content: string;
+    data: {
+        content: string;
+    }
 }
 
 export interface VideoModule extends BaseModule {
     type: 'video';
-    videoUrl: string;
-    description?: string;
-    thumbnailUrl?: string;
+    data: {
+        video_url: string;
+        description?: string;
+        thumbnail_url?: string;
+    }
 }
+
+export type QuestionType = 'multiple_choice' | 'text';
+
+export interface BaseQuestion {
+    id: string;
+    type: QuestionType;
+    question: string;
+    order: number;
+}
+
+export interface MultipleChoiceOption {
+    id: string;
+    text: string;
+    isCorrect: boolean;
+}
+
+export interface MultipleChoiceQuestion extends BaseQuestion {
+    type: 'multiple_choice';
+    options: MultipleChoiceOption[];
+}
+
+export interface TextQuestion extends BaseQuestion {
+    type: 'text';
+    correct_answer: string;
+}
+
+export type Question = MultipleChoiceQuestion | TextQuestion;
 
 export interface QuizModule extends BaseModule {
     type: 'quiz';
-    questions: QuizQuestion[];
-}
+    data: {
+        questions: Question[];
+    }
+} 
 
-export interface QuizQuestion {
-    id: string;
-    question: string;
-    options: string[];
-    correctAnswer: number;
-}
 
 export interface Section {
     id: string;
     title: string;
     order: number;
-    courseId: string;
+    course_id: string;
 }
 
 export interface CourseContent {
@@ -55,6 +83,23 @@ export interface ModuleRegistryEntry {
     name: string;
     icon: React.ComponentType<{ className?: string }>;
     editor: React.ComponentType<ModuleEditorProps<any>>;
-    defaultData: () => Omit<BaseModule, keyof BaseModule>;
+    defaultData: () => BaseModule & { data: any};
     validate?: (module: BaseModule) => Record<string, string> | null;
+}
+
+export interface ModuleData {
+    text: { content: string };
+    video: { video_url: string; description?: string; thumbnail_url?: string };
+    quiz: { questions: Question[] };
+}
+
+export interface ModuleRecord {
+    id: string;
+    title: string;
+    type: ModuleType;
+    order: number;
+    section_id: string;
+    data: ModuleData[keyof ModuleData];
+    created_at: string;
+    updated_at: string;
 } 

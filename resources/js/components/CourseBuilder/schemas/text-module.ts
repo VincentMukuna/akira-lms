@@ -3,9 +3,11 @@ import { baseModuleSchema } from './base-module';
 
 export const textModuleSchema = baseModuleSchema.extend({
     type: z.literal('text'),
-    content: z.string()
-        .min(1, 'Content is required')
-        .max(50000, 'Content is too long (max 50000 characters)'),
+    data: z.object({
+        content: z.string()
+            .min(1, 'Content is required')
+            .max(50000, 'Content is too long (max 50000 characters)'),
+    }),
 });
 
 export type TextModuleSchema = z.infer<typeof textModuleSchema>;

@@ -1,10 +1,9 @@
-import { BaseModule } from '@/components/CourseBuilder/types/course';
-import { QuizModule } from '@/components/CourseBuilder/types/quiz';
+import { BaseModule, QuizModule } from '@/components/CourseBuilder/types/course';
 import { ClipboardList } from 'lucide-react';
+import { nanoid } from 'nanoid';
 import moduleRegistry from '../../../lib/moduleRegistry';
 import QuizEditor from '../ModuleEditor/QuizEditor';
 import { validateQuizModule } from '../schemas/quiz-module';
-
 function isQuizModule(module: BaseModule): module is QuizModule {
     return module.type === 'quiz';
 }
@@ -16,7 +15,14 @@ moduleRegistry.register({
     icon: ClipboardList,
     editor: QuizEditor,
     defaultData: () => ({
-        questions: [],
+        id: nanoid(),
+        title: '',
+        order: 0,
+        section_id: '',
+        type: 'quiz',
+        data: {
+            questions: [],
+        },
     }),
     validate: (module: BaseModule) => {
         const result = validateQuizModule(module);
