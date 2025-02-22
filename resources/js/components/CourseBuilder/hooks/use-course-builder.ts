@@ -1,13 +1,12 @@
 import { BaseModule, CourseContent, ModuleData, ModuleType, Section } from '@/components/CourseBuilder/types/course';
 import {
-    updateModuleOrder as updateModuleOrderApi,
     updateSectionOrder as updateSectionOrderApi
 } from '@/lib/api/course-builder';
 import moduleRegistry from '@/lib/moduleRegistry';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { nanoid } from 'nanoid';
 import { toast } from 'sonner';
-import { courseBuilderApi } from '../api/course-builder-api';
+import { courseBuilderApi, ModuleOrder } from '../api/course-builder-api';
 
 interface AddModuleData {
     section_id: string;
@@ -202,14 +201,33 @@ export function useUpdateSectionOrder() {
     });
 }
 
+interface UpdateModuleOrderData {
+    course_id: string;
+    module_orders: ModuleOrder[];
+}
+
 // Update module order
 export function useUpdateModuleOrder() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: updateModuleOrderApi,
-        onSuccess: (updatedModules) => {
-            queryClient.setQueriesData({ queryKey: ['course-content'] }, (old: any) => {
+        mutationFn: (updateModuleOrderData: UpdateModuleOrderData) => {
+            return courseBuilderApi.updateModuleOrder(updateModuleOrderData);
+        },
+        onMutate: async (updateModuleOrderData) => {
+            const previousContent = queryClient.getQueryData<CourseContent>(['course-content', updateModuleOrderData.course_id]);
+            console.log("PREVIOUS CONTENT", previousContent);
+            if (!previousContent) {
+                throw new Error('Previous content not found');
+            }
+            queryClient.setQueryData(['course-content', updateModuleOrderData.course_id], (old: any) => ({
+                ...old,
+                modules: old.modules.map((m: BaseModule) => updateModuleOrderData.module_orders.find((mo: ModuleOrder) => mo.id === m.id) || m),
+            }));
+            return { previousContent };
+        },
+        onSuccess: (updatedModules, updateModuleOrderData) => {
+            queryClient.setQueriesData({ queryKey: ['course-content', updateModuleOrderData.course_id] }, (old: any) => {
                 if (!old) return old;
                 return {
                     ...old,
@@ -219,6 +237,11 @@ export function useUpdateModuleOrder() {
                     }),
                 };
             });
+        },
+        onError: (error, variables, context) => {
+            console.log('onError', error, variables, context);
+            toast.error('Failed to update module order');
+            queryClient.setQueryData(['course-content', variables.course_id], context?.previousContent);
         },
     });
 } 

@@ -52,19 +52,23 @@ export default function CourseBuilder({ course_id, defaultCourseContent }: Props
             const destSection = destination.droppableId;
 
             const modulesToUpdate = courseContent.modules.filter(
-                (m) => m.sectionId === sourceSection || m.sectionId === destSection,
+                (m) => m.section_id === sourceSection || m.section_id === destSection,
             );
 
             const [movedModule] = modulesToUpdate.splice(source.index, 1);
-            movedModule.sectionId = destSection;
+            movedModule.section_id = destSection;
             modulesToUpdate.splice(destination.index, 0, movedModule);
 
             // Update order numbers
-            modulesToUpdate.forEach((module, index) => {
-                module.order = index;
-            });
+            modulesToUpdate.forEach((module, index) => { module.order = index; });
 
-            updateModuleOrder.mutate(modulesToUpdate);
+            updateModuleOrder.mutate({
+                course_id: course_id,
+                module_orders: modulesToUpdate.map((m) => ({
+                    id: m.id,
+                    order: m.order,
+                })),
+            });
         }
     };
 

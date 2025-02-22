@@ -8,6 +8,7 @@ use App\Domain\Course\QueryBuilders\CourseQueryBuilder;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Course extends Model
 {
@@ -28,6 +29,18 @@ class Course extends Model
     public function sections(): HasMany
     {
         return $this->hasMany(CourseSection::class)->orderBy('order');
+    }
+
+    public function modules(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            CourseModule::class,
+            CourseSection::class,
+            'course_id',
+            'section_id',
+            'id',
+            'id'
+        )->orderBy('order');
     }
 
     public function newEloquentBuilder($query): CourseQueryBuilder

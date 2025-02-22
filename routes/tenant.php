@@ -23,6 +23,7 @@ use App\Http\Controllers\Users\UserStatsController;
 use App\Http\Controllers\Course\ModuleReorderController;
 use App\Http\Controllers\Course\SectionController;
 use App\Http\Controllers\Course\ModuleController;
+use App\Http\Controllers\Course\ModuleOrderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -145,6 +146,7 @@ Route::middleware([
         // Course Content Management
         Route::post('modules/{id}/reorder', ModuleReorderController::class)->name('courses.modules.reorder');
         Route::post('courses/{course_id}/sections', [SectionController::class, 'store'])->name('courses.sections.store');
+        Route::put('modules/order', [ModuleOrderController::class, 'update'])->name('modules.order.update');
         Route::apiResource('modules', ModuleController::class)->only(['store', 'update']);
     });
 });

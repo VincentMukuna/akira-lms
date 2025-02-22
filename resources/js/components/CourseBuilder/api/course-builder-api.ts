@@ -41,4 +41,25 @@ export const courseBuilderApi = {
         console.log("updateModule", response.data);
         return response.data;
     },
+
+
+    updateModuleOrder: async (params: UpdateModuleOrderParams) => {
+        const response = await axios.put(`/modules/order`, {
+            course_id: params.course_id,
+            module_orders: params.module_orders,
+        });
+        console.log("updateModuleOrder", response.data);
+        return response.data;
+    },
 };
+
+
+type UpdateModuleOrderParams = {
+    course_id: string;
+    module_orders: ModuleOrder[];
+}
+    
+export type ModuleOrder = {
+    id: string;
+    order: number;
+}
