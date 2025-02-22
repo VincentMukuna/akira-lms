@@ -140,7 +140,9 @@ export function useAddModule() {
                 if (!old) return old;
                 return {
                     ...old,
-                    modules: [...(old.modules || []), newModule],
+                    modules: old.modules.map((m: BaseModule) => 
+                        (m.section_id === newModule.section_id && m.order === newModule.order) ? newModule : m
+                    ),
                 };
             });
         },

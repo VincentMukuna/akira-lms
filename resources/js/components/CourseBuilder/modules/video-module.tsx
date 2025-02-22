@@ -38,8 +38,8 @@ export function VideoModuleEditor({ module, onChange, errors = {} }: VideoModule
                         placeholder="Enter video URL (YouTube, Vimeo, etc.)"
                         className={errors.video_url ? "border-red-500" : ""}
                     />
-                    {errors.video_url && (
-                        <div className="text-[0.8rem] font-medium text-destructive">{errors.video_url}</div>
+                    {errors && errors["data.video_url"] && (
+                        <div className="text-[0.8rem] font-medium text-destructive">{errors["data.video_url"]}</div>
                     )}
                 </div>
 
@@ -52,7 +52,7 @@ export function VideoModuleEditor({ module, onChange, errors = {} }: VideoModule
                         placeholder="Enter thumbnail URL"
                         className={errors.thumbnail_url ? "border-red-500" : ""}
                     />
-                    {errors.thumbnail_url && (
+                    {errors && errors["data.thumbnail_url"] && (
                         <div className="text-[0.8rem] font-medium text-destructive">{errors.thumbnail_url}</div>
                     )}
                 </div>
