@@ -12,10 +12,10 @@ class AdminDashboardController extends Controller
     {
         // TODO: Add stats for the admin dashboard
         $stats = [
-            'total_users' => 0,
-            'active_courses' => 0,
-            'total_instructors' => 0,
-            'total_learners' => 0,
+            'total_users' => 354,
+            'active_courses' => 13,
+            'total_instructors' => 7,
+            'total_learners' => 290,
         ];
 
         return Inertia::render('admin/dashboard', [
