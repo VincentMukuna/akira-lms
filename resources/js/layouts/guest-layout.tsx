@@ -1,18 +1,18 @@
-import ApplicationLogo from '@/components/ApplicationLogo';
-import FlashMessage from '@/components/flash-message';
-import { Link } from '@inertiajs/react';
+import { GalleryVerticalEnd } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 
 export default function Guest({ children }: PropsWithChildren) {
     return (
-        <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 dark:bg-gray-900 sm:justify-center sm:pt-0">
-            <div>
-                <Link href="/">
-                    <ApplicationLogo className="h-20 w-20 fill-current text-gray-500" />
-                </Link>
+        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6">
+        <a href="#" className="flex items-center gap-2 self-center font-medium">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <GalleryVerticalEnd className="size-4" />
+                    </div>
+                    AkiraLMS
+                </a>
+                {children}
             </div>
-            <FlashMessage />
-            <div className="mt-6 w-full overflow-hidden sm:max-w-md">{children}</div>
-        </div>
+    </div>
     );
 }
