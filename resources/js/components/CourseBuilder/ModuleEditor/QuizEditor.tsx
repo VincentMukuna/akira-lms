@@ -164,7 +164,7 @@ export default function QuizEditor({ module, onChange, errors = {} }: QuizEditor
                                 ref={provided.innerRef}
                                 className="space-y-4"
                             >
-                                {questions.map((question, questionIndex) => (
+                                {questions?.map((question, questionIndex) => (
                                     <Draggable
                                         key={question.id}
                                         draggableId={question.id}
