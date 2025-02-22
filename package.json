@@ -98,6 +98,7 @@
         "cmdk": "^1.0.0",
         "date-fns": "^3.6.0",
         "embla-carousel-react": "^8.5.2",
+        "framer-motion": "^12.4.7",
         "fuse.js": "^7.1.0",
         "input-otp": "^1.4.2",
         "jotai": "^2.12.1",

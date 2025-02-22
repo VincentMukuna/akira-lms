@@ -32,10 +32,28 @@ const textQuestionSchema = baseQuestionSchema.extend({
     correct_answer: z.string().min(1, 'Correct answer is required'),
 });
 
+// Schema for true/false questions
+const trueFalseQuestionSchema = baseQuestionSchema.extend({
+    type: z.literal('true_false'),
+    correct_answer: z.boolean(),
+    explanation: z.string().optional(),
+});
+
+// Schema for fill in the blank questions
+const fillInBlankQuestionSchema = baseQuestionSchema.extend({
+    type: z.literal('fill_in_blank'),
+    blanks: z.array(z.object({
+        id: z.string().min(1, 'Blank ID is required'),
+        answer: z.string().min(1, 'Answer is required'),
+    })).min(1, 'At least one blank is required'),
+});
+
 // Combined question schema using discriminated union
 const questionSchema = z.discriminatedUnion('type', [
     multipleChoiceQuestionSchema,
     textQuestionSchema,
+    trueFalseQuestionSchema,
+    fillInBlankQuestionSchema,
 ]);
 
 // Main quiz module schema

@@ -7,7 +7,7 @@ import {
     useUpdateSection,
     useUpdateSectionOrder,
 } from '@/components/CourseBuilder/hooks/use-course-builder';
-import { BaseModule, CourseContent, ModuleType } from '@/components/CourseBuilder/types/course';
+import { BaseModule, CourseContent, ModuleType, Section } from '@/components/CourseBuilder/types/course';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FileText, Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -54,7 +54,32 @@ export default function CourseBuilder({ course_id, defaultCourseContent }: Props
             const sourceSection = source.droppableId;
             const destSection = destination.droppableId;
 
-            // Get all modules from the source and destination sections
+            // If reordering within the same section
+            if (sourceSection === destSection) {
+                const sectionModules = courseContent.modules
+                    .filter((m: BaseModule) => m.section_id === sourceSection)
+                    .sort((a: BaseModule, b: BaseModule) => a.order - b.order);
+
+                const [movedModule] = sectionModules.splice(source.index, 1);
+                sectionModules.splice(destination.index, 0, movedModule);
+
+                // Update order numbers
+                sectionModules.forEach((module: BaseModule, index: number) => {
+                    module.order = index;
+                });
+
+                updateModuleOrder.mutate({
+                    course_id: course_id,
+                    module_orders: sectionModules.map((m: BaseModule) => ({
+                        id: m.id,
+                        order: m.order,
+                        section_id: m.section_id,
+                    })),
+                });
+                return;
+            }
+
+            // Handle moving between different sections
             const sourceModules = courseContent.modules
                 .filter((m: BaseModule) => m.section_id === sourceSection)
                 .sort((a: BaseModule, b: BaseModule) => a.order - b.order);

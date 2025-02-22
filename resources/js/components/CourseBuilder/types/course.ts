@@ -25,7 +25,7 @@ export interface VideoModule extends BaseModule {
     }
 }
 
-export type QuestionType = 'multiple_choice' | 'text';
+export type QuestionType = 'multiple_choice' | 'text' | 'true_false' | 'fill_in_blank';
 
 export interface BaseQuestion {
     id: string;
@@ -50,7 +50,25 @@ export interface TextQuestion extends BaseQuestion {
     correct_answer: string;
 }
 
-export type Question = MultipleChoiceQuestion | TextQuestion;
+export interface TrueFalseQuestion extends BaseQuestion {
+    type: 'true_false';
+    correct_answer: boolean;
+    explanation?: string;
+}
+
+export interface FillInBlankQuestion extends BaseQuestion {
+    type: 'fill_in_blank';
+    blanks: {
+        id: string;
+        answer: string;
+        position: {
+            start: number;
+            end: number;
+        };
+    }[];
+}
+
+export type Question = MultipleChoiceQuestion | TextQuestion | TrueFalseQuestion | FillInBlankQuestion;
 
 export interface QuizModule extends BaseModule {
     type: 'quiz';
