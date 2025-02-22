@@ -1,3 +1,4 @@
+import CourseManagementNavigation from '@/components/CourseManagement/Navigation';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -48,6 +49,9 @@ function EditCourse({ course }: Props) {
     };
 
     return (
+        <>
+            <CourseManagementNavigation courseId={course.id} currentRoute="edit" />
+            <div className="container py-6">
         <form onSubmit={onSubmit} className="space-y-6">
             <Card>
                 <CardHeader>
@@ -92,14 +96,11 @@ function EditCourse({ course }: Props) {
                             Learning Objectives
                         </label>
                         <Textarea
-                            placeholder="What will students learn from this course?"
+                                    placeholder="Enter learning objectives"
                             value={data.learning_objectives}
                             onChange={e => setData('learning_objectives', e.target.value)}
                             disabled={processing}
                         />
-                        <p className="text-sm text-muted-foreground">
-                            List the key learning outcomes for this course.
-                        </p>
                         {errors.learning_objectives && (
                             <p className="text-sm font-medium text-destructive">{errors.learning_objectives}</p>
                         )}
@@ -107,15 +108,15 @@ function EditCourse({ course }: Props) {
 
                     <div className="space-y-2">
                         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Difficulty Level
+                                    Level
                         </label>
                         <Select
                             value={data.level}
-                            onValueChange={(value: FormData['level']) => setData('level', value)}
+                                    onValueChange={(value: 'beginner' | 'intermediate' | 'advanced') => setData('level', value)}
                             disabled={processing}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select difficulty level" />
+                                        <SelectValue placeholder="Select course level" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="beginner">Beginner</SelectItem>
@@ -128,48 +129,34 @@ function EditCourse({ course }: Props) {
                         )}
                     </div>
 
-                    <div className="flex flex-row items-center justify-between rounded-lg border p-4">
-                        <div className="space-y-0.5">
-                            <label className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                Publish Immediately
-                            </label>
-                            <p className="text-sm text-muted-foreground">
-                                If disabled, the course will be saved as a draft.
-                            </p>
-                        </div>
+                            <div className="flex items-center space-x-2">
                         <Switch
+                                    id="is_published"
                             checked={data.is_published}
-                            onCheckedChange={(checked: boolean) => setData('is_published', checked)}
+                                    onCheckedChange={checked => setData('is_published', checked)}
                             disabled={processing}
                         />
-                        {errors.is_published && (
-                            <p className="text-sm font-medium text-destructive">{errors.is_published}</p>
+                                <label
+                                    htmlFor="is_published"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Published
+                                </label>
+                            </div>
+
+                            <div className="flex justify-end">
+                                <Button type="submit" disabled={processing}>
+                                    {processing && (
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         )}
+                                    Save Changes
+                                </Button>
                     </div>
                 </CardContent>
             </Card>
-
-            <div className="flex justify-end gap-4">
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => window.history.back()}
-                    disabled={processing}
-                >
-                    Cancel
-                </Button>
-                <Button type="submit" disabled={processing}>
-                    {processing ? (
-                        <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Saving...
-                        </>
-                    ) : (
-                        'Save Changes'
-                    )}
-                </Button>
+                </form>
             </div>
-        </form>
+        </>
     );
 }
 
