@@ -1,5 +1,7 @@
 import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
+import { useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { PanelLeft } from 'lucide-react';
 import * as React from 'react';
 
@@ -12,12 +14,24 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
-const SIDEBAR_COOKIE_NAME = 'sidebar:state';
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+const SIDEBAR_STORAGE_KEY = 'sidebar:state';
 const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
+
+// Read the initial value synchronously to prevent layout shift
+const getInitialValue = () => {
+    if (typeof window === 'undefined') return true;
+    try {
+        const item = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+        return item ? JSON.parse(item) : true;
+    } catch {
+        return true;
+    }
+};
+
+const sidebarAtom = atomWithStorage<boolean>(SIDEBAR_STORAGE_KEY, getInitialValue());
 
 type SidebarContext = {
     state: 'expanded' | 'collapsed';
@@ -63,9 +77,8 @@ const SidebarProvider = React.forwardRef<
         const isMobile = useIsMobile();
         const [openMobile, setOpenMobile] = React.useState(false);
 
-        // This is the internal state of the sidebar.
-        // We use openProp and setOpenProp for control from outside the component.
-        const [_open, _setOpen] = React.useState(defaultOpen);
+        // Use Jotai atom for persisted state
+        const [_open, _setOpen] = useAtom(sidebarAtom);
         const open = openProp ?? _open;
         const setOpen = React.useCallback(
             (value: boolean | ((value: boolean) => boolean)) => {
@@ -75,11 +88,8 @@ const SidebarProvider = React.forwardRef<
                 } else {
                     _setOpen(openState);
                 }
-
-                // This sets the cookie to keep the sidebar state.
-                document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
             },
-            [setOpenProp, open],
+            [setOpenProp, open, _setOpen],
         );
 
         // Helper to toggle the sidebar.
@@ -740,5 +750,6 @@ export {
     SidebarRail,
     SidebarSeparator,
     SidebarTrigger,
-    useSidebar,
+    useSidebar
 };
+

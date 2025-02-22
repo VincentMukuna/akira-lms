@@ -14,11 +14,16 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Course\CourseController;
 use App\Http\Controllers\Users\InvitedUsersController;
 use App\Http\Controllers\Workspace\SetupController;
 use App\Http\Controllers\Users\InvitationController;
 use App\Http\Controllers\Users\UserController;
 use App\Http\Controllers\Users\UserStatsController;
+use App\Http\Controllers\Course\ModuleReorderController;
+use App\Http\Controllers\Course\SectionController;
+use App\Http\Controllers\Course\ModuleController;
+use App\Http\Controllers\Course\ModuleOrderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
@@ -54,7 +59,6 @@ Route::middleware([
     // Instructor Routes
     Route::middleware(['auth', 'verified', 'role:instructor'])->prefix('instructor')->group(function () {
         Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('instructor.dashboard');
-        // TODO: Add other instructor routes when controllers are created
     });
 
     // Learner Routes
@@ -126,6 +130,25 @@ Route::middleware([
 
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
             ->name('logout');
+    });
+
+    // Course Builder Routes
+    Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+        // Course Management
+        Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+        Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
+        Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+        Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+        Route::put('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+        Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('courses.builder');
+        Route::get('/courses/{id}/content', [CourseController::class, 'content'])->name('courses.content');
+
+        // Course Content Management
+        Route::post('modules/{id}/reorder', ModuleReorderController::class)->name('courses.modules.reorder');
+        Route::post('courses/{course_id}/sections', [SectionController::class, 'store'])->name('courses.sections.store');
+        Route::put('modules/order', [ModuleOrderController::class, 'update'])->name('modules.order.update');
+        Route::apiResource('modules', ModuleController::class)->only(['store', 'update']);
+        Route::put('sections/{id}', [SectionController::class, 'update'])->name('sections.update');
     });
 });
 
