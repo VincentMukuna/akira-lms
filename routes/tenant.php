@@ -54,6 +54,11 @@ Route::middleware([
         Route::get('users/invite', [InvitedUsersController::class, 'create'])->name('admin.users.invite');
         Route::post('users/invite', [InvitedUsersController::class, 'store'])->name('admin.users.invite.store');
         Route::get('/users/stats', UserStatsController::class)->name('admin.users.stats');
+
+        //settings
+        Route::get('/settings', function () {
+            return Inertia::render('Settings/Index');
+        })->name('admin.settings.index');
     });
 
     // Instructor Routes
