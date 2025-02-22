@@ -4,6 +4,7 @@ import {
     useCourseContent,
     useUpdateModule,
     useUpdateModuleOrder,
+    useUpdateSection,
     useUpdateSectionOrder,
 } from '@/components/CourseBuilder/hooks/use-course-builder';
 import { BaseModule, CourseContent, ModuleType } from '@/components/CourseBuilder/types/course';
@@ -27,6 +28,7 @@ export default function CourseBuilder({ course_id, defaultCourseContent }: Props
     const { addSection,  } = useAddSection();
     const { addModule, } = useAddModule();
     const updateModule = useUpdateModule();
+    const updateSection = useUpdateSection();
     const updateSectionOrder = useUpdateSectionOrder();
     const updateModuleOrder = useUpdateModuleOrder();
 
@@ -35,6 +37,7 @@ export default function CourseBuilder({ course_id, defaultCourseContent }: Props
         if (!result.destination || !courseContent) return;
 
         const { source, destination } = result;
+        console.log({source, destination});
 
         if (result.type === 'section') {
             const newSections = [...courseContent.sections];
@@ -51,22 +54,40 @@ export default function CourseBuilder({ course_id, defaultCourseContent }: Props
             const sourceSection = source.droppableId;
             const destSection = destination.droppableId;
 
-            const modulesToUpdate = courseContent.modules.filter(
-                (m) => m.section_id === sourceSection || m.section_id === destSection,
-            );
+            // Get all modules from the source and destination sections
+            const sourceModules = courseContent.modules
+                .filter((m: BaseModule) => m.section_id === sourceSection)
+                .sort((a: BaseModule, b: BaseModule) => a.order - b.order);
+            
+            const destModules = courseContent.modules
+                .filter((m: BaseModule) => m.section_id === destSection)
+                .sort((a: BaseModule, b: BaseModule) => a.order - b.order);
 
-            const [movedModule] = modulesToUpdate.splice(source.index, 1);
+            // Remove the module from source section
+            const [movedModule] = sourceModules.splice(source.index, 1);
             movedModule.section_id = destSection;
-            modulesToUpdate.splice(destination.index, 0, movedModule);
 
-            // Update order numbers
-            modulesToUpdate.forEach((module, index) => { module.order = index; });
+            // Insert into destination section
+            destModules.splice(destination.index, 0, movedModule);
+
+            // Update order numbers for both sections
+            sourceModules.forEach((module: BaseModule, index: number) => {
+                module.order = index;
+            });
+
+            destModules.forEach((module: BaseModule, index: number) => {
+                module.order = index;
+            });
+
+            // Combine all modules that need updating
+            const modulesToUpdate = [...sourceModules, ...destModules];
 
             updateModuleOrder.mutate({
                 course_id: course_id,
-                module_orders: modulesToUpdate.map((m) => ({
+                module_orders: modulesToUpdate.map((m: BaseModule) => ({
                     id: m.id,
                     order: m.order,
+                    section_id: m.section_id,
                 })),
             });
         }
@@ -96,6 +117,14 @@ export default function CourseBuilder({ course_id, defaultCourseContent }: Props
         });
     };
 
+    const handleSectionUpdate = (section: Section) => {
+        updateSection.mutate({
+            id: section.id,
+            title: section.title,
+            course_id: course_id,
+        });
+    };
+
     if (isLoading) {
         return (
             <div className="flex h-full items-center justify-center">
@@ -116,13 +145,7 @@ export default function CourseBuilder({ course_id, defaultCourseContent }: Props
                         modules={courseContent.modules}
                         selectedModuleId={selectedModuleId}
                         onSectionAdd={handleAddSection}
-                        onSectionUpdate={(section) =>
-                            updateSectionOrder.mutate(
-                                courseContent.sections.map((s) =>
-                                    s.id === section.id ? { ...section, course_id } : s,
-                                ),
-                            )
-                        }
+                        onSectionUpdate={handleSectionUpdate}
                         onModuleAdd={handleAddModule}
                         onModuleSelect={setSelectedModuleId}
                         onDragEnd={handleDragEnd}

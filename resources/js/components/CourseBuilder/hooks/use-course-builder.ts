@@ -76,6 +76,35 @@ export function useAddSection() {
     };
 }
 
+// Update a section
+export function useUpdateSection() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (section: {id: string, title: string, course_id: string}) => {
+            return courseBuilderApi.updateSection(section);
+        },
+        onMutate: async (section) => {
+            const previousContent = queryClient.getQueryData<CourseContent>(['course-content', section.course_id]);
+            queryClient.setQueryData(['course-content', section.course_id], (old: any) => ({
+                ...old,
+                sections: old.sections.map((s: Section) => s.id === section.id ? section : s),
+            }));
+            return { previousContent };
+        },
+        onSuccess: (updatedSection) => {
+            queryClient.setQueryData(['course-content', updatedSection.course_id], (old: any) => ({
+                ...old,
+                sections: old.sections.map((s: Section) => s.id === updatedSection.id ? updatedSection : s),
+            }));
+        },
+        onError: (error, variables, context) => {
+            console.log('onError', error, variables, context);
+            toast.error('Failed to update section');
+            queryClient.setQueryData(['course-content', variables.course_id], context?.previousContent);
+        },
+    });
+}
 // Add a new module
 export function useAddModule() {
     const queryClient = useQueryClient();

@@ -19,6 +19,12 @@ export const courseBuilderApi = {
         return response.data;
     },
 
+    updateSection: async (section: {id: string, title: string}) => {
+        const response = await axios.put(`/sections/${section.id}`, section);
+        console.log("updateSection", response.data);
+        return response.data;
+    },
+
     // Modules
     createModule: async ({ section_id, type, title, order, data }: { section_id: string, type: string, title: string, order: number, data: ModuleData[keyof ModuleData] }) => {
        
@@ -62,4 +68,5 @@ type UpdateModuleOrderParams = {
 export type ModuleOrder = {
     id: string;
     order: number;
+    section_id: string;
 }

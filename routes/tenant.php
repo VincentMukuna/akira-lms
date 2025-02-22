@@ -148,6 +148,7 @@ Route::middleware([
         Route::post('courses/{course_id}/sections', [SectionController::class, 'store'])->name('courses.sections.store');
         Route::put('modules/order', [ModuleOrderController::class, 'update'])->name('modules.order.update');
         Route::apiResource('modules', ModuleController::class)->only(['store', 'update']);
+        Route::put('sections/{id}', [SectionController::class, 'update'])->name('sections.update');
     });
 });
 

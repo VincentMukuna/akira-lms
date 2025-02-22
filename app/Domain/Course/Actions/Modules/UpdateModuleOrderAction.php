@@ -15,6 +15,7 @@ class UpdateModuleOrderAction
             foreach ($moduleOrders as $moduleOrder) {
                 $module = CourseModule::find($moduleOrder['id']);
                 $module->order = $moduleOrder['order'];
+                $module->section_id = $moduleOrder['section_id'];
                 $module->save();
             }
         });

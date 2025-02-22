@@ -73,7 +73,7 @@ export default function SectionList({
                                                                         return (
                                                                             <Draggable
                                                                                 key={module.id}
-                                                                                draggableId={module.id}
+                                                                                draggableId={module.id}                                                                                
                                                                                 index={index}
                                                                             >
                                                                                 {(provided) => (
