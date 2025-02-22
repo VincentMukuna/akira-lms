@@ -46,7 +46,7 @@ function ModuleItem({ module, index, isSelected, provided, onSelect, onAction }:
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     className={cn(
-                        'flex items-center gap-2 rounded-md border-2 p-2.5',
+                        'flex items-center gap-2 rounded-md border-2 p-2.5 cursor-pointer',
                         'transition-all duration-200 ease-in-out',
                         isSelected
                             ? 'border-primary bg-primary/5 shadow-sm'
