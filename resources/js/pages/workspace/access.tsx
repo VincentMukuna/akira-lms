@@ -66,7 +66,7 @@ export default function Access() {
         setIsRedirecting(true);
 
         try {
-            const response = await axios.post(route('workspace.access'), data, {
+            const response = await axios.post(route('workspace.access.store'), data, {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',

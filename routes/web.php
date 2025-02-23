@@ -21,7 +21,7 @@ Route::get('/access', [TenantAccessController::class, 'create'])
     ->name('workspace.access');
 
 Route::post('/access', [TenantAccessController::class, 'store'])
-    ->name('workspace.access');
+    ->name('workspace.access.store');
 
 // Tenant Registration Routes
 Route::middleware('guest')->group(function () {
