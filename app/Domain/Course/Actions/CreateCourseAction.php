@@ -11,12 +11,19 @@ class CreateCourseAction
 {
     public function execute(CourseData $data): Course
     {
-        return Course::create([
+        $course = Course::create([
             'title' => $data->title,
             'description' => $data->description,
             'learning_objectives' => $data->learning_objectives,
             'level' => $data->level,
             'is_published' => $data->is_published,
         ]);
+
+        if ($data->cover_image) {
+            $course->addMedia($data->cover_image)
+                ->toMediaCollection('cover');
+        }
+
+        return $course;
     }
 }

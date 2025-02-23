@@ -18,14 +18,16 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { useForm } from '@inertiajs/react';
-import { Loader2 } from 'lucide-react';
+import { ImageIcon, Loader2 } from 'lucide-react';
 import React from 'react';
 
 type FormData = {
-    [K in 'title' | 'description' | 'learning_objectives' | 'level' | 'is_published']: K extends 'level' 
+    [K in 'title' | 'description' | 'learning_objectives' | 'level' | 'is_published' | 'cover_image']: K extends 'level' 
         ? 'beginner' | 'intermediate' | 'advanced'
         : K extends 'is_published'
         ? boolean
+        : K extends 'cover_image'
+        ? File | null
         : string;
 }
 
@@ -36,6 +38,7 @@ function CreateCourse() {
         learning_objectives: '',
         level: 'beginner',
         is_published: false,
+        cover_image: null,
     });
 
     const onSubmit = (e: React.FormEvent) => {
@@ -65,6 +68,38 @@ function CreateCourse() {
                         />
                         {errors.title && (
                             <p className="text-sm font-medium text-destructive">{errors.title}</p>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            Cover Image
+                        </label>
+                        <div className="flex items-center gap-4">
+                            <Input
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                onChange={e => setData('cover_image', e.target.files?.[0] || null)}
+                                disabled={processing}
+                                className="w-full"
+                            />
+                            {data.cover_image && (
+                                <div className="relative h-20 w-20 overflow-hidden rounded-md border">
+                                    <img
+                                        src={URL.createObjectURL(data.cover_image)}
+                                        alt="Cover preview"
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
+                            )}
+                            {!data.cover_image && (
+                                <div className="flex h-20 w-20 items-center justify-center rounded-md border bg-muted">
+                                    <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                            )}
+                        </div>
+                        {errors.cover_image && (
+                            <p className="text-sm font-medium text-destructive">{errors.cover_image}</p>
                         )}
                     </div>
 
