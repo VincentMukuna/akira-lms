@@ -9,9 +9,11 @@ import {
     ContextMenuTrigger,
 } from '@/components/ui/context-menu';
 import { Input } from '@/components/ui/input';
+import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import moduleRegistry from '@/lib/moduleRegistry';
 import { cn } from '@/lib/utils';
 import { Archive, GripVertical, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { DragDropContext, Draggable, DraggableProvided, Droppable } from 'react-beautiful-dnd';
 import { toast } from 'sonner';
 import ModuleTypeSelector from './ModuleTypeSelector';
@@ -156,6 +158,8 @@ function SectionItem({
     onModuleSelect,
     onAction,
 }: SectionItemProps) {
+    const debouncedUpdate = useDebouncedCallback(onUpdate, 1000);
+    const [sectionTitle, setSectionTitle] = useState(section.title);
     return (
         <ContextMenu>
             <ContextMenuTrigger asChild>
@@ -172,13 +176,12 @@ function SectionItem({
                             >
                                 <GripVertical className="h-5 w-5 text-muted-foreground/50 hover:text-muted-foreground transition-colors cursor-grab" />
                                 <Input
-                                    value={section.title}
-                                    onChange={(e) =>
-                                        onUpdate({
-                                            ...section,
-                                            title: e.target.value,
-                                        })
-                                    }
+                                    value={sectionTitle}
+                                    onChange={(e) => setSectionTitle(e.target.value)}
+                                    onBlur={() => debouncedUpdate({
+                                        ...section,
+                                        title: sectionTitle,
+                                    })}
                                     className="h-9 text-lg font-medium bg-transparent border-transparent hover:border-input focus:border-input transition-colors"
                                     placeholder="Section Title"
                                 />
