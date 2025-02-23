@@ -33,20 +33,21 @@ class TenantAccessController extends Controller
         })->first();
 
         // If no exact match, try subdomain match
-        if (!$tenant) {
+        if (! $tenant) {
             $tenant = Tenant::whereHas('domains', function ($query) use ($request) {
-                $query->where('domain', $request->subdomain . '.' . config('tenancy.central_domains')[0]);
+                $query->where('domain', $request->subdomain.'.'.config('tenancy.central_domains')[0]);
             })->first();
         }
 
-        if (!$tenant) {
+        if (! $tenant) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'errors' => [
                         'subdomain' => 'We couldn\'t find a workspace with that domain.',
-                    ]
+                    ],
                 ], 422);
             }
+
             return back()->withErrors([
                 'subdomain' => 'We couldn\'t find a workspace with that domain.',
             ]);
@@ -54,14 +55,15 @@ class TenantAccessController extends Controller
 
         $domain = $tenant->domains->first();
 
-        if (!$domain) {
+        if (! $domain) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'errors' => [
                         'subdomain' => 'This workspace has no associated domain.',
-                    ]
+                    ],
                 ], 422);
             }
+
             return back()->withErrors([
                 'subdomain' => 'This workspace has no associated domain.',
             ]);
@@ -69,19 +71,19 @@ class TenantAccessController extends Controller
 
         // Construct the URL with proper protocol and domain
         $protocol = $request->secure() ? 'https://' : 'http://';
-        $loginUrl = $protocol . $domain->domain . '/login';
+        $loginUrl = $protocol.$domain->domain.'/login';
 
         // Return JSON response with redirect URL and company name
         if ($request->wantsJson()) {
             return response()->json([
                 'redirect_url' => $loginUrl,
-                'company_name' => $tenant->name
+                'company_name' => $tenant->name,
             ]);
         }
 
         return back()->with([
             'redirect_url' => $loginUrl,
-            'company_name' => $tenant->name
+            'company_name' => $tenant->name,
         ]);
     }
 }

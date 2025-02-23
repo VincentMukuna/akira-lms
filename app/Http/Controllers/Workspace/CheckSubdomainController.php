@@ -12,12 +12,12 @@ class CheckSubdomainController extends Controller
     {
         $exists = Tenant::query()
             ->whereHas('domains', function ($query) use ($subdomain) {
-                $query->where('domain', 'like', $subdomain . '.%');
+                $query->where('domain', 'like', $subdomain.'.%');
             })
             ->exists();
 
         return response()->json([
-            'available' => !$exists,
+            'available' => ! $exists,
         ]);
     }
 }

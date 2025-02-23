@@ -10,7 +10,6 @@ use App\Domain\Course\Models\Course;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +32,7 @@ class CourseController extends Controller
             ->withCount('sections as modules_count')
             ->latest()
             ->get()
-            ->map(fn(Course $course) => [
+            ->map(fn (Course $course) => [
                 'id' => $course->id,
                 'title' => $course->title,
                 'description' => $course->description,

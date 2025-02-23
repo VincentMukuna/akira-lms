@@ -17,7 +17,7 @@ class ReorderModulesAction
                 // Update both section and order if changed
                 $module->update([
                     'course_section_id' => $moduleData->section_id,
-                    'order' => $moduleData->order
+                    'order' => $moduleData->order,
                 ]);
             }
         });

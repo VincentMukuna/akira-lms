@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 class DeleteTenantCommand extends Command
 {
     protected $signature = 'tenant:delete {id}';
+
     protected $description = 'Delete a tenant and its associated database';
 
     public function handle(): int
@@ -18,12 +19,13 @@ class DeleteTenantCommand extends Command
 
         $tenant = Tenant::find($id);
 
-        if (!$tenant) {
+        if (! $tenant) {
             $this->error("Tenant with ID '{$id}' not found.");
+
             return parent::FAILURE;
         }
 
-        if (!$this->confirm("Are you sure you want to delete tenant '{$id}' and all its data?")) {
+        if (! $this->confirm("Are you sure you want to delete tenant '{$id}' and all its data?")) {
             return parent::FAILURE;
         }
 

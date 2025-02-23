@@ -45,7 +45,7 @@ class Invitation extends Model
 
     public function isValid(): bool
     {
-        return !$this->used_at && $this->expires_at->isFuture();
+        return ! $this->used_at && $this->expires_at->isFuture();
     }
 
     public function markAsUsed(): void

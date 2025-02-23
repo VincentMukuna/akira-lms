@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Hash;
 class CreateTenantCommand extends Command
 {
     protected $signature = 'tenant:create {id} {domain?}';
+
     protected $description = 'Create a new tenant with a domain and test user';
 
     public function handle(): int
     {
         $id = $this->argument('id');
-        $domain = $this->argument('domain') ?? $id . '.localhost';
+        $domain = $this->argument('domain') ?? $id.'.localhost';
 
         $this->info('Creating tenant...');
 

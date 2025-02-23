@@ -17,8 +17,7 @@ class InviteUsersAction
         $adminId = Auth::id();
 
         $jobs = collect($data->invites)->map(
-            fn($invite) =>
-            new ProcessUserInvite($invite['email'], $invite['role'], $adminId)
+            fn ($invite) => new ProcessUserInvite($invite['email'], $invite['role'], $adminId)
         )->toArray();
 
         $batch = Bus::batch($jobs)

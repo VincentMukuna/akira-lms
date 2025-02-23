@@ -2,11 +2,11 @@
 
 namespace App\Data;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeInterfaceTransformer;
-use Illuminate\Support\Carbon;
 use App\Models\User;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Transformers\DateTimeInterfaceTransformer;
 
 class UserData extends Data
 {

@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Dashboard\AdminDashboardController;
-use App\Http\Controllers\Dashboard\InstructorDashboardController;
-use App\Http\Controllers\Dashboard\LearnerDashboardController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -15,19 +11,22 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Course\CourseController;
-use App\Http\Controllers\Users\InvitedUsersController;
-use App\Http\Controllers\Workspace\SetupController;
-use App\Http\Controllers\Users\InvitationController;
-use App\Http\Controllers\Users\UserController;
-use App\Http\Controllers\Users\UserStatsController;
-use App\Http\Controllers\Course\ModuleReorderController;
-use App\Http\Controllers\Course\SectionController;
 use App\Http\Controllers\Course\ModuleController;
 use App\Http\Controllers\Course\ModuleOrderController;
+use App\Http\Controllers\Course\ModuleReorderController;
+use App\Http\Controllers\Course\SectionController;
+use App\Http\Controllers\Dashboard\AdminDashboardController;
+use App\Http\Controllers\Dashboard\InstructorDashboardController;
+use App\Http\Controllers\Dashboard\LearnerDashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Users\InvitationController;
+use App\Http\Controllers\Users\InvitedUsersController;
+use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Users\UserStatsController;
+use App\Http\Controllers\Workspace\SetupController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 /*
@@ -55,7 +54,7 @@ Route::middleware([
         Route::post('users/invite', [InvitedUsersController::class, 'store'])->name('admin.users.invite.store');
         Route::get('/users/stats', UserStatsController::class)->name('admin.users.stats');
 
-        //settings
+        // settings
         Route::get('/settings', function () {
             return Inertia::render('Settings/Index');
         })->name('admin.settings.index');
@@ -157,4 +156,4 @@ Route::middleware([
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

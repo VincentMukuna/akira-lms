@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
+use App\Services\RoleRedirectionService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use App\Services\RoleRedirectionService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(RoleRedirectionService::class, function ($app) {
-            return new RoleRedirectionService();
+            return new RoleRedirectionService;
         });
     }
 

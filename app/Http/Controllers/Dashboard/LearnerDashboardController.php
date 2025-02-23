@@ -21,4 +21,4 @@ class LearnerDashboardController extends Controller
             'stats' => $stats,
         ]);
     }
-} 
+}

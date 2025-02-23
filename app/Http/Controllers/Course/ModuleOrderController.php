@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Course;
 
-use App\Http\Controllers\Controller;
-use App\Domain\Course\Data\UpdateModuleOrderData;
 use App\Domain\Course\Actions\Modules\UpdateModuleOrderAction;
+use App\Domain\Course\Data\UpdateModuleOrderData;
 use App\Domain\Course\Models\Course;
-use App\Domain\Course\Models\CourseModule;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ModuleOrderController extends Controller
@@ -22,6 +21,7 @@ class ModuleOrderController extends Controller
 
         $course = Course::find($data->course_id);
         $modules = $course->modules()->get();
+
         return response()->json($modules);
     }
 }

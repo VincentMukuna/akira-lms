@@ -2,9 +2,9 @@
 
 namespace App\Domain\Users\Filters;
 
-use Illuminate\Http\Request;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 abstract class AbstractFilter
 {
@@ -25,6 +25,6 @@ abstract class AbstractFilter
     protected function parameterExists(string $param): bool
     {
         return $this->request->has($param) &&
-            !empty($this->request->get($param));
+            ! empty($this->request->get($param));
     }
 }

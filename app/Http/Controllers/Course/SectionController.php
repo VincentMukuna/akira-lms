@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Course;
 
 use App\Domain\Course\Actions\Sections\CreateSectionAction;
+use App\Domain\Course\Actions\Sections\UpdateSectionAction;
 use App\Domain\Course\Data\CreateSectionData;
 use App\Domain\Course\Data\UpdateSectionData;
-use App\Domain\Course\Actions\Sections\UpdateSectionAction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 

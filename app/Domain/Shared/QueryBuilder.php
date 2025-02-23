@@ -8,6 +8,7 @@ use Illuminate\Pipeline\Pipeline;
 class QueryBuilder
 {
     protected Builder $query;
+
     protected array $filters = [];
 
     public function __construct(Builder $query)
@@ -23,6 +24,7 @@ class QueryBuilder
     public function withFilters(array $filters): self
     {
         $this->filters = array_merge($this->filters, $filters);
+
         return $this;
     }
 
@@ -31,6 +33,7 @@ class QueryBuilder
         if ($condition) {
             $this->filters[] = $filter;
         }
+
         return $this;
     }
 
@@ -45,8 +48,8 @@ class QueryBuilder
     protected function resolveFilters(): array
     {
         return collect($this->filters)
-            ->map(fn($filter) => app($filter))
-            ->filter(fn($filter) => $filter->qualifies())
+            ->map(fn ($filter) => app($filter))
+            ->filter(fn ($filter) => $filter->qualifies())
             ->toArray();
     }
 }

@@ -31,7 +31,7 @@ class WorkspaceController extends Controller
 
         return Inertia::render('auth/register', [
             'status' => 'success',
-            'email' => $data->admin_email
+            'email' => $data->admin_email,
         ]);
     }
 }

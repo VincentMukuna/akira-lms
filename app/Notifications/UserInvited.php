@@ -38,7 +38,6 @@ class UserInvited extends Notification implements ShouldQueue
 
         Log::info("Accept URI: {$acceptUri}");
 
-
         return (new MailMessage)
             ->subject("Invitation to join {$company}")
             ->greeting("You've been invited to join {$company}!")

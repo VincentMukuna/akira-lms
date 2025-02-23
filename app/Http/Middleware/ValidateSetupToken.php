@@ -22,7 +22,7 @@ class ValidateSetupToken
 
         // Validate setup token
         if (
-            !$setupToken ||
+            ! $setupToken ||
             $setupToken !== $tenant->setup_token ||
             now()->isAfter($tenant->setup_token_expires_at)
         ) {

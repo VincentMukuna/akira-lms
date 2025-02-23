@@ -5,8 +5,8 @@ namespace App\Domain\Workspace\Actions;
 use App\Domain\Workspace\Data\WorkspaceCreateData;
 use App\Models\Tenant;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Uri;
 use Illuminate\Support\Str;
+use Illuminate\Support\Uri;
 
 class CreateWorkspaceAction
 {
@@ -31,7 +31,7 @@ class CreateWorkspaceAction
             $appHost = $appUri->host();
 
             $domain = $tenant->domains()->create([
-                'domain' => $data->subdomain . '.' . $appHost,
+                'domain' => $data->subdomain.'.'.$appHost,
             ]);
 
             DB::commit();

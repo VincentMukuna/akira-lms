@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Course\Models;
 
-use App\Domain\Course\Models\Course;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

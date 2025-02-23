@@ -16,6 +16,7 @@ class RoleRedirectionService
     {
         $clone = clone $this;
         $clone->temporaryRedirections = $redirections;
+
         return $clone;
     }
 
