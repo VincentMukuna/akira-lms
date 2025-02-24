@@ -7,11 +7,11 @@ namespace App\Http\Controllers\Course;
 use App\Domain\Course\Filters\LevelFilter;
 use App\Domain\Course\Filters\SearchFilter;
 use App\Domain\Course\Models\Course;
+// use App\Domain\Shared\QueryBuilder;
 use App\Domain\Shared\QueryBuilder;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class LearnerCourseController extends Controller
 {
@@ -23,7 +23,7 @@ class LearnerCourseController extends Controller
                     SearchFilter::class,
                     LevelFilter::class,
                 ])
-                ->get()
+                ->build()
                 ->where('is_published', true)
                 ->withCount('sections as modules_count')
                 ->latest()

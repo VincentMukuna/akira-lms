@@ -24,7 +24,7 @@ class UserController extends Controller
                 RoleFilter::class,
                 DateRangeFilter::class,
             ])
-            ->get()
+            ->build()
             ->with('roles')
             ->latest()
             ->paginate(10);
