@@ -9,19 +9,19 @@ import { Award, BookOpen, Clock, Crown } from 'lucide-react';
 import { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
-// Mock data - Replace with real data from backend
+// Update the mock data to be more corporate-focused
 const currentCoursesData = [
-    { name: 'Web Development', progress: 65 },
-    { name: 'Data Science', progress: 30 },
-    { name: 'UI/UX Design', progress: 45 },
+    { name: 'Leadership Essentials', progress: 65 },
+    { name: 'Project Management', progress: 30 },
+    { name: 'Compliance Training', progress: 45 },
 ];
 
 const learningTimeData = [
-    { day: 'Mon', hours: 2.5 },
-    { day: 'Tue', hours: 1.8 },
-    { day: 'Wed', hours: 3.2 },
-    { day: 'Thu', hours: 2.0 },
-    { day: 'Fri', hours: 2.7 },
+    { day: 'Mon', hours: 1.5 },
+    { day: 'Tue', hours: 1.0 },
+    { day: 'Wed', hours: 2.0 },
+    { day: 'Thu', hours: 1.5 },
+    { day: 'Fri', hours: 1.0 },
 ];
 
 const skillsData = [
@@ -31,48 +31,73 @@ const skillsData = [
 ];
 
 const recentActivities = [
-    { course: 'Web Development', action: 'Completed Module 3: JavaScript Basics', time: '2 hours ago' },
-    { course: 'Data Science', action: 'Started New Quiz: Python Fundamentals', time: '5 hours ago' },
-    { course: 'UI/UX Design', action: 'Submitted Project: Mobile App Design', time: 'Yesterday' },
+    { 
+        course: 'Compliance Training', 
+        action: 'Completed Module: Data Privacy and Security', 
+        time: '2 hours ago',
+        type: 'completion'
+    },
+    { 
+        course: 'Project Management', 
+        action: 'Started Assessment: Agile Methodologies', 
+        time: '5 hours ago',
+        type: 'assessment'
+    },
+    { 
+        course: 'Leadership Essentials', 
+        action: 'Completed Workshop: Team Building', 
+        time: 'Yesterday',
+        type: 'workshop'
+    },
 ];
 
-// Mock data for leaderboard
+// Mock data for leaderboard with more corporate titles
 const leaderboardData = [
     { 
         rank: 1,
         name: 'Sarah Chen',
-        points: 2850,
+        title: 'Senior Manager',
+        points: 285,
         avatar: '/avatars/sarah.jpg',
-        badge: 'Gold',
+        badge: 'Expert',
+        department: 'Operations'
     },
     {
         rank: 2,
         name: 'Mike Johnson',
-        points: 2720,
+        title: 'Team Lead',
+        points: 272,
         avatar: '/avatars/mike.jpg',
-        badge: 'Gold',
+        badge: 'Advanced',
+        department: 'Technology'
     },
     {
         rank: 3,
         name: 'Emma Davis',
-        points: 2680,
+        title: 'Project Manager',
+        points: 268,
         avatar: '/avatars/emma.jpg',
-        badge: 'Silver',
+        badge: 'Advanced',
+        department: 'Product'
     },
     {
         rank: 4,
         name: 'Alex Turner',
-        points: 2590,
+        title: 'Business Analyst',
+        points: 259,
         avatar: '/avatars/alex.jpg',
-        badge: 'Silver',
+        badge: 'Intermediate',
+        department: 'Finance'
     },
     {
         rank: 5,
         name: 'You',
-        points: 2470,
+        title: 'Software Engineer',
+        points: 247,
         avatar: '/avatars/user.jpg',
-        badge: 'Bronze',
-        isCurrentUser: true,
+        badge: 'Intermediate',
+        department: 'Technology',
+        isCurrentUser: true
     }
 ];
 
@@ -99,45 +124,45 @@ const LearnerDashboard = () => {
 
     return (
         <>
-            <Head title="My Dashboard" />
+            <Head title="Learning Dashboard" />
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                 {/* Stats Overview Cards - Row 1 */}
-                <Card className="md:col-span-4 bg-gradient-to-br from-primary/10 to-primary/5">
+                <Card className="md:col-span-4 bg-gradient-to-br from-primary/5 to-transparent">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Courses in Progress</CardTitle>
+                        <CardTitle className="text-sm font-medium">Active Courses</CardTitle>
                         <BookOpen className="h-4 w-4 text-primary" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-primary">3</div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            Active enrollments
+                            Required: 2 • Optional: 1
                         </p>
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-4 bg-gradient-to-br from-blue-500/10 to-blue-500/5">
+                <Card className="md:col-span-4 bg-gradient-to-br from-blue-500/5 to-transparent">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Learning Hours</CardTitle>
+                        <CardTitle className="text-sm font-medium">Learning Time</CardTitle>
                         <Clock className="h-4 w-4 text-blue-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-blue-500">12.2</div>
+                        <div className="text-3xl font-bold text-blue-500">7.0</div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            This week • 25% increase
+                            Hours this week • Target: 8.0
                         </p>
                     </CardContent>
                 </Card>
 
-                <Card className="md:col-span-4 bg-gradient-to-br from-yellow-500/10 to-yellow-500/5">
+                <Card className="md:col-span-4 bg-gradient-to-br from-yellow-500/5 to-transparent">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Achievements</CardTitle>
+                        <CardTitle className="text-sm font-medium">Certifications</CardTitle>
                         <Award className="h-4 w-4 text-yellow-500" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-yellow-500">5</div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            Badges earned • Latest: Problem Solver
+                            Active: 3 • Expiring soon: 2
                         </p>
                     </CardContent>
                 </Card>
@@ -145,9 +170,9 @@ const LearnerDashboard = () => {
                 {/* Main Content Area - Row 2 & 3 */}
                 <Card className="md:col-span-8 md:row-span-3 overflow-hidden">
                     <CardHeader>
-                        <CardTitle>Current Courses Progress</CardTitle>
+                        <CardTitle>Course Progress</CardTitle>
                         <CardDescription>
-                            Track your progress across all active courses
+                            Track your progress in mandatory and optional courses
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="p-0">
@@ -184,10 +209,10 @@ const LearnerDashboard = () => {
                         <div className="border-t bg-muted/20 p-6">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-sm font-medium">Next milestone</p>
-                                    <p className="text-sm text-muted-foreground">Complete JavaScript Module 4</p>
+                                    <p className="text-sm font-medium">Upcoming Deadline</p>
+                                    <p className="text-sm text-muted-foreground">Complete Annual Compliance Training</p>
                                 </div>
-                                <div className="text-sm text-muted-foreground">2 days left</div>
+                                <Badge variant="destructive" className="text-sm">Due in 5 days</Badge>
                             </div>
                         </div>
                     </CardContent>
@@ -198,10 +223,10 @@ const LearnerDashboard = () => {
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle>Learning Schedule</CardTitle>
-                                <CardDescription>Track your learning sessions</CardDescription>
+                                <CardTitle>Training Schedule</CardTitle>
+                                <CardDescription>Upcoming sessions and deadlines</CardDescription>
                             </div>
-                            <Badge variant="outline" className="ml-2">3 Events Today</Badge>
+                            <Badge variant="outline" className="ml-2">2 Required Today</Badge>
                         </div>
                     </CardHeader>
                     <CardContent className="p-0">
@@ -228,24 +253,24 @@ const LearnerDashboard = () => {
                         <div className="border-t bg-muted/20 p-6">
                             <div className="space-y-4">
                                 <div className="flex items-center gap-4">
-                                    <div className="h-2 w-2 rounded-full bg-primary" />
+                                    <div className="h-2 w-2 rounded-full bg-destructive" />
                                     <div>
-                                        <p className="text-sm font-medium">Python Workshop</p>
-                                        <p className="text-xs text-muted-foreground">10:00 AM - 11:30 AM</p>
+                                        <p className="text-sm font-medium">Compliance Training</p>
+                                        <p className="text-xs text-muted-foreground">10:00 AM - 11:00 AM • Required</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <div className="h-2 w-2 rounded-full bg-blue-500" />
                                     <div>
-                                        <p className="text-sm font-medium">UI Design Review</p>
-                                        <p className="text-xs text-muted-foreground">2:00 PM - 3:00 PM</p>
+                                        <p className="text-sm font-medium">Project Management Review</p>
+                                        <p className="text-xs text-muted-foreground">2:00 PM - 3:00 PM • Optional</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                                    <div className="h-2 w-2 rounded-full bg-primary" />
                                     <div>
-                                        <p className="text-sm font-medium">JavaScript Study Group</p>
-                                        <p className="text-xs text-muted-foreground">4:00 PM - 5:00 PM</p>
+                                        <p className="text-sm font-medium">Leadership Workshop</p>
+                                        <p className="text-xs text-muted-foreground">4:00 PM - 5:00 PM • Department</p>
                                     </div>
                                 </div>
                             </div>
@@ -256,9 +281,9 @@ const LearnerDashboard = () => {
                 {/* Learning Time - Row 3 */}
                 <Card className="md:col-span-4">
                     <CardHeader>
-                        <CardTitle>Learning Time</CardTitle>
+                        <CardTitle>Learning Activity</CardTitle>
                         <CardDescription>
-                            Daily learning activity
+                            Daily training completion
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -301,7 +326,7 @@ const LearnerDashboard = () => {
                         <div className="flex items-center justify-between">
                             <div>
                                 <CardTitle>Recent Activity</CardTitle>
-                                <CardDescription>Your latest learning activities</CardDescription>
+                                <CardDescription>Your latest training activities</CardDescription>
                             </div>
                             <Badge variant="outline">Last 24 hours</Badge>
                         </div>
@@ -311,7 +336,11 @@ const LearnerDashboard = () => {
                             {recentActivities.map((activity, index) => (
                                 <div key={index} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-2 w-2 rounded-full bg-primary" />
+                                        <div className={`h-2 w-2 rounded-full ${
+                                            activity.type === 'completion' ? 'bg-primary' :
+                                            activity.type === 'assessment' ? 'bg-blue-500' :
+                                            'bg-green-500'
+                                        }`} />
                                         <div>
                                             <p className="text-sm font-medium">{activity.course}</p>
                                             <p className="text-sm text-muted-foreground">{activity.action}</p>
@@ -329,8 +358,8 @@ const LearnerDashboard = () => {
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle>Leaderboard</CardTitle>
-                                <CardDescription>Top performers this month</CardDescription>
+                                <CardTitle>Department Rankings</CardTitle>
+                                <CardDescription>Top learners this quarter</CardDescription>
                             </div>
                             <Crown className="h-5 w-5 text-yellow-500" />
                         </div>
@@ -356,15 +385,15 @@ const LearnerDashboard = () => {
                                         </Avatar>
                                         <div>
                                             <p className="text-sm font-medium leading-none">{user.name}</p>
-                                            <p className="text-sm text-muted-foreground">{user.points} pts</p>
+                                            <p className="text-xs text-muted-foreground">{user.title} • {user.department}</p>
                                         </div>
                                     </div>
-                                    <Badge variant={
-                                        user.badge === 'Gold' ? 'default' :
-                                        user.badge === 'Silver' ? 'secondary' : 'outline'
-                                    } className="ml-2">
-                                        {user.badge}
-                                    </Badge>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm text-muted-foreground">{user.points} pts</span>
+                                        <Badge variant="secondary" className="ml-2">
+                                            {user.badge}
+                                        </Badge>
+                                    </div>
                                 </div>
                             ))}
                         </div>
