@@ -70,6 +70,7 @@ Route::middleware([
     Route::middleware(['auth', 'verified', 'role:learner'])->prefix('learner')->group(function () {
         Route::get('/dashboard', [LearnerDashboardController::class, 'index'])->name('learner.dashboard');
         Route::get('/courses', [LearnerCourseController::class, 'index'])->name('learner.courses');
+        Route::get('/courses/{id}', [LearnerCourseController::class, 'show'])->name('learner.courses.show');
         // TODO: Add other learner routes when controllers are created
     });
 

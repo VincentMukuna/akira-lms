@@ -27,6 +27,10 @@ interface Props {
 
 export default function AuthenticatedLayout({ children, header }: Props) {
     const renderHeader = () => {
+        if (!header) {
+            return null;
+        }
+
         if (typeof header === 'string') {
             return (
                 <div className="flex items-center">
