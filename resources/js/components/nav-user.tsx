@@ -64,7 +64,7 @@ export function NavUser() {
   }, [theme]);
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className="dark">
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
