@@ -1,12 +1,15 @@
 import { SearchFilter } from '@/components/filters/search-filter';
 import { SelectFilter } from '@/components/filters/select-filter';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Label } from '@/components/ui/label';
 import { FiltersProvider, useFilters } from '@/contexts/filters-context';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Head } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BookOpen, Clock, GraduationCap } from 'lucide-react';
+import { BookOpen, Clock, GraduationCap, SlidersHorizontal } from 'lucide-react';
 
 interface Course {
     id: string;
@@ -50,7 +53,7 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
     return (
         <motion.div
             layout="size"
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
             transition={{
                 duration: 0.15,
                 ease: "easeOut"
@@ -79,6 +82,7 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
                                 ease: "easeOut"
                             }
                         }}
+                        className="max-w-sm"
                     >
                         <Card className="group relative h-full overflow-hidden transition-all duration-200 hover:shadow-lg">
                             <motion.div
@@ -114,13 +118,13 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
                                 </motion.div>
                             </motion.div>
                             <CardHeader className="space-y-2 p-4">
-                                <CardTitle className="line-clamp-2 text-lg">{course.title}</CardTitle>
+                                <CardTitle className="line-clamp-2 text-base">{course.title}</CardTitle>
                                 <p className="line-clamp-2 text-sm text-muted-foreground">
                                     {course.description}
                                 </p>
                             </CardHeader>
                             <CardContent className="p-4 pt-0">
-                                <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                     <div className="flex items-center gap-1">
                                         <GraduationCap className="h-4 w-4" />
                                         <span>{course.modules_count} modules</span>
@@ -142,24 +146,81 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
 function CoursesFilters() {
     const { filters, updateFilter } = useFilters();
     
-    return (
-        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="flex-1 md:max-w-sm">
+    const filterContent = (
+        <div className="space-y-6">
+            <div className="space-y-2">
+                <Label>Search Courses</Label>
                 <SearchFilter
                     value={filters.search ?? ''}
                     onChange={(value) => updateFilter('search', value)}
                     placeholder="Search courses..."
-                    label="Search"
                 />
             </div>
-            <div className="w-full md:w-[200px]">
+            <div className="space-y-2">
+                <Label>Level</Label>
                 <SelectFilter
                     value={filters.level ?? ''}
                     onChange={(value) => updateFilter('level', value)}
                     options={levelOptions}
-                    label="Level"
                     placeholder="Filter by level"
                 />
+            </div>
+        </div>
+    );
+    
+    return (
+        <div className="mb-8 space-y-4">
+            {/* Mobile Search and Filters */}
+            <div className="flex items-center md:hidden">
+                <div className="flex-1">
+                    <SearchFilter
+                        value={filters.search ?? ''}
+                        onChange={(value) => updateFilter('search', value)}
+                        placeholder="Search courses..."
+                    />
+                </div>
+                <Drawer>
+                    <DrawerTrigger asChild>
+                        <Button 
+                            variant="ghost" 
+                            size="icon"
+                            className="ml-2"
+                        >
+                            <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
+                        </Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                        <div className="mx-auto w-full max-w-sm">
+                            <DrawerHeader>
+                                <DrawerTitle>Filter Courses</DrawerTitle>
+                            </DrawerHeader>
+                            <div className="px-4 pb-8">
+                                {filterContent}
+                            </div>
+                        </div>
+                    </DrawerContent>
+                </Drawer>
+            </div>
+
+            {/* Desktop Filters */}
+            <div className="hidden md:flex md:flex-row md:items-end md:gap-6">
+                <div className="flex-1 max-w-2xl">
+                    <SearchFilter
+                        value={filters.search ?? ''}
+                        onChange={(value) => updateFilter('search', value)}
+                        placeholder="Search courses..."
+                        label="Search"
+                    />
+                </div>
+                <div className="w-[200px]">
+                    <SelectFilter
+                        value={filters.level ?? ''}
+                        onChange={(value) => updateFilter('level', value)}
+                        options={levelOptions}
+                        label="Level"
+                        placeholder="Filter by level"
+                    />
+                </div>
             </div>
         </div>
     );
