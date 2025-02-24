@@ -52,29 +52,35 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
             layout="size"
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
             transition={{
-                duration: 0.4,
-                ease: [0.4, 0, 0.2, 1]
+                duration: 0.15,
+                ease: "easeOut"
             }}
         >
-            <AnimatePresence mode="popLayout" initial={false}>
+            <AnimatePresence mode="sync" initial={false}>
                 {courses.map((course, index) => (
                     <motion.div
                         layout="position"
                         key={course.id}
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
+                        exit={{ 
+                            opacity: 0,
+                            scale: 0.98,
+                            transition: {
+                                duration: 0.15,
+                                ease: "easeIn"
+                            }
+                        }}
                         transition={{
-                            opacity: { duration: 0.25, ease: "easeOut" },
-                            scale: { duration: 0.25, ease: "easeOut" },
+                            opacity: { duration: 0.2 },
+                            scale: { duration: 0.2 },
                             layout: {
-                                duration: 0.4,
-                                ease: [0.4, 0, 0.2, 1],
-                                delay: index * 0.05
+                                duration: 0.3,
+                                ease: "easeOut"
                             }
                         }}
                     >
-                        <Card className="group relative h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
+                        <Card className="group relative h-full overflow-hidden transition-all duration-200 hover:shadow-lg">
                             <motion.div
                                 whileHover={{ scale: 1.03 }}
                                 transition={{ 
@@ -88,7 +94,7 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
                                         <img
                                             src={course.cover_image}
                                             alt={course.title}
-                                            className="h-full w-full object-cover transition-transform duration-300"
+                                            className="h-full w-full object-cover transition-transform duration-200"
                                         />
                                     </div>
                                 ) : (
@@ -98,9 +104,9 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
                                 )}
                                 <motion.div 
                                     className="absolute right-3 top-3"
-                                    initial={{ opacity: 0, y: -10 }}
+                                    initial={{ opacity: 0, y: -5 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 }}
+                                    transition={{ duration: 0.2 }}
                                 >
                                     <Badge className={`${getLevelColor(course.level)} shadow-sm`} variant="secondary">
                                         {course.level}
