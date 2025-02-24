@@ -1,11 +1,11 @@
 import { SearchFilter } from '@/components/filters/search-filter';
 import { SelectFilter } from '@/components/filters/select-filter';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FiltersProvider, useFilters } from '@/contexts/filters-context';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Head } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 import { BookOpen, Clock, GraduationCap } from 'lucide-react';
 
 interface Course {
@@ -49,48 +49,58 @@ const getLevelColor = (level: Course['level']) => {
 function CoursesGrid({ courses }: { courses: Course[] }) {
     return (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {courses.map((course) => (
-                <Card key={course.id} className="overflow-hidden">
-                    {course.cover_image ? (
-                        <div className="aspect-video w-full overflow-hidden">
-                            <img
-                                src={course.cover_image}
-                                alt={course.title}
-                                className="h-full w-full object-cover"
-                            />
-                        </div>
-                    ) : (
-                        <div className="flex aspect-video w-full items-center justify-center bg-gray-100">
-                            <BookOpen className="h-12 w-12 text-gray-400" />
-                        </div>
-                    )}
-                    <CardHeader>
-                        <div className="flex items-start justify-between">
-                            <CardTitle className="line-clamp-2">{course.title}</CardTitle>
-                            <Badge className={getLevelColor(course.level)} variant="secondary">
-                                {course.level}
-                            </Badge>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="line-clamp-2 text-sm text-muted-foreground">
-                            {course.description}
-                        </p>
-                        <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                                <GraduationCap className="h-4 w-4" />
-                                <span>{course.modules_count} modules</span>
+            {courses.map((course, index) => (
+                <motion.div
+                    key={course.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                    <Card className="group relative overflow-hidden transition-all hover:shadow-lg">
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
+                            className="relative"
+                        >
+                            {course.cover_image ? (
+                                <div className="aspect-video w-full overflow-hidden">
+                                    <img
+                                        src={course.cover_image}
+                                        alt={course.title}
+                                        className="h-full w-full object-cover transition-transform"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="flex aspect-video w-full items-center justify-center bg-gray-50">
+                                    <BookOpen className="h-12 w-12 text-gray-300" />
+                                </div>
+                            )}
+                            <div className="absolute right-3 top-3">
+                                <Badge className={`${getLevelColor(course.level)} shadow-sm`} variant="secondary">
+                                    {course.level}
+                                </Badge>
                             </div>
-                            <div className="flex items-center gap-1">
-                                <Clock className="h-4 w-4" />
-                                <span>8 hours</span>
+                        </motion.div>
+                        <CardHeader className="space-y-2 p-4">
+                            <CardTitle className="line-clamp-2 text-lg">{course.title}</CardTitle>
+                            <p className="line-clamp-2 text-sm text-muted-foreground">
+                                {course.description}
+                            </p>
+                        </CardHeader>
+                        <CardContent className="p-4 pt-0">
+                            <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                    <GraduationCap className="h-4 w-4" />
+                                    <span>{course.modules_count} modules</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <Clock className="h-4 w-4" />
+                                    <span>8 hours</span>
+                                </div>
                             </div>
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button className="w-full">Enroll Now</Button>
-                    </CardFooter>
-                </Card>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             ))}
         </div>
     );
