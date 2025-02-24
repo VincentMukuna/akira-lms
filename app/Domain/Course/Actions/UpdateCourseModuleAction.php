@@ -14,7 +14,7 @@ class UpdateCourseModuleAction
         $module->update([
             'title' => $data->title,
             'type' => $data->type,
-            'content' => $data->content,
+            'data' => $data->data,
             'order' => $data->order,
         ]);
 
