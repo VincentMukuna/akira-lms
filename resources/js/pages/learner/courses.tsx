@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FiltersProvider, useFilters } from '@/contexts/filters-context';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Head } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, Clock, GraduationCap } from 'lucide-react';
 
 interface Course {
@@ -48,61 +48,88 @@ const getLevelColor = (level: Course['level']) => {
 
 function CoursesGrid({ courses }: { courses: Course[] }) {
     return (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {courses.map((course, index) => (
-                <motion.div
-                    key={course.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                    <Card className="group relative overflow-hidden transition-all hover:shadow-lg">
-                        <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
-                            className="relative"
-                        >
-                            {course.cover_image ? (
-                                <div className="aspect-video w-full overflow-hidden">
-                                    <img
-                                        src={course.cover_image}
-                                        alt={course.title}
-                                        className="h-full w-full object-cover transition-transform"
-                                    />
+        <motion.div
+            layout="size"
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            transition={{
+                duration: 0.4,
+                ease: [0.4, 0, 0.2, 1]
+            }}
+        >
+            <AnimatePresence mode="popLayout" initial={false}>
+                {courses.map((course, index) => (
+                    <motion.div
+                        layout="position"
+                        key={course.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{
+                            opacity: { duration: 0.25, ease: "easeOut" },
+                            scale: { duration: 0.25, ease: "easeOut" },
+                            layout: {
+                                duration: 0.4,
+                                ease: [0.4, 0, 0.2, 1],
+                                delay: index * 0.05
+                            }
+                        }}
+                    >
+                        <Card className="group relative h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
+                            <motion.div
+                                whileHover={{ scale: 1.03 }}
+                                transition={{ 
+                                    duration: 0.2,
+                                    ease: "easeOut"
+                                }}
+                                className="relative"
+                            >
+                                {course.cover_image ? (
+                                    <div className="aspect-video w-full overflow-hidden">
+                                        <img
+                                            src={course.cover_image}
+                                            alt={course.title}
+                                            className="h-full w-full object-cover transition-transform duration-300"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex aspect-video w-full items-center justify-center bg-gray-50/80">
+                                        <BookOpen className="h-12 w-12 text-gray-300" />
+                                    </div>
+                                )}
+                                <motion.div 
+                                    className="absolute right-3 top-3"
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                >
+                                    <Badge className={`${getLevelColor(course.level)} shadow-sm`} variant="secondary">
+                                        {course.level}
+                                    </Badge>
+                                </motion.div>
+                            </motion.div>
+                            <CardHeader className="space-y-2 p-4">
+                                <CardTitle className="line-clamp-2 text-lg">{course.title}</CardTitle>
+                                <p className="line-clamp-2 text-sm text-muted-foreground">
+                                    {course.description}
+                                </p>
+                            </CardHeader>
+                            <CardContent className="p-4 pt-0">
+                                <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
+                                    <div className="flex items-center gap-1">
+                                        <GraduationCap className="h-4 w-4" />
+                                        <span>{course.modules_count} modules</span>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <Clock className="h-4 w-4" />
+                                        <span>8 hours</span>
+                                    </div>
                                 </div>
-                            ) : (
-                                <div className="flex aspect-video w-full items-center justify-center bg-gray-50">
-                                    <BookOpen className="h-12 w-12 text-gray-300" />
-                                </div>
-                            )}
-                            <div className="absolute right-3 top-3">
-                                <Badge className={`${getLevelColor(course.level)} shadow-sm`} variant="secondary">
-                                    {course.level}
-                                </Badge>
-                            </div>
-                        </motion.div>
-                        <CardHeader className="space-y-2 p-4">
-                            <CardTitle className="line-clamp-2 text-lg">{course.title}</CardTitle>
-                            <p className="line-clamp-2 text-sm text-muted-foreground">
-                                {course.description}
-                            </p>
-                        </CardHeader>
-                        <CardContent className="p-4 pt-0">
-                            <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                    <GraduationCap className="h-4 w-4" />
-                                    <span>{course.modules_count} modules</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Clock className="h-4 w-4" />
-                                    <span>8 hours</span>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            ))}
-        </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                ))}
+            </AnimatePresence>
+        </motion.div>
     );
 }
 
