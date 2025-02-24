@@ -206,23 +206,25 @@ function CoursesFilters() {
             </div>
 
             {/* Desktop Filters */}
-            <div className="hidden md:flex md:flex-row md:items-end md:gap-6">
-                <div className="flex-1 max-w-2xl">
-                    <SearchFilter
-                        value={filters.search ?? ''}
-                        onChange={(value) => updateFilter('search', value)}
-                        placeholder="Search courses..."
-                        label="Search"
-                    />
-                </div>
-                <div className="w-[200px]">
-                    <SelectFilter
-                        value={filters.level ?? ''}
-                        onChange={(value) => updateFilter('level', value)}
-                        options={levelOptions}
-                        label="Level"
-                        placeholder="Filter by level"
-                    />
+            <div className="hidden md:flex md:justify-end">
+                <div className="flex items-end gap-6">
+                    <div className="w-[300px]">
+                        <SearchFilter
+                            value={filters.search ?? ''}
+                            onChange={(value) => updateFilter('search', value)}
+                            placeholder="Search courses..."
+                            label="Search"
+                        />
+                    </div>
+                    <div className="w-[200px]">
+                        <SelectFilter
+                            value={filters.level ?? ''}
+                            onChange={(value) => updateFilter('level', value)}
+                            options={levelOptions}
+                            label="Level"
+                            placeholder="Filter by level"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
