@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Users\Filters;
+namespace App\Domain\Shared\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;

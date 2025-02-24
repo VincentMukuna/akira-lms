@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Users\Filters;
+namespace App\Domain\Course\Filters;
 
 use App\Domain\Shared\Filters\AbstractFilter;
 use Closure;
@@ -14,8 +14,8 @@ class SearchFilter extends AbstractFilter
             $searchTerm = $this->request->get('search');
 
             $query->where(function (Builder $query) use ($searchTerm) {
-                $query->where('name', 'like', "%{$searchTerm}%")
-                    ->orWhere('email', 'like', "%{$searchTerm}%");
+                $query->where('title', 'like', "%{$searchTerm}%")
+                    ->orWhere('description', 'like', "%{$searchTerm}%");
             });
         }
 
@@ -26,4 +26,4 @@ class SearchFilter extends AbstractFilter
     {
         return $this->parameterExists('search');
     }
-}
+} 

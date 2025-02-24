@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Course\CourseController;
+use App\Http\Controllers\Course\LearnerCourseController;
 use App\Http\Controllers\Course\ModuleController;
 use App\Http\Controllers\Course\ModuleOrderController;
 use App\Http\Controllers\Course\ModuleReorderController;
@@ -68,6 +69,7 @@ Route::middleware([
     // Learner Routes
     Route::middleware(['auth', 'verified', 'role:learner'])->prefix('learner')->group(function () {
         Route::get('/dashboard', [LearnerDashboardController::class, 'index'])->name('learner.dashboard');
+        Route::get('/courses', [LearnerCourseController::class, 'index'])->name('learner.courses');
         // TODO: Add other learner routes when controllers are created
     });
 
@@ -143,7 +145,8 @@ Route::middleware([
         Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
         Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
         Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
-        Route::put('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+        Route::post('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+        Route::delete('/courses/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
         Route::get('/courses/{id}/builder', [CourseController::class, 'builder'])->name('courses.builder');
         Route::get('/courses/{id}/content', [CourseController::class, 'content'])->name('courses.content');
 

@@ -37,7 +37,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function get(): Builder
+    public function build(): Builder
     {
         return app(Pipeline::class)
             ->send($this->query)

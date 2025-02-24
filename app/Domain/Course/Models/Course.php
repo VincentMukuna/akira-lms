@@ -9,10 +9,12 @@ use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Course extends Model
+class Course extends Model implements HasMedia
 {
-    use HasUuid;
+    use HasUuid, InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -43,8 +45,14 @@ class Course extends Model
         )->orderBy('order');
     }
 
-    public function newEloquentBuilder($query): CourseQueryBuilder
+    public function registerMediaCollections(): void
     {
-        return new CourseQueryBuilder($query);
+        $this->addMediaCollection('cover')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
+    }
+
+    public function getCoverAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('cover');
     }
 }

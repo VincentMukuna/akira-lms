@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Users;
 
-use App\Data\UserData;
 use App\Domain\Shared\QueryBuilder;
+use App\Domain\Users\Data\UserData;
 use App\Domain\Users\Filters\DateRangeFilter;
 use App\Domain\Users\Filters\RoleFilter;
 use App\Domain\Users\Filters\SearchFilter;
@@ -24,7 +24,7 @@ class UserController extends Controller
                 RoleFilter::class,
                 DateRangeFilter::class,
             ])
-            ->get()
+            ->build()
             ->with('roles')
             ->latest()
             ->paginate(10);

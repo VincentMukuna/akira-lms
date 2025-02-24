@@ -7,11 +7,11 @@ namespace App\Domain\Course\Actions;
 use App\Domain\Course\Data\CourseData;
 use App\Domain\Course\Models\Course;
 
-class CreateCourseAction
+class UpdateCourseAction
 {
-    public function execute(CourseData $data): Course
+    public function execute(Course $course, CourseData $data): Course
     {
-        $course = Course::create([
+        $course->update([
             'title' => $data->title,
             'description' => $data->description,
             'learning_objectives' => $data->learning_objectives,
@@ -20,10 +20,14 @@ class CreateCourseAction
         ]);
 
         if ($data->cover_image) {
+            // Delete old cover image if it exists
+            $course->clearMediaCollection('cover');
+            
+            // Add new cover image
             $course->addMedia($data->cover_image)
                 ->toMediaCollection('cover');
         }
 
-        return $course;
+        return $course->fresh();
     }
-}
+} 

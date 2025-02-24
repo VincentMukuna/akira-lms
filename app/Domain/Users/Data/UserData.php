@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Data;
+namespace App\Domain\Users\Data;
 
 use App\Models\User;
 use Illuminate\Support\Carbon;

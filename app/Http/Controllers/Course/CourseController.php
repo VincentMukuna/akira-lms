@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Course;
 
 use App\Domain\Course\Actions\CreateCourseAction;
+use App\Domain\Course\Actions\DeleteCourseAction;
+use App\Domain\Course\Actions\UpdateCourseAction;
 use App\Domain\Course\Data\CourseData;
 use App\Domain\Course\Models\Course;
 use App\Http\Controllers\Controller;
@@ -17,6 +19,8 @@ class CourseController extends Controller
 {
     public function __construct(
         private readonly CreateCourseAction $createCourseAction,
+        private readonly UpdateCourseAction $updateCourseAction,
+        private readonly DeleteCourseAction $deleteCourseAction,
     ) {}
 
     public function index(): Response
@@ -39,6 +43,7 @@ class CourseController extends Controller
                 'status' => $course->is_published ? 'published' : 'draft',
                 'modules_count' => $course->modules_count,
                 'created_at' => $course->created_at->format('Y-m-d'),
+                'cover_image' => $course->cover,
             ]);
 
         return Inertia::render('Courses/Index', [
@@ -59,6 +64,7 @@ class CourseController extends Controller
             'learning_objectives' => ['required', 'string'],
             'level' => ['required', 'string', 'in:beginner,intermediate,advanced'],
             'is_published' => ['boolean'],
+            'cover_image' => ['nullable', 'file', 'image', 'mimes:jpeg,png,webp', 'max:5120'],
         ]);
 
         $course = $this->createCourseAction->execute(
@@ -82,6 +88,7 @@ class CourseController extends Controller
                 'learning_objectives' => $course->learning_objectives,
                 'level' => $course->level,
                 'is_published' => $course->is_published,
+                'cover_image' => $course->cover,
             ],
         ]);
     }
@@ -94,14 +101,13 @@ class CourseController extends Controller
             'learning_objectives' => ['required', 'string'],
             'level' => ['required', 'string', 'in:beginner,intermediate,advanced'],
             'is_published' => ['boolean'],
+            'cover_image' => ['nullable', 'file', 'image', 'mimes:jpeg,png,webp', 'max:5120'],
         ]);
 
         $course = Course::findOrFail($id);
-        $course->update($validated);
+        $this->updateCourseAction->execute($course, CourseData::from($validated));
 
-        return redirect()->route('courses.builder', [
-            'id' => $course->id,
-        ])->with('success', 'Course updated successfully.');
+        return back()->with('success', 'Course updated successfully.');
     }
 
     public function builder(string $id): Response
@@ -151,5 +157,14 @@ class CourseController extends Controller
         ];
 
         return response()->json($content);
+    }
+
+    public function destroy(string $id): RedirectResponse
+    {
+        $course = Course::findOrFail($id);
+        $this->deleteCourseAction->execute($course);
+
+        return redirect()->route('courses.index')
+            ->with('success', 'Course deleted successfully.');
     }
 }

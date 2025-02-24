@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Domain\Users\Filters;
+namespace App\Domain\Course\Filters;
 
 use App\Domain\Shared\Filters\AbstractFilter;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
-class RoleFilter extends AbstractFilter
+class LevelFilter extends AbstractFilter
 {
     public function handle(Builder $query, Closure $next): Builder
     {
         if ($this->qualifies()) {
-            $role = $this->request->get('role');
-
-            $query->whereHas('roles', function (Builder $query) use ($role) {
-                $query->where('name', $role);
-            });
+            $level = $this->request->get('level');
+            $query->where('level', $level);
         }
 
         return $next($query);
@@ -23,6 +20,6 @@ class RoleFilter extends AbstractFilter
 
     public function qualifies(): bool
     {
-        return $this->parameterExists('role');
+        return $this->parameterExists('level');
     }
-}
+} 
