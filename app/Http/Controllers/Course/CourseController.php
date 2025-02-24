@@ -107,9 +107,7 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
         $this->updateCourseAction->execute($course, CourseData::from($validated));
 
-        return redirect()->route('courses.builder', [
-            'id' => $course->id,
-        ])->with('success', 'Course updated successfully.');
+        return back()->with('success', 'Course updated successfully.');
     }
 
     public function builder(string $id): Response
