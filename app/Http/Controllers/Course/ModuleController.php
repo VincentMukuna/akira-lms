@@ -19,7 +19,7 @@ class ModuleController extends Controller
 
     public function store(Request $request)
     {
-        $data = CreateModuleData::from($request->input());
+        $data = CreateModuleData::from($request->all());
 
         $module = $this->createModule->execute($data);
 
@@ -28,7 +28,7 @@ class ModuleController extends Controller
 
     public function update(Request $request, CourseModule $module)
     {
-        $data = ModuleUpdateData::from($request->input());
+        $data = ModuleUpdateData::from($request->all());
         $module = $this->updateModule->execute($module, $data);
 
         return response()->json($module);

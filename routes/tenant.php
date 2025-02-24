@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Course\CourseController;
+use App\Http\Controllers\Course\LearnerCourseController;
 use App\Http\Controllers\Course\ModuleController;
 use App\Http\Controllers\Course\ModuleOrderController;
 use App\Http\Controllers\Course\ModuleReorderController;
@@ -68,6 +69,7 @@ Route::middleware([
     // Learner Routes
     Route::middleware(['auth', 'verified', 'role:learner'])->prefix('learner')->group(function () {
         Route::get('/dashboard', [LearnerDashboardController::class, 'index'])->name('learner.dashboard');
+        Route::get('/courses', [LearnerCourseController::class, 'index'])->name('learner.courses');
         // TODO: Add other learner routes when controllers are created
     });
 

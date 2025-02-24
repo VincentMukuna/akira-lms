@@ -45,11 +45,6 @@ class Course extends Model implements HasMedia
         )->orderBy('order');
     }
 
-    public function newEloquentBuilder($query): CourseQueryBuilder
-    {
-        return new CourseQueryBuilder($query);
-    }
-
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('cover')
