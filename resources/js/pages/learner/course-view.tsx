@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Head } from '@inertiajs/react';
-import { BookOpen, CheckCircle2, Clock, FileText, GraduationCap, PlayCircle } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, GraduationCap, PlayCircle } from 'lucide-react';
 
 interface Module {
     id: string;
@@ -52,30 +52,49 @@ function CourseView({ course }: Props) {
         <>
             <Head title={course.title} />
 
-            <div className="container py-8">
+            {/* Course Header with Background */}
+            <div className="relative mb-8 -mx-6 p-4">
+                <div className="absolute inset-0 h-[250px]">
+                    {course.cover_image ? (
+                        <>
+                            <img
+                                src={course.cover_image}
+                                alt=""
+                                className="h-full w-full object-cover opacity-75"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-b from-background/40 to-background" />
+                        </>
+                    ) : (
+                        <div className="h-full w-full bg-gradient-to-b from-muted/50 to-background" />
+                    )}
+                </div>
+
+                <div className="container relative py-12">
+                    <div className="space-y-4">
+                        <h1 className="text-3xl font-bold tracking-tight">{course.title}</h1>
+                        <p className="text-lg text-muted-foreground">{course.description}</p>
+                        
+                        <div className="flex items-center gap-4">
+                            <Badge variant="secondary" className="text-sm">
+                                {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
+                            </Badge>
+                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                <GraduationCap className="h-4 w-4" />
+                                <span>{totalModules} modules</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                <Clock className="h-4 w-4" />
+                                <span>8 hours</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="container">
                 <div className="grid gap-6 md:grid-cols-3">
                     {/* Main Content */}
                     <div className="md:col-span-2 space-y-6">
-                        {/* Course Header */}
-                        <div className="space-y-4">
-                            <h1 className="text-3xl font-bold tracking-tight">{course.title}</h1>
-                            <p className="text-lg text-muted-foreground">{course.description}</p>
-                            
-                            <div className="flex items-center gap-4">
-                                <Badge variant="secondary" className="text-sm">
-                                    {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
-                                </Badge>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                    <GraduationCap className="h-4 w-4" />
-                                    <span>{totalModules} modules</span>
-                                </div>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                    <Clock className="h-4 w-4" />
-                                    <span>8 hours</span>
-                                </div>
-                            </div>
-                        </div>
-
                         {/* Course Progress */}
                         <Card>
                             <CardHeader className="space-y-1">
@@ -118,20 +137,7 @@ function CourseView({ course }: Props) {
 
                     {/* Sidebar */}
                     <div className="space-y-6">
-                        {/* Course Image */}
-                        {course.cover_image ? (
-                            <div className="aspect-video overflow-hidden rounded-lg border">
-                                <img
-                                    src={course.cover_image}
-                                    alt={course.title}
-                                    className="h-full w-full object-cover"
-                                />
-                            </div>
-                        ) : (
-                            <div className="aspect-video flex items-center justify-center rounded-lg border bg-muted">
-                                <BookOpen className="h-12 w-12 text-muted-foreground" />
-                            </div>
-                        )}
+                       
 
                         {/* Learning Objectives */}
                         <Card>
@@ -156,19 +162,19 @@ function CourseView({ course }: Props) {
     );
 }
 
-CourseView.layout = (page: React.ReactNode) => {
-    return (
-        <AuthenticatedLayout header={
-            {
-                items: [
-                    {
-                        label: 'Courses',
-                        href: route('learner.courses')
-                    },
-                ]
-            }
-        }>{page}</AuthenticatedLayout>
-    );
-}
+CourseView.layout = (page: React.ReactNode) => (
+    <AuthenticatedLayout
+        header={{
+            items: [
+                {
+                    label: 'Courses',
+                    href: route('learner.courses'),
+                },
+            ],
+        }}
+    >
+        {page}
+    </AuthenticatedLayout>
+);
 
 export default CourseView; 
