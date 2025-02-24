@@ -53,7 +53,7 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
     return (
         <motion.div
             layout="size"
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+            className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
             transition={{
                 duration: 0.15,
                 ease: "easeOut"
@@ -103,34 +103,37 @@ function CoursesGrid({ courses }: { courses: Course[] }) {
                                     </div>
                                 ) : (
                                     <div className="flex aspect-video w-full items-center justify-center bg-gray-50/80">
-                                        <BookOpen className="h-12 w-12 text-gray-300" />
+                                        <BookOpen className="h-8 w-8 text-gray-300 sm:h-12 sm:w-12" />
                                     </div>
                                 )}
                                 <motion.div 
-                                    className="absolute right-3 top-3"
+                                    className="absolute right-2 top-2 sm:right-3 sm:top-3"
                                     initial={{ opacity: 0, y: -5 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.2 }}
                                 >
-                                    <Badge className={`${getLevelColor(course.level)} shadow-sm`} variant="secondary">
+                                    <Badge 
+                                        className={`${getLevelColor(course.level)} text-xs shadow-sm sm:text-sm`} 
+                                        variant="secondary"
+                                    >
                                         {course.level}
                                     </Badge>
                                 </motion.div>
                             </motion.div>
-                            <CardHeader className="space-y-2 p-4">
-                                <CardTitle className="line-clamp-2 text-base">{course.title}</CardTitle>
-                                <p className="line-clamp-2 text-sm text-muted-foreground">
+                            <CardHeader className="space-y-1.5 p-3 sm:space-y-2 sm:p-4">
+                                <CardTitle className="line-clamp-2 text-sm font-medium sm:text-base">{course.title}</CardTitle>
+                                <p className="line-clamp-2 text-xs text-muted-foreground sm:text-sm">
                                     {course.description}
                                 </p>
                             </CardHeader>
-                            <CardContent className="p-4 pt-0">
-                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <CardContent className="p-3 pt-0 sm:p-4 sm:pt-0">
+                                <div className="flex items-center gap-3 text-xs text-muted-foreground sm:gap-4 sm:text-sm">
                                     <div className="flex items-center gap-1">
-                                        <GraduationCap className="h-4 w-4" />
+                                        <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                         <span>{course.modules_count} modules</span>
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        <Clock className="h-4 w-4" />
+                                        <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                                         <span>8 hours</span>
                                     </div>
                                 </div>
