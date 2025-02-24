@@ -2,6 +2,7 @@
 
 namespace App\Domain\Users\Filters;
 
+use App\Domain\Shared\Filters\AbstractFilter;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
