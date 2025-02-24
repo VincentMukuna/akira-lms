@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Link, router } from '@inertiajs/react';
-import { BookIcon, MoreVerticalIcon, PlusIcon } from 'lucide-react';
+import { ImageIcon, MoreVerticalIcon, PlusIcon } from 'lucide-react';
 import React from 'react';
 import { toast } from 'sonner';
 
@@ -93,7 +93,7 @@ function CoursesIndex({ courses }: Props) {
                                             </div>
                                         ) : (
                                             <div className="flex h-16 w-24 items-center justify-center rounded-md border bg-muted">
-                                                <BookIcon className="h-8 w-8 text-muted-foreground" />
+                                                <ImageIcon className="h-8 w-8 text-muted-foreground" />
                                             </div>
                                         )}
                                         <div>
