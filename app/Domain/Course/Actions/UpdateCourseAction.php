@@ -19,11 +19,13 @@ class UpdateCourseAction
             'is_published' => $data->is_published,
         ]);
 
-        if ($data->cover_image) {
-            // Delete old cover image if it exists
+        // Handle cover image
+        if ($data->cover_image === null) {
+            // If cover_image is explicitly set to null, remove the existing cover image
             $course->clearMediaCollection('cover');
-            
-            // Add new cover image
+        } elseif ($data->cover_image) {
+            // If a new cover image is provided, replace the existing one
+            $course->clearMediaCollection('cover');
             $course->addMedia($data->cover_image)
                 ->toMediaCollection('cover');
         }

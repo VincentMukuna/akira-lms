@@ -16,10 +16,12 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { useImageUpload } from '@/hooks/use-image-upload';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
+import { cn } from '@/lib/utils';
 import { useForm } from '@inertiajs/react';
-import { ImageIcon, Loader2 } from 'lucide-react';
-import React from 'react';
+import { ImagePlus, Loader2, Trash2, Upload, X } from 'lucide-react';
+import React, { useCallback, useState } from 'react';
 
 type FormData = {
     [K in 'title' | 'description' | 'learning_objectives' | 'level' | 'is_published' | 'cover_image']: K extends 'level' 
@@ -32,6 +34,23 @@ type FormData = {
 }
 
 function CreateCourse() {
+    const [isDragging, setIsDragging] = useState(false);
+
+    const {
+        previewUrl,
+        fileName,
+        fileInputRef,
+        handleThumbnailClick,
+        handleFileChange,
+        handleRemove,
+    } = useImageUpload({
+        onUpload: (url) => {
+            if (fileInputRef.current?.files?.[0]) {
+                setData('cover_image', fileInputRef.current.files[0]);
+            }
+        },
+    });
+
     const { data, setData, post, processing, errors } = useForm<FormData>({
         title: '',
         description: '',
@@ -45,6 +64,43 @@ function CreateCourse() {
         e.preventDefault();
         post(route(`courses.store`));
     };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = useCallback(
+        (e: React.DragEvent<HTMLDivElement>) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setIsDragging(false);
+
+            const file = e.dataTransfer.files?.[0];
+            if (file && file.type.startsWith("image/")) {
+                const input = fileInputRef.current;
+                if (input) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    input.files = dataTransfer.files;
+                    handleFileChange({ target: input } as React.ChangeEvent<HTMLInputElement>);
+                }
+            }
+        },
+        [handleFileChange],
+    );
 
     return (
         <form onSubmit={onSubmit} className="space-y-6">
@@ -71,33 +127,98 @@ function CreateCourse() {
                         )}
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                         <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                             Cover Image
                         </label>
-                        <div className="flex items-center gap-4">
-                            <Input
-                                type="file"
-                                accept="image/jpeg,image/png,image/webp"
-                                onChange={e => setData('cover_image', e.target.files?.[0] || null)}
-                                disabled={processing}
-                                className="w-full"
-                            />
-                            {data.cover_image && (
-                                <div className="relative h-20 w-20 overflow-hidden rounded-md border">
+                        <Input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            disabled={processing}
+                        />
+
+                        {!previewUrl ? (
+                            <div
+                                onClick={handleThumbnailClick}
+                                onDragOver={handleDragOver}
+                                onDragEnter={handleDragEnter}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                className={cn(
+                                    "flex h-64 cursor-pointer flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 transition-colors hover:bg-muted",
+                                    isDragging && "border-primary/50 bg-primary/5",
+                                    processing && "opacity-50 cursor-not-allowed"
+                                )}
+                            >
+                                <div className="rounded-full bg-background p-3 shadow-sm">
+                                    <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-sm font-medium">Click to select</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        or drag and drop file here
+                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-2">
+                                        Recommended size: 1280x720. Max file size: 5MB.
+                                        Supported formats: JPEG, PNG, WebP.
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="relative">
+                                <div className="group relative h-64 overflow-hidden rounded-lg border">
                                     <img
-                                        src={URL.createObjectURL(data.cover_image)}
-                                        alt="Cover preview"
-                                        className="h-full w-full object-cover"
+                                        src={previewUrl}
+                                        alt="Course cover"
+                                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                     />
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
+                                    <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+                                        <Button
+                                            size="sm"
+                                            variant="secondary"
+                                            onClick={handleThumbnailClick}
+                                            className="h-9 w-9 p-0"
+                                            disabled={processing}
+                                        >
+                                            <Upload className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="destructive"
+                                            onClick={() => {
+                                                handleRemove();
+                                                setData('cover_image', null);
+                                            }}
+                                            className="h-9 w-9 p-0"
+                                            disabled={processing}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </div>
-                            )}
-                            {!data.cover_image && (
-                                <div className="flex h-20 w-20 items-center justify-center rounded-md border bg-muted">
-                                    <ImageIcon className="h-8 w-8 text-muted-foreground" />
-                                </div>
-                            )}
-                        </div>
+                                {fileName && (
+                                    <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                                        <span className="truncate">{fileName}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                handleRemove();
+                                                setData('cover_image', null);
+                                            }}
+                                            className="ml-auto rounded-full p-1 hover:bg-muted"
+                                            disabled={processing}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {errors.cover_image && (
                             <p className="text-sm font-medium text-destructive">{errors.cover_image}</p>
                         )}
