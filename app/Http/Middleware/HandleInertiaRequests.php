@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
                 'info' => session('info'),
                 'message' => session('message'),
             ],
+            'registration' => fn () => $request->session()->get('workspace_registration'),
         ];
     }
 }

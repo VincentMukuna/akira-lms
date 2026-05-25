@@ -1,24 +1,47 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import GuestLayout from '@/layouts/guest-layout';
 import { authLinkClassName, cn } from '@/lib/utils';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { PageProps } from '@/types';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useCallback, useState } from 'react';
 
 export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { registration } = usePage<
+        PageProps<{
+            registration?: {
+                email: string;
+            };
+        }>
+    >().props;
+
+    const { data, setData, post, processing, errors } = useForm({
         company_name: '',
         subdomain: '',
         admin_email: '',
     });
 
+    const emailCorrectionForm = useForm({
+        admin_email: registration?.email ?? '',
+    });
+
     const [subdomainAvailable, setSubdomainAvailable] = useState<boolean | null>(null);
     const [checking, setChecking] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+    const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+
+    const displayEmail = registration?.email ?? '';
 
     const checkSubdomainAvailability = useCallback(async (subdomain: string) => {
         if (!subdomain) {
@@ -41,9 +64,7 @@ export default function Register() {
 
     const debouncedCheck = useDebouncedCallback(checkSubdomainAvailability);
 
-    // Handle subdomain change
     const handleSubdomainChange = (value: string) => {
-        // Convert to lowercase and remove special characters
         const sanitized = value.toLowerCase().replace(/[^a-z0-9-]/g, '');
         setData('subdomain', sanitized);
         debouncedCheck(sanitized);
@@ -52,14 +73,33 @@ export default function Register() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('register.workspace'), {
+            preserveScroll: true,
+        });
+    };
+
+    const handleOpenEmailDialog = () => {
+        emailCorrectionForm.setData('admin_email', displayEmail);
+        emailCorrectionForm.clearErrors();
+        setEmailDialogOpen(true);
+    };
+
+    const handleCloseEmailDialog = () => {
+        emailCorrectionForm.clearErrors();
+        emailCorrectionForm.setData('admin_email', displayEmail);
+        setEmailDialogOpen(false);
+    };
+
+    const handleSaveEmail: FormEventHandler = (e) => {
+        e.preventDefault();
+        emailCorrectionForm.patch(route('register.workspace.admin-email'), {
+            preserveScroll: true,
             onSuccess: () => {
-                setSubmitted(true);
-                reset();
+                setEmailDialogOpen(false);
             },
         });
     };
 
-    if (submitted) {
+    if (registration) {
         return (
             <GuestLayout>
                 <Head title="Registration Successful" />
@@ -67,10 +107,87 @@ export default function Register() {
                 <Card className="w-full max-w-xl">
                     <CardHeader>
                         <CardTitle>Workspace Created Successfully! 🎉</CardTitle>
-                        <CardDescription>
-                            We've sent setup instructions to {data.admin_email}
+                        <CardDescription className="space-y-1">
+                            <span>
+                                We&apos;ve sent setup instructions to{' '}
+                                <span className="text-foreground">{displayEmail}</span>.
+                            </span>
+                            <button
+                                type="button"
+                                onClick={handleOpenEmailDialog}
+                                className="block text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                            >
+                                Wrong email?
+                            </button>
                         </CardDescription>
                     </CardHeader>
+
+                    <Dialog
+                        open={emailDialogOpen}
+                        onOpenChange={(open) => {
+                            if (!open) {
+                                emailCorrectionForm.clearErrors();
+                                emailCorrectionForm.setData('admin_email', displayEmail);
+                            }
+                            setEmailDialogOpen(open);
+                        }}
+                    >
+                        <DialogContent
+                            className="sm:max-w-md"
+                            onInteractOutside={(e) => {
+                                if (emailCorrectionForm.processing) {
+                                    e.preventDefault();
+                                }
+                            }}
+                        >
+                            <form onSubmit={handleSaveEmail}>
+                                <DialogHeader>
+                                    <DialogTitle>Update admin email</DialogTitle>
+                                    <DialogDescription>
+                                        We&apos;ll send a new setup link to the corrected address.
+                                        The previous link will no longer work.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="py-4 space-y-2">
+                                    <Label htmlFor="corrected_admin_email">Admin email</Label>
+                                    <Input
+                                        id="corrected_admin_email"
+                                        type="email"
+                                        value={emailCorrectionForm.data.admin_email}
+                                        onChange={(e) =>
+                                            emailCorrectionForm.setData(
+                                                'admin_email',
+                                                e.target.value,
+                                            )
+                                        }
+                                        required
+                                        autoFocus
+                                    />
+                                    {emailCorrectionForm.errors.admin_email && (
+                                        <p className="text-sm text-red-500">
+                                            {emailCorrectionForm.errors.admin_email}
+                                        </p>
+                                    )}
+                                </div>
+                                <DialogFooter>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={handleCloseEmailDialog}
+                                        disabled={emailCorrectionForm.processing}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        disabled={emailCorrectionForm.processing}
+                                    >
+                                        Resend email
+                                    </Button>
+                                </DialogFooter>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
 
                     <CardContent className="space-y-4">
                         <p className="text-sm text-muted-foreground">
@@ -88,14 +205,9 @@ export default function Register() {
                             </ol>
                         </div>
 
-                        <div className="flex flex-col gap-4">
-                            <Button variant="outline" onClick={() => setSubmitted(false)}>
-                                Register Another Workspace
-                            </Button>
-                            <Link href={route('home')} className={cn(authLinkClassName, 'self-center')}>
-                                Back to Homepage
-                            </Link>
-                        </div>
+                        <Link href={route('home')} className={cn(authLinkClassName, 'self-center block text-center')}>
+                            Back to Homepage
+                        </Link>
                     </CardContent>
                 </Card>
             </GuestLayout>

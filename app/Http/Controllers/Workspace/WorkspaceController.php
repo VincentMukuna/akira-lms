@@ -6,6 +6,7 @@ use App\Domain\Workspace\Actions\CreateWorkspaceAction;
 use App\Domain\Workspace\Data\WorkspaceCreateData;
 use App\Domain\Workspace\Notifications\WorkspaceCreated;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +18,7 @@ class WorkspaceController extends Controller
         return Inertia::render('auth/register');
     }
 
-    public function store(WorkspaceCreateData $data, CreateWorkspaceAction $action): Response
+    public function store(WorkspaceCreateData $data, CreateWorkspaceAction $action): RedirectResponse
     {
         $result = $action->execute($data);
 
@@ -29,9 +30,13 @@ class WorkspaceController extends Controller
                 $result['setup_token']
             ));
 
-        return Inertia::render('auth/register', [
-            'status' => 'success',
-            'email' => $data->admin_email,
+        session([
+            'workspace_email_correction_tenant_id' => $result['tenant']->id,
+            'workspace_registration' => [
+                'email' => $data->admin_email,
+            ],
         ]);
+
+        return redirect()->route('register');
     }
 }

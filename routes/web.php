@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Workspace\CheckSubdomainController;
 use App\Http\Controllers\Workspace\TenantAccessController;
+use App\Http\Controllers\Workspace\UpdateWorkspaceAdminEmailController;
 use App\Http\Controllers\Workspace\WorkspaceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,10 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [WorkspaceController::class, 'store'])
         ->name('register.workspace');
+
+    Route::patch('register/admin-email', [UpdateWorkspaceAdminEmailController::class, 'update'])
+        ->middleware('throttle:5,1')
+        ->name('register.workspace.admin-email');
 
     Route::get('check-subdomain/{subdomain}', CheckSubdomainController::class)
         ->middleware('throttle:6,1')
