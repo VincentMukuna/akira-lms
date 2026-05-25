@@ -4,6 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import GuestLayout from '@/layouts/guest-layout';
+import { authLinkClassName, cn } from '@/lib/utils';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -93,19 +94,18 @@ export default function Login({
                             </Label>
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col gap-4">
+                            <Button type="submit" disabled={processing}>
+                                Log in
+                            </Button>
                             {canResetPassword && (
                                 <Link
                                     href={route('password.request')}
-                                    className="text-sm text-primary underline hover:text-primary/90"
+                                    className={cn(authLinkClassName, 'self-center')}
                                 >
                                     Forgot your password?
                                 </Link>
                             )}
-
-                            <Button type="submit" disabled={processing}>
-                                Log in
-                            </Button>
                         </div>
                     </form>
                 </CardContent>

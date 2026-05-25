@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import GuestLayout from '@/layouts/guest-layout';
+import { authLinkClassName, cn } from '@/lib/utils';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -36,16 +37,15 @@ export default function VerifyEmail({ status }: { status?: string }) {
                     )}
 
                     <form onSubmit={submit} className="space-y-4">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col gap-4">
                             <Button type="submit" disabled={processing}>
                                 Resend Verification Email
                             </Button>
-
                             <Link
                                 href={route('logout')}
                                 method="post"
                                 as="button"
-                                className="text-sm text-primary underline hover:text-primary/90"
+                                className={cn(authLinkClassName, 'self-center')}
                             >
                                 Log Out
                             </Link>

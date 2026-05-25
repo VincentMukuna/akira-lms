@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCountdown } from '@/hooks/use-countdown';
 import GuestLayout from '@/layouts/guest-layout';
+import { authLinkClassName } from '@/lib/utils';
 import { Link, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { GraduationCap } from 'lucide-react';
@@ -182,11 +183,11 @@ export default function Access() {
                         </Button>
                     </form>
                 </CardContent>
-                <div className="px-6 pb-6 text-center text-sm text-muted-foreground">
-                    Don't have a workspace yet?{' '}
+                <div className="px-6 pb-6 text-center text-sm">
+                    <span className="text-muted-foreground">Don't have a workspace yet? </span>
                     <Link
                         href={route('register')}
-                        className="font-medium text-primary hover:underline"
+                        className={authLinkClassName}
                     >
                         Create your workspace
                     </Link>

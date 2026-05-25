@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback';
 import GuestLayout from '@/layouts/guest-layout';
+import { authLinkClassName, cn } from '@/lib/utils';
 import { Head, Link, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { FormEventHandler, useCallback, useState } from 'react';
@@ -87,14 +88,11 @@ export default function Register() {
                             </ol>
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col gap-4">
                             <Button variant="outline" onClick={() => setSubmitted(false)}>
                                 Register Another Workspace
                             </Button>
-                            <Link
-                                href={route('home')}
-                                className="text-sm text-primary underline hover:text-primary/90"
-                            >
+                            <Link href={route('home')} className={cn(authLinkClassName, 'self-center')}>
                                 Back to Homepage
                             </Link>
                         </div>
@@ -192,20 +190,20 @@ export default function Register() {
                             </p>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4">
-                            <Link
-                                href={route('workspace.access')}
-                                className="text-sm text-primary underline hover:text-primary/90"
-                            >
-                                Already have an account?
-                            </Link>
-
+                        <div className="flex flex-col pt-4 gap-4">
                             <Button
                                 type="submit"
                                 disabled={processing || subdomainAvailable === false || checking}
                             >
                                 Create Workspace
                             </Button>
+                            <Link
+                                href={route('workspace.access')}
+                                className={cn(authLinkClassName, 'self-center')}
+                            >
+                                Already have an account?
+                            </Link>
+
                         </div>
                     </form>
                 </CardContent>
