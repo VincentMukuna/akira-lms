@@ -14,7 +14,7 @@ import moduleRegistry from '@/lib/moduleRegistry';
 import { cn } from '@/lib/utils';
 import { Archive, GripVertical, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { DragDropContext, Draggable, DraggableProvided, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, DraggableProvided, Droppable } from '@hello-pangea/dnd';
 import { toast } from 'sonner';
 import ModuleTypeSelector from './ModuleTypeSelector';
 

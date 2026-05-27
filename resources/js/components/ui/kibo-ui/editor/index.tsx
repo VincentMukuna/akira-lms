@@ -617,7 +617,7 @@ export const EditorProvider = ({
     Table.configure({
       HTMLAttributes: {
         class: cn(
-          'relative m-0 mx-auto my-3 w-full table-fixed border-collapse overflow-hidden rounded-none text-sm',
+          'relative m-0 mx-auto my-3 w-full table-fixed border-collapse overflow-hidden rounded text-sm',
         ),
       },
       allowTableNodeSelection: true,
@@ -988,7 +988,7 @@ export const EditorSelector = ({
   return (
     <Popover modal open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost" className="gap-2 rounded-none border-none">
+        <Button size="sm" variant="ghost" className="gap-2 rounded border-none">
           <span className="whitespace-nowrap text-xs">{title}</span>
           <ChevronDownIcon size={12} />
         </Button>
@@ -1204,7 +1204,7 @@ export const EditorLinkSelector = ({ open, onOpenChange }: EditorLinkSelectorPro
   return (
     <Popover modal open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <Button size="sm" variant="ghost" className="gap-2 rounded-none border-none">
+        <Button size="sm" variant="ghost" className="gap-2 rounded border-none">
           <ExternalLinkIcon size={12} />
           <p
             className={cn('decoration-text-muted underline underline-offset-4', {

@@ -8,7 +8,7 @@ import {
   DraggableStateSnapshot,
   Droppable,
   DroppableProvided,
-} from 'react-beautiful-dnd';
+} from '@hello-pangea/dnd';
 import { QuizModule } from '../../types/course';
 import BaseModuleEditor from '../BaseModuleEditor';
 import { QuestionEditor } from './components/QuestionEditor';

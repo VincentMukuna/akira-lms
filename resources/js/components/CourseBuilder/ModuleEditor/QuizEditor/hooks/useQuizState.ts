@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { DropResult } from 'react-beautiful-dnd';
+import { DropResult } from '@hello-pangea/dnd';
 import { MultipleChoiceOption, Question, QuestionType, QuizModule } from '../../../types/course';
 
 export function useQuizState(module: QuizModule, onChange: (module: Partial<QuizModule>) => void) {
