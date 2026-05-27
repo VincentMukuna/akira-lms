@@ -1,5 +1,74 @@
-![Screenshot 2025-02-20 at 10-23-01 AkiraLMS - AI-Powered Learning Management System - AkiraLMS](https://github.com/user-attachments/assets/fc31565a-829a-4192-98c8-e88a08f824df)
-![Screenshot 2025-02-20 at 10-23-52 AkiraLMS - AI-Powered Learning Management System - AkiraLMS](https://github.com/user-attachments/assets/2a376809-7be3-48b0-a0dd-54a05f67ec53)
-![Screenshot 2025-02-22 at 22-30-50 Admin Dashboard - AkiraLMS](https://github.com/user-attachments/assets/0b98a8c9-a9c4-4ad5-8b30-583b372a8b2f)
-![Screenshot 2025-02-22 at 22-12-17 - AkiraLMS](https://github.com/user-attachments/assets/52295e54-b042-4a96-a3b3-ece321ea73b0)
-![Screenshot 2025-02-21 at 15-51-47 - AkiraLMS](https://github.com/user-attachments/assets/cd044f22-1773-44be-aabb-59017845422e)
+# Akira LMS
+
+Laravel 11 + Inertia.js + React application using Laravel Sail for local development.
+
+## Requirements
+
+- Docker Desktop
+- Composer
+- Node.js and npm
+
+If Composer is not installed, follow the [official Composer installation guide](https://getcomposer.org/download/).
+If Node.js/npm is not installed, follow the [official npm installation guide](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
+
+## Quick Start
+
+1. Install PHP dependencies:
+
+```bash
+composer install
+```
+
+2. Create your environment file:
+
+```bash
+cp .env.example .env
+```
+
+3. Start the Sail containers:
+
+```bash
+./vendor/bin/sail up -d --build
+```
+
+4. Install JavaScript dependencies in Sail:
+
+```bash
+./vendor/bin/sail npm install
+```
+
+5. Generate application key and run migrations:
+
+```bash
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate
+```
+
+6. Open the app:
+
+- App: [http://localhost](http://localhost)
+- Mailpit: [http://localhost:8025](http://localhost:8025)
+
+## Local Development Workflow
+
+Use two terminals during development:
+
+1. Start Sail services:
+
+```bash
+./vendor/bin/sail up -d
+```
+
+2. Start the Vite dev server:
+
+```bash
+./vendor/bin/sail npm run dev
+```
+
+To stop Vite, press `Ctrl + C` in its terminal.
+
+To stop all Sail services:
+
+```bash
+./vendor/bin/sail down
+```
